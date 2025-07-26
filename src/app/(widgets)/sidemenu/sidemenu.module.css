@@ -1,0 +1,175 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 220px;
+  background: linear-gradient(to bottom, #434190, #6B46C1);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem 1rem;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  z-index: 100;
+}
+
+.open {
+  transform: translateX(0);
+}
+
+.closed {
+  transform: translateX(-100%);
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 100px;
+}
+
+.link {
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.3s ease, padding-left 0.3s ease;
+}
+
+.link:hover {
+  background: rgba(255, 255, 255, 0.15);
+  padding-left: 1.5rem;
+}
+
+.toggleBtn {
+  position: fixed;
+  top: 3.8rem;
+  left: 2rem;
+  background-color: rgba(118, 75, 162, 0.85); 
+  border: none;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(118, 75, 162, 0.6);
+  z-index: 101;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.toggleBtn:hover {
+  background-color: #764ba2; /* solid purple from your main purple */
+  box-shadow: 0 6px 12px rgba(118, 75, 162, 0.9);
+}
+
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.fadeIn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.fadeOut {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.popup {
+  background: #fff;
+  color: #333;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 320px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  animation: fadePopup 0.3s ease;
+}
+
+@keyframes fadePopup {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.popupActions {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.popupActions button {
+  padding: 8px 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.popupActions button:first-child {
+  background-color: #764ba2;
+  color: white;
+}
+
+.popupActions button:first-child:hover {
+  background-color: #5d3e94;
+}
+
+.popupActions button:last-child {
+  background-color: #e0e0e0;
+}
+
+.popupActions button:last-child:hover {
+  background-color: #d0d0d0;
+}
+.logoutWrapper {
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.logoutBtn {
+  background: #fff;
+  color: #6B46C1;
+  border: none;
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 16px;
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logoutBtn:hover {
+  background-color: #f1f1f1;
+  transform: translateY(-2px);
+}

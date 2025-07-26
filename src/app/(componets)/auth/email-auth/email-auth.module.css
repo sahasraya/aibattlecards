@@ -1,0 +1,51 @@
+.container {
+  max-width: 400px;
+  margin: 100px auto;
+  text-align: center;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  padding: 40px 30px;
+  transition: all 0.6s ease-out;
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.fadeUp {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.emailImage {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+}
+
+.heading {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.message {
+  font-size: 1rem;
+  color: #555;
+  margin: 20px 0;
+}
+
+.button {
+  background-color: #0070f3;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #005ac1;
+}
