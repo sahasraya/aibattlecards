@@ -48,11 +48,34 @@
   text-decoration: none;
   color: #333;
   font-weight: 500;
-  transition: color 0.3s;
+  transition: color 0.35s ease-in-out;
 }
 
 .auth-function-holder a:hover {
   color: #4a90e2;
+}
+
+/* VS Button */
+.vs-btn {
+  background: linear-gradient(135deg, #ff416c, #ff4b2b);
+  color: #fff !important;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  border-radius: 25px;
+  text-decoration: none;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Smooth transition for transform, shadow, and background */
+  transition: transform 0.45s ease, box-shadow 0.45s ease, background 0.45s ease;
+}
+
+.vs-btn:hover {
+  transform: scale(1.07);
+  box-shadow: 0 8px 20px rgba(255, 75, 43, 0.5);
+  background: linear-gradient(135deg, #ff5e84, #ff693b);
 }
 
 /* Profile wrapper */

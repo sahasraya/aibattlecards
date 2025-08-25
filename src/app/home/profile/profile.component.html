@@ -101,5 +101,67 @@
         </div>
 
 
+
+        <div *ngIf="activeTab === 'Access'" class="access-tab">
+            <h2 class="section-title">Access</h2>
+
+            <!-- Change Password Section -->
+            <form [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()" class="access-form">
+                <h3 class="sub-title">Change Password</h3>
+                <div class="form-group">
+                    <label>Old Password</label>
+                    <input type="password" formControlName="oldPassword" required>
+                </div>
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" formControlName="newPassword" required>
+                </div>
+                <div class="form-group">
+                    <label>Re-enter New Password</label>
+                    <input type="password" formControlName="confirmPassword" required>
+                </div>
+                <button type="submit" [disabled]="passwordForm.invalid">Update Password</button>
+            </form>
+
+            <!-- Danger Zone Section -->
+
+
+            <!-- Delete Confirmation Modal -->
+            <div class="danger-zone">
+                <h3 class="sub-title">Danger Zone</h3>
+                <p class="danger-text">Deleting your account is permanent and cannot be undone.</p>
+                <button class="delete-btn" (click)="showDeleteConfirm = true">Delete Account</button>
+            </div>
+
+            <!-- Delete Confirmation Modal -->
+            <div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="showDeleteConfirm = false">
+
+                <div class="modal" *ngIf="showDeleteConfirm">
+                    <div class="modal-content">
+                        <h3 class="modal-title">Are you sure?</h3>
+                        <p class="modal-warning">
+                            Deleting your account will permanently remove your account and all associated data.
+                        </p>
+                        <ul class="modal-bullets">
+                            <li>All published products will be permanently deleted.</li>
+                            <li>All reviews will be permanently removed.</li>
+                            <li>You will lose access to your account and all related data.</li>
+                        </ul>
+                        <div class="modal-actions">
+                            <button class="cancel-btn" (click)="showDeleteConfirm = false">Cancel</button>
+                            <button class="confirm-btn" (click)="onDeleteAccount()">Yes, Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+
+
     </div>
 </div>

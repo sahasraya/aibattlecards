@@ -27,6 +27,8 @@ interface Review {
 export class ProfileComponent implements OnInit {
   activeTab: string = 'Profile';
   profileForm!: FormGroup;
+  passwordForm!: FormGroup;
+  showDeleteConfirm: boolean = false;
 
   toolsArray: Tool[] = [
     {
@@ -96,6 +98,13 @@ export class ProfileComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
     });
 
+
+      this.passwordForm = this.fb.group({
+      oldPassword: ['', Validators.required],
+      newPassword: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required]
+    }, { validators: this.passwordMatchValidator });
+
     // Check query param for active tab
     this.route.queryParams.subscribe((params: any) => {
       const tab = params['tab'];
@@ -104,7 +113,36 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
+ passwordMatchValidator(form: FormGroup) {
+    const newPassword = form.get('newPassword')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
+    return newPassword === confirmPassword ? null : { mismatch: true };
+  }
 
+  // Submit change password
+  onPasswordSubmit() {
+    if (this.passwordForm.invalid) return;
+
+    const { oldPassword, newPassword } = this.passwordForm.value;
+    console.log('Change password:', { oldPassword, newPassword });
+
+    // TODO: Call your API to update the password
+    alert('Password updated successfully!');
+    this.passwordForm.reset();
+  }
+
+  // Delete account
+  onDeleteAccount() {
+    console.log('Delete account confirmed');
+
+    // TODO: Call your API to delete account
+    alert('Account deleted successfully!');
+    this.showDeleteConfirm = false;
+  }
+
+
+
+  
   setActiveTab(tab: string) {
     this.activeTab = tab;
     this.router.navigate([], {

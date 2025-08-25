@@ -1,0 +1,254 @@
+.battle-card-wrapper {
+  padding: 1rem 2rem;
+  background: #f5f7fa;
+}
+
+/* Search Bar */
+.search-bar-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 600px;
+  margin-bottom: 1.5rem;
+  background: #fff;
+  border-radius: 30px;
+  padding: 0.4rem 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar-wrapper input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 0.5rem 0.75rem;
+  font-size: 16px;
+  border-radius: 30px;
+}
+
+.search-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 0.75rem;
+}
+
+/* Search dropdown */
+.search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  margin-top: 0.25rem;
+  list-style: none;
+  padding: 0;
+}
+
+.search-dropdown li {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.search-dropdown li:hover {
+  background: #f0f4ff;
+}
+
+/* Cards */
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 1.5rem;
+}
+
+/* Make Battle Button */
+.battle-btn {
+  background: #4a90e2;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 10px;
+}
+
+.battle-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.battle-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(74, 144, 226, 0.4);
+}
+
+/* Table */
+.battle-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+.battle-table th,
+.battle-table td {
+  padding: 14px 16px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  transition: background 0.3s ease;
+}
+
+.battle-table thead {
+  background: #f9fafb;
+}
+
+.battle-table .property-col {
+  width: 180px;
+  text-align: left;
+  font-weight: 600;
+  background: #f3f4f6;
+}
+
+.battle-table .property {
+  font-weight: 500;
+  color: #374151;
+  background: #fafafa;
+  text-align: left;
+}
+
+.battle-table td {
+  color: #444;
+  font-size: 14px;
+}
+
+.battle-table th.tool-col {
+  background: #fff;
+}
+
+.tool-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-tool-img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.header-tool-img:hover {
+  transform: scale(1.08);
+  border-color: #3b82f6;
+}
+
+/* Hover row effect */
+.battle-table tbody tr:hover {
+  background: #f0f9ff;
+}
+
+/* First column fixed width */
+.battle-table td:first-child,
+.battle-table th:first-child {
+  text-align: left;
+  font-weight: 600;
+  color: #111827;
+}
+
+.tool-img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+.filtered-cards-wrapper {
+  margin-bottom: 1.5rem;
+}
+
+.filtered-cards-wrapper h3 {
+  font-size: 16px;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.filtered-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.filtered-card {
+  position: relative;
+  flex: 1 1 200px;
+  max-width: 220px;
+  background: #fff;
+  padding: 0.8rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filtered-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.tool-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.tool-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.select-circle {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 22px;
+  height: 22px;
+  background: #ff416c;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cards-container app-smaller-product-card {
+    flex: 1 1 100%;
+  }
+
+  .search-bar-wrapper {
+    max-width: 100%;
+  }
+}

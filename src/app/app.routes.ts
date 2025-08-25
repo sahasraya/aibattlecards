@@ -3,6 +3,7 @@ import { MainHomeComponent } from './home/main-home.component';
 import { DashboardComponent } from './home/dashboard/dashboard.component';
 import { ProductItemComponent } from './home/product-item/product-item.component';
 import { ProfileComponent } from './home/profile/profile.component';
+import { BattleCardComponent } from './home/battle-card/battle-card.component';
 
 export const routes: Routes = [
   {
@@ -30,6 +31,10 @@ export const routes: Routes = [
        {
         path: 'user-profile',
         component: ProfileComponent
+      },
+        {
+        path: 'battle-card',
+        component: BattleCardComponent
       }
        
        

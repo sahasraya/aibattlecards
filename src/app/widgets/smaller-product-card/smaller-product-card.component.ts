@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
   styleUrl: './smaller-product-card.component.css'
 })
 export class SmallerProductCardComponent {
-  @Input() product: any;  
+  @Input() product: any;
   @Input() showDropdown: boolean = false;
 
   toggleDropdown(event: Event) {

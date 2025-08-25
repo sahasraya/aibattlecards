@@ -274,3 +274,108 @@ button[type="submit"]:hover:not(:disabled) {
   background-color: #4a90e2;
   color: #fff;
 }
+/* Access Tab */
+.access-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #222;
+}
+
+.sub-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #444;
+}
+
+/* Change Password Form */
+.access-form {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 500px;
+}
+
+.access-form .form-group label {
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+.access-form input {
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.access-form input:focus {
+  border-color: #4a90e2;
+  outline: none;
+}
+
+.access-form button {
+  padding: 0.8rem;
+  background: #4a90e2;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.access-form button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.access-form button:hover:not(:disabled) {
+  background: #357abd;
+}
+
+/* Danger Zone */
+.danger-zone {
+  background: #ffe6e6;
+  border: 1px solid #ff4d4d;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-top: 2rem;
+}
+
+.danger-zone .sub-title {
+  color: #d80000;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.danger-zone .danger-text {
+  font-size: 14px;
+  color: #b30000;
+  margin-bottom: 1rem;
+}
+
+.delete-btn {
+  padding: 0.8rem;
+  background: #e63946;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.delete-btn:hover {
+  background: #c92a36;
+}

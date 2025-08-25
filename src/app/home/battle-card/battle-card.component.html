@@ -1,0 +1,98 @@
+<div class="battle-card-wrapper">
+
+    <!-- Search Bar -->
+    <div class="search-bar-wrapper">
+        <img src="../../../assets/images/search.png" alt="search icon" class="search-icon">
+        <input type="text" placeholder="Search for tools like ChatGPT..." [(ngModel)]="searchTerm"
+            (input)="onSearchChange()">
+
+        <!-- Search Dropdown -->
+        <ul class="search-dropdown" *ngIf="searchTerm && filteredTools.length">
+            <li *ngFor="let tool of filteredTools" (click)="onSelectSearchTool(tool)">
+                {{tool.name}}
+            </li>
+        </ul>
+    </div>
+
+    <!-- Filtered Tools Selection (for battle) -->
+    <div *ngIf="selectedTypeTools.length > 0" class="filtered-cards-wrapper">
+        <h3>Select Tools for Battle (max 3)</h3>
+        <div class="filtered-cards-container">
+            <div class="filtered-card" *ngFor="let tool of selectedTypeTools" (click)="toggleSelect(tool)">
+                <img [src]="tool.icon" alt="" class="tool-img">
+                <span class="tool-name">{{tool.name}}</span>
+                <div class="select-circle" *ngIf="tool.selected">{{tool.selected}}</div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Make Battle Button -->
+
+    <!-- Selected Tools Table -->
+    <table *ngIf="selectedTools.length > 0" class="battle-table">
+        <thead>
+            <tr>
+                <th class="property-col">Property</th>
+                <th *ngFor="let tool of selectedTools" class="tool-col">
+                    <div class="tool-header">
+                        <img [src]="tool.icon" alt="{{tool.name}}" class="header-tool-img">
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Product Names -->
+            <tr>
+                <td class="property">Name</td>
+                <td *ngFor="let tool of selectedTools">{{ tool.name }}</td>
+            </tr>
+
+            <!-- Type -->
+            <tr>
+                <td class="property">Type</td>
+                <td *ngFor="let tool of selectedTools">{{ tool.type }}</td>
+            </tr>
+
+            <!-- Tags -->
+            <tr>
+                <td class="property">Tags</td>
+                <td *ngFor="let tool of selectedTools">{{ tool.tags.join(', ') }}</td>
+            </tr>
+
+            <!-- See Review Button -->
+            <tr>
+                <td class="property">Actions</td>
+                <td *ngFor="let tool of selectedTools">
+                    <button class="review-btn" (click)="openReview(tool)">See Reviews</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Modal -->
+    <div *ngIf="popupSelected.length > 0" class="modal-backdrop">
+        <div class="modal">
+            <span class="close-btn" (click)="closePopup()"> <img src="../../../assets/images/close.png" alt=""></span>
+            <div class="modal-content" *ngFor="let product of popupSelected">
+                <h3>{{ product.name }}</h3>
+                <p><strong>Type:</strong> {{ product.type }}</p>
+                <p><strong>Tags:</strong> {{ product.tags.join(', ') }}</p>
+            </div>
+            <div class="modal-actions">
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <div class="cards-container" *ngIf="isproductisselectedfromsearch">
+        <app-smaller-product-card *ngFor="let tool of toolsArray" [product]="tool">
+        </app-smaller-product-card>
+    </div>
+
+
+</div>
