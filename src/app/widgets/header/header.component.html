@@ -1,0 +1,26 @@
+<div class="header-holder">
+    <!-- Left Logo -->
+    <img src="../../../assets/images/12.png" alt="logo" class="logo">
+
+    <!-- Search Bar (centered) -->
+    <input type="text" class="search-bar" placeholder="Search for products, services, or categories...">
+
+    <!-- Right Side Actions -->
+    <div class="auth-function-holder">
+        <a routerLink="">Sign Up</a>
+        <a routerLink="">Log in</a>
+    </div>
+
+    <!-- Profile Section -->
+    <div class="profile-wrapper" (click)="toggleDropdown()">
+        <img src="../../../assets/images/12.png" alt="profile icon" class="profile-icon">
+
+        <div class="profile-dropdown" *ngIf="dropdownOpen">
+            <ul>
+                <li><a routerLink="/home/user-profile">Profile</a></li>
+                <li><a routerLink="">Settings</a></li>
+                <li><a routerLink="">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</div>

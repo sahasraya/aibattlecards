@@ -1,0 +1,128 @@
+.header-holder {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: 1rem;
+}
+
+/* Logo */
+.logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+/* Search Bar */
+.search-bar {
+  flex: 1;
+  max-width: 500px;
+  padding: 0.6rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 30px;
+  outline: none;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  margin: 0 auto;
+  display: block;
+}
+
+.search-bar:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 6px rgba(74, 144, 226, 0.3);
+}
+
+/* Auth links */
+.auth-function-holder {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.auth-function-holder a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.auth-function-holder a:hover {
+  color: #4a90e2;
+}
+
+/* Profile wrapper */
+.profile-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.profile-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #eee;
+  transition: border 0.3s, transform 0.3s;
+}
+
+.profile-wrapper:hover .profile-icon {
+  border-color: #4a90e2;
+  transform: scale(1.05);
+}
+
+/* Dropdown menu */
+.profile-dropdown {
+  position: absolute;
+  right: 0;
+  top: 50px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  padding: 0.5rem 0;
+  width: 180px;
+  animation: fadeIn 0.25s ease;
+  z-index: 200;
+}
+
+.profile-dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.profile-dropdown li {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.profile-dropdown li:last-child {
+  border-bottom: none;
+}
+
+.profile-dropdown a {
+  display: block;
+  padding: 0.7rem 1rem;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.profile-dropdown a:hover {
+  background: #f0f4ff;
+  color: #4a90e2;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,21 @@
+<div class="product-card" [routerLink]="['/home/product-item']" routerLinkActive="active-card">
+    <img src="../../../assets/images/dotmenu.svg" alt="Menu" class="dotmenu" (click)="toggleDropdown($event)">
+
+    <div class="dotmenudropdown" *ngIf="product.showDropdown">
+        <ul>
+            <li>Edit</li>
+            <li>Delete</li>
+        </ul>
+    </div>
+
+    <div class="product-icon">
+        <img [src]="product.icon" alt="tool icon" />
+    </div>
+    <h3 class="product-name">{{ product.name }}</h3>
+    <p class="product-type">
+        <span>Type</span> {{ product.type }}
+    </p>
+    <div class="chip-wrapper">
+        <span class="chip" *ngFor="let tag of product.tags">{{ tag }}</span>
+    </div>
+</div>

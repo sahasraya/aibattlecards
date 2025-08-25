@@ -1,0 +1,37 @@
+.app-layout {
+  display: flex;
+}
+
+/* side menu is already fixed with 300px width */
+app-side-menu {
+  min-width: 300px;
+}
+
+/* main content wrapper */
+.main-content {
+  flex: 1;
+  min-height: 100vh;
+  background: #fdfdfd;
+  max-width: calc(100% - 300px);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* header fixed at the top */
+.app-header {
+  position: sticky; /* or use fixed if you want it outside scroll */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: #fff; /* ensure background covers content when scrolling */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 1rem;
+}
+
+/* router outlet content pushes below header */
+.content-body {
+  flex: 1;
+  padding: 1.5rem;
+}

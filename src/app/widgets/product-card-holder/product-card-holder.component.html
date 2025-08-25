@@ -1,0 +1,31 @@
+<div class="featured-container">
+
+    <div class="scroll-wrapper">
+        <!-- Left Arrow -->
+        <button class="scroll-btn left" (click)="scrollLeft(cardContainer)">
+            <img src="../../../assets/images/leftarrow.png" alt="scroll left" />
+        </button>
+
+        <!-- Cards Container -->
+        <div class="cards-container" #cardContainer>
+            <div class="product-card" *ngFor="let product of featuredArrayDetails"
+                [routerLink]="['/home/product-item']">
+                <div class="product-icon">
+                    <img src="{{ product.icon }}" alt="icon" />
+                </div>
+                <h3 class="product-name">{{ product.name }}</h3>
+                <p class="product-type">
+                    <span>Type</span> {{ product.type }}
+                </p>
+                <div class="chip-wrapper">
+                    <span class="chip" *ngFor="let tag of product.tags">{{ tag }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Arrow -->
+        <button class="scroll-btn right" (click)="scrollRight(cardContainer)">
+            <img src="../../../assets/images/rightarrow.png" alt="scroll right" />
+        </button>
+    </div>
+</div>

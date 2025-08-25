@@ -1,0 +1,108 @@
+.side-menu {
+  width: 300px; /* larger width */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  font-family: "Manrope", sans-serif;
+
+  position: fixed; /* fixed to the viewport */
+  top: 0;
+  left: 0;
+  height: 100vh; /* full height */
+  overflow-y: auto; /* scroll if content exceeds */
+  padding: 1.5rem 1rem;
+  background: #fafafa;
+  border-right: 1px solid #e0e0e0;
+  z-index: 1000;
+}
+
+/* Optional sticky for tiles if you want titles to stick inside */
+.menu-tile {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 1.2rem;
+  border: 1px solid #eaeaea;
+  transition: all 0.3s ease;
+}
+
+.menu-tile:hover {
+  border-color: #4a90e2;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.15);
+}
+
+.tile-title {
+  font-size: 18px; /* a little larger */
+  font-weight: 600;
+  color: #6a1b9a; /* purple accent */
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid #eaeaea;
+  padding-bottom: 0.5rem;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 1;
+}
+
+.categories-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.categories-list li {
+  margin-bottom: 0.5rem;
+}
+
+.categories-list a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7rem 0.9rem;
+  text-decoration: none;
+  color: #333;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.categories-list a:hover {
+  background: #f0f4ff;
+  color: #4a90e2;
+}
+
+.categories-list img {
+  width: 16px; /* slightly bigger arrow */
+  height: 16px;
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+
+.categories-list a:hover img {
+  opacity: 1;
+}
+
+.chips-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.chip {
+  background: #e6eaf5;
+  color: #333;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.chip:hover {
+  background: #4a90e2;
+  color: #fff;
+}
+
+.chip.active {
+  background: #00e676;
+  color: #fff;
+}
