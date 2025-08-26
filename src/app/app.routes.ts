@@ -4,6 +4,9 @@ import { DashboardComponent } from './home/dashboard/dashboard.component';
 import { ProductItemComponent } from './home/product-item/product-item.component';
 import { ProfileComponent } from './home/profile/profile.component';
 import { BattleCardComponent } from './home/battle-card/battle-card.component';
+import { LogInComponent } from './auth/log-in/log-in.component';
+import { SignUpComponent } from './auth/sign-up/sign-up.component';
+import { EmailAuthComponent } from './auth/email-auth/email-auth.component';
 
 export const routes: Routes = [
   {
@@ -36,6 +39,29 @@ export const routes: Routes = [
         path: 'battle-card',
         component: BattleCardComponent
       }
+       
+       
+    ]
+  },
+  {
+    path: 'auth',
+    children: [
+       
+      {
+        path: 'log-in',
+        component: LogInComponent
+      },
+       {
+        path: 'sign-up',
+        component: SignUpComponent
+      },
+       {
+        path: 'authentication',
+        component: EmailAuthComponent
+      },
+       
+       
+        
        
        
     ]

@@ -1,0 +1,57 @@
+<div class="signup-container">
+    <div class="signup-card">
+        <h2 class="signup-title">Create Account</h2>
+        <p class="signup-subtitle">Fill in the details to sign up</p>
+
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" formControlName="username" placeholder="Enter username" />
+                <small *ngIf="signupForm.get('username')?.touched && signupForm.get('username')?.invalid">
+                    Username is required
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" formControlName="email" placeholder="Enter email" />
+                <small *ngIf="signupForm.get('email')?.touched && signupForm.get('email')?.invalid">
+                    Valid email is required
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" formControlName="password" placeholder="Enter password" />
+                <small *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.errors?.['required']">
+                    Password is required
+                </small>
+                <small *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.errors?.['minlength']">
+                    Password must be at least 6 characters
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="reenterPassword">Re-enter Password</label>
+                <input type="password" id="reenterPassword" formControlName="reenterPassword"
+                    placeholder="Re-enter password" />
+                <small
+                    *ngIf="signupForm.get('reenterPassword')?.touched && signupForm.get('reenterPassword')?.errors?.['required']">
+                    Password confirmation is required
+                </small>
+                <small
+                    *ngIf="signupForm.get('reenterPassword')?.touched && signupForm.get('reenterPassword')?.errors?.['minlength']">
+                    Password must be at least 6 characters
+                </small>
+            </div>
+            <button type="submit" [disabled]="!signupForm.valid" class="signup-btn">
+                Sign Up
+            </button>
+        </form>
+
+        <p class="login-text">
+            Already have an account?
+            <a routerLink="/auth/log-in">Log In</a>
+        </p>
+    </div>
+</div>

@@ -1,0 +1,118 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--primary-gradient);
+  background-size: 400% 400%; /* Important for animation */
+  animation: gradientBG 15s ease infinite;
+
+  padding: 1rem;
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.login-card {
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-title {
+  margin-bottom: 0.5rem;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.login-subtitle {
+  margin-bottom: 2rem;
+  font-size: 14px;
+  color: #666;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: var(--border-radius);
+  background: var(--input-bg);
+  font-size: 14px;
+  outline: none;
+  transition: box-shadow 0.3s ease;
+}
+
+input:focus {
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+}
+
+small {
+  color: #e63946;
+  font-size: 12px;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 0.8rem;
+  border: none;
+  border-radius: var(--border-radius);
+  background: var(--accent-color);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.login-btn:disabled {
+  background: #a8c0f0;
+  cursor: not-allowed;
+}
+
+.login-btn:not(:disabled):hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+}
+
+.signup-text {
+  margin-top: 1rem;
+  font-size: 14px;
+  color: #666;
+}
+
+.signup-text a {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.signup-text a:hover {
+  color: var(--accent-hover);
+}

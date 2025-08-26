@@ -7,8 +7,8 @@
 
     <!-- Right Side Actions -->
     <div class="auth-function-holder">
-        <a routerLink="">Sign Up</a>
-        <a routerLink="">Log in</a>
+        <a routerLink="/auth/sign-up">Sign Up</a>
+        <a routerLink="/auth/log-in">Log in</a>
         <a routerLink="/home/battle-card" class="vs-btn">Vs</a>
     </div>
 
@@ -20,8 +20,27 @@
             <ul>
                 <li><a routerLink="/home/user-profile">Profile</a></li>
                 <li><a routerLink="">Settings</a></li>
-                <li><a routerLink="">Logout</a></li>
+                <li><a routerLink="" (click)="showlogoutpopup()">Logout</a></li>
             </ul>
         </div>
     </div>
+</div>
+
+
+<div class="modal-backdrop" *ngIf="showLogoutConfirm" (click)="showLogoutConfirm = false">
+
+    <div class="modal" *ngIf="showLogoutConfirm" (click)="$event.stopPropagation()">
+        <div class="modal-content">
+            <h3 class="modal-title">Are you sure?</h3>
+            <p class="modal-warning">
+                Do you really want to log out of your account? You will need to log in again to access your data.
+            </p>
+
+            <div class="modal-actions">
+                <button class="cancel-btn" (click)="showLogoutConfirm = false">Cancel</button>
+                <button class="confirm-btn" (click)="onLogout()">Yes, Log Out</button>
+            </div>
+        </div>
+    </div>
+
 </div>

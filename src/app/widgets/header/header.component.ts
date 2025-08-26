@@ -11,13 +11,20 @@ import { RouterLink } from "@angular/router";
 })
 export class HeaderComponent {
   dropdownOpen:boolean = false;
+  showLogoutConfirm:boolean = false;
   
 
 
   
 toggleDropdown() {
   this.dropdownOpen = !this.dropdownOpen;
-}
+  }
+  showlogoutpopup() {
+    this.showLogoutConfirm = true;
+  }
+  onLogout(){
+    this.showLogoutConfirm = false;
+  }
 
 // Optional: close dropdown when clicking outside
   @HostListener('document:click', ['$event'])

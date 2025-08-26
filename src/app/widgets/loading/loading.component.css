@@ -1,0 +1,41 @@
+/* Container for centering */
+.loader-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px;
+}
+
+/* Outer bar */
+.loader-bar {
+  position: relative;
+  width: 95%;
+  height: var(--loader-height);
+  background: var(--loader-bg);
+  border-radius: var(--loader-radius);
+  overflow: hidden;
+}
+
+/* Animated progress */
+.loader-progress {
+  position: absolute;
+  height: 100%;
+  width: 50%;
+  background: linear-gradient(90deg, var(--loader-color), #85c1f0);
+  border-radius: var(--loader-radius);
+  animation: moveProgress 1.6s linear infinite;
+}
+
+/* Animation keyframes */
+@keyframes moveProgress {
+  0% {
+    left: -50%;
+  }
+  50% {
+    left: 50%;
+  }
+  100% {
+    left: 100%;
+  }
+}
