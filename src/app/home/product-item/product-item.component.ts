@@ -23,10 +23,10 @@ export class ProductItemComponent {
       isPaid: ['', Validators.required],
       ispaidtogglecommercialorpersonal: ['', Validators.required],
       usageDuration: ['', Validators.required],
-      experienceRating: [3, Validators.required],
-      efficiencyRating: [3, Validators.required],
-      documentationRating: [3, Validators.required],
-      paidVersionRating: [3],
+      experienceRating: [1, Validators.required],
+      efficiencyRating: [1, Validators.required],
+      documentationRating: [1, Validators.required],
+      paidVersionRating: [1],
       paidtogglecommercialorpersonal: [3],
       additionalComments: ['']
     });

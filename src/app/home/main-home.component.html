@@ -1,11 +1,12 @@
-<div class="app-layout">
-    <app-side-menu></app-side-menu>
+<div class="main_layout">
+    <app-header class="app-header"></app-header>
+    <app-loading></app-loading>
 
-    <main class="main-content">
-        <app-header class="app-header"></app-header>
-        <app-loading></app-loading>
+    <div class="content_Wrapper">
+        <app-side-menu></app-side-menu>
         <div class="content-body">
             <router-outlet></router-outlet>
+
         </div>
-    </main>
+    </div>
 </div>

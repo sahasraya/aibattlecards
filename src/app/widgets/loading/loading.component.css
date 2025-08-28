@@ -4,13 +4,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 5px;
 }
 
 /* Outer bar */
 .loader-bar {
   position: relative;
-  width: 95%;
+  width: 100%;
   height: var(--loader-height);
   background: var(--loader-bg);
   border-radius: var(--loader-radius);

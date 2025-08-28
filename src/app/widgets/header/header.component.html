@@ -7,9 +7,10 @@
 
     <!-- Right Side Actions -->
     <div class="auth-function-holder">
+        <a routerLink="/home/battle-card" class="vs-btn">Vs</a>
+
         <a routerLink="/auth/sign-up">Sign Up</a>
         <a routerLink="/auth/log-in">Log in</a>
-        <a routerLink="/home/battle-card" class="vs-btn">Vs</a>
     </div>
 
     <!-- Profile Section -->
@@ -19,8 +20,7 @@
         <div class="profile-dropdown" *ngIf="dropdownOpen">
             <ul>
                 <li><a routerLink="/home/user-profile">Profile</a></li>
-                <li><a routerLink="">Settings</a></li>
-                <li><a routerLink="" (click)="showlogoutpopup()">Logout</a></li>
+                <li><a (click)="showlogoutpopup($event)">Logout</a></li>
             </ul>
         </div>
     </div>

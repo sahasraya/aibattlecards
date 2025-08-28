@@ -19,7 +19,9 @@ export class HeaderComponent {
 toggleDropdown() {
   this.dropdownOpen = !this.dropdownOpen;
   }
-  showlogoutpopup() {
+  showlogoutpopup(e: Event) {
+    e.preventDefault(); // Prevent default anchor behavior
+    e.stopPropagation
     this.showLogoutConfirm = true;
   }
   onLogout(){

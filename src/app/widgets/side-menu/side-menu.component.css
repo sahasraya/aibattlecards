@@ -4,15 +4,10 @@
   flex-direction: column;
   gap: 1.5rem;
   font-family: "Manrope", sans-serif;
-
-  position: fixed; /* fixed to the viewport */
-  top: 0;
-  left: 0;
-  height: 100vh; /* full height */
+  position: sticky;
+  top: 65px;
   overflow-y: auto; /* scroll if content exceeds */
   padding: 1.5rem 1rem;
-  background: #fafafa;
-  border-right: 1px solid #e0e0e0;
   z-index: 10;
 }
 

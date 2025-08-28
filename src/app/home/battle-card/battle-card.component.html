@@ -14,17 +14,65 @@
         </ul>
     </div>
 
-    <!-- Filtered Tools Selection (for battle) -->
+    <!-- 🎴 Filtered Tools (after selecting from search) -->
     <div *ngIf="selectedTypeTools.length > 0" class="filtered-cards-wrapper">
+
+
         <h3>Select Tools for Battle (max 3)</h3>
+        <input type="text" placeholder="Filter by name..." [(ngModel)]="filterTerm" (input)="onFilterChange()"
+            class="search-bar-products">
+
         <div class="filtered-cards-container">
-            <div class="filtered-card" *ngFor="let tool of selectedTypeTools" (click)="toggleSelect(tool)">
+            <div class="filtered-card" *ngFor="let tool of displayedTypeTools" (click)="toggleSelect(tool)">
                 <img [src]="tool.icon" alt="" class="tool-img">
                 <span class="tool-name">{{tool.name}}</span>
                 <div class="select-circle" *ngIf="tool.selected">{{tool.selected}}</div>
             </div>
         </div>
     </div>
+
+
+    <div class="modal-backdrop" *ngIf="isSearchingAnythingElseProduct">
+        <div class="modal">
+            <div class="modal-content">
+                <h3 class="modal-title">Do you want to search something else?</h3>
+                <p class="modal-warning">Multiple products are available. You can reset your search to select something
+                    different.</p>
+                <div class="modal-actions">
+                    <button class="cancel-btn" (click)="onSearchSomethingElse(false)">No</button>
+                    <button class="confirm-btn" (click)="onSearchSomethingElse(true)">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- ✅ Selected Models Section -->
+    <div *ngIf="selectedTools.length > 0" class="selected-models-wrapper">
+        <!-- <input type="text" placeholder="Search selected models.dddddddddddddddddd.." [(ngModel)]="selectedFilterTerm"
+            (input)="onSelectedFilterChange()"> -->
+
+        <span class="separater"></span>
+
+        <div class="filtered-cards-container">
+            <div class="filtered-card" *ngFor="let tool of displayedSelectedTools" (click)="toggleSelect(tool)">
+                <img [src]="tool.icon" alt="" class="tool-img">
+                <span class="tool-name">{{tool.name}}</span>
+                <div class="select-circle">{{tool.selected}}</div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
 
 
 

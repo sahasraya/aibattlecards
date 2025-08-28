@@ -48,7 +48,7 @@
   text-decoration: none;
   color: #333;
   font-weight: 500;
-  transition: color 0.35s ease-in-out;
+  /* transition: color 0.35s ease-in-out; */
 }
 
 .auth-function-holder a:hover {
@@ -66,16 +66,20 @@
   font-size: 14px;
   display: flex;
   align-items: center;
+  width: 40px;
+  height: 40px;
   justify-content: center;
 
-  /* Smooth transition for transform, shadow, and background */
-  transition: transform 0.45s ease, box-shadow 0.45s ease, background 0.45s ease;
+  /* Make gradient smooth */
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+  transition: all 0.3s ease, background-position 0.5s ease;
 }
 
 .vs-btn:hover {
-  transform: scale(1.07);
   box-shadow: 0 8px 20px rgba(255, 75, 43, 0.5);
-  background: linear-gradient(135deg, #ff5e84, #ff693b);
+  /* Animate gradient */
+  background-position: 100% 50%;
 }
 
 /* Profile wrapper */

@@ -1,6 +1,14 @@
 .featured-container {
   margin: 1rem 0;
   padding: 0 1rem;
+  max-width: 100%;
+  overflow-x: auto;
+  -ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
+  scrollbar-width: none; /* Hide scrollbar in Firefox */
+}
+
+.featured-container::-webkit-scrollbar {
+  display: none; /* Hide scrollbar in Chrome, Safari, Opera */
 }
 
 .scroll-wrapper {

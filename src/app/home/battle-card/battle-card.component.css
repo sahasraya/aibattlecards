@@ -1,6 +1,7 @@
 .battle-card-wrapper {
   padding: 1rem 2rem;
   background: #f5f7fa;
+  border-radius: 15px;
 }
 
 /* Search Bar */
@@ -23,6 +24,34 @@
   padding: 0.5rem 0.75rem;
   font-size: 16px;
   border-radius: 30px;
+}
+.search-bar-products {
+  width: 100%;
+  max-width: 380px;
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
+  font-size: 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 25px;
+  background: #fff url("../../../assets/images/search.png") no-repeat 12px
+    center;
+  background-size: 16px;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+  margin-bottom: 1rem;
+  color: #374151;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+/* Focus effect */
+.search-bar-products:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Placeholder styling */
+.search-bar-products::placeholder {
+  color: #9ca3af;
+  font-size: 14px;
 }
 
 .search-icon {
@@ -187,7 +216,13 @@
   margin-bottom: 0.5rem;
   color: #333;
 }
-
+.separater {
+  height: 1px;
+  background-color: #c0c0c079;
+  flex-grow: 1;
+  margin-bottom: 15px;
+  display: block;
+}
 .filtered-cards-container {
   display: flex;
   flex-wrap: wrap;
