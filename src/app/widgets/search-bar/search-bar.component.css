@@ -1,0 +1,20 @@
+/* Search Bar */
+.search-bar {
+  padding: 0.6rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 30px;
+  outline: none;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  margin: 0 auto;
+  display: block;
+
+  width: 90%; /* default smaller width */
+}
+
+.search-bar:focus {
+  width: 100%; /* expand when focused */
+  max-width: 600px;
+  border-color: #4a90e2;
+  box-shadow: 0 0 6px rgba(74, 144, 226, 0.3);
+}

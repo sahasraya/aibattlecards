@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { ProductCardHolderComponent } from '../../widgets/product-card-holder/product-card-holder.component';
+import { CommonProductListComponent } from '../../widgets/common-product-list/common-product-list.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [ProductCardHolderComponent],
+  imports: [ProductCardHolderComponent,CommonProductListComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

@@ -2,6 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import { SmallerProductCardComponent } from '../../widgets/smaller-product-card/smaller-product-card.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CommonProductListComponent } from '../../widgets/common-product-list/common-product-list.component';
 
 
 
@@ -19,7 +20,7 @@ interface Tool {
 @Component({
   selector: 'app-battle-card',
   standalone: true,
-  imports: [SmallerProductCardComponent,CommonModule,FormsModule],
+  imports: [CommonProductListComponent,CommonModule,FormsModule],
   templateUrl: './battle-card.component.html',
   styleUrl: './battle-card.component.css'
 })

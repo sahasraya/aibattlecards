@@ -136,11 +136,6 @@
 
 
 
-
-    <div class="cards-container" *ngIf="isproductisselectedfromsearch">
-        <app-smaller-product-card *ngFor="let tool of toolsArray" [product]="tool">
-        </app-smaller-product-card>
-    </div>
-
+    <app-common-product-list></app-common-product-list>
 
 </div>
