@@ -17,7 +17,11 @@
   height: 40px;
   object-fit: contain;
 }
-
+.palcehodler{
+  width: 40px;
+  height: 40px;
+  background-color: beige;
+}
 /* Search Bar */
 app-search-bar {
   min-width: 550px;
@@ -43,7 +47,7 @@ app-search-bar {
 
 /* VS Button */
 .vs-btn {
-  background: linear-gradient(135deg, #ff416c, #ff4b2b);
+ background: linear-gradient(100deg,rgba(90, 103, 216, 1) 20%, rgba(255, 75, 43, 1) 100%);
   color: #fff !important;
   padding: 0.5rem 1rem;
   font-weight: 600;
@@ -63,7 +67,7 @@ app-search-bar {
 }
 
 .vs-btn:hover {
-  box-shadow: 0 8px 20px rgba(255, 75, 43, 0.5);
+  box-shadow: 0 8px 20px #5a67d8;
   /* Animate gradient */
   background-position: 100% 50%;
 }

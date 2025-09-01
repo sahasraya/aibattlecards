@@ -45,7 +45,7 @@
 .product-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 6px 16px rgba(74, 144, 226, 0.25);
-  border-color: #4a90e2;
+  border-color:var(--accent-color);
 }
 
 .product-icon {
@@ -85,10 +85,17 @@
   justify-content: center;
   gap: 0.5rem;
 }
+.product-icon{
+  width: 150px;
+  height: 150px;
+  background-color: #555;
+  margin: auto;
 
+}
 .chip {
   background: #e6eaf5;
   color: #333;
+
   padding: 0.3rem 0.8rem;
   border-radius: 16px;
   font-size: 12px;
@@ -96,7 +103,7 @@
 }
 
 .chip:hover {
-  background: #4a90e2;
+  background:var(--accent-color);
   color: #fff;
 }
 

@@ -193,9 +193,9 @@ body {
   font-family: var(--font-family, "Manrope", sans-serif);
   font-size: 16px;
   font-weight: 600;
-  color: #fff;
-  background: var(--accent-color, #5a67d8);
-  border: none;
+  color: black;
+  /* background: var(--accent-color, #5a67d8); */
+  border: 1px solid var(--accent-color);
   border-radius: var(--border-radius, 8px);
   cursor: pointer;
   box-shadow: var(--shadow-light, 0 2px 8px rgba(0, 0, 0, 0.1));
@@ -205,7 +205,7 @@ body {
 }
 
 .loadmorebtn:hover {
-  background: var(--accent-hover, #434190);
+  /* background: var(--accent-hover, #434190); */
   transform: translateY(-2px);
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
 }
