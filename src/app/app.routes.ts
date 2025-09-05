@@ -7,6 +7,7 @@ import { BattleCardComponent } from './home/battle-card/battle-card.component';
 import { LogInComponent } from './auth/log-in/log-in.component';
 import { SignUpComponent } from './auth/sign-up/sign-up.component';
 import { EmailAuthComponent } from './auth/email-auth/email-auth.component';
+import { CategoryComponent } from './home/category/category.component';
 
 export const routes: Routes = [
   {
@@ -38,7 +39,12 @@ export const routes: Routes = [
         {
         path: 'battle-card',
         component: BattleCardComponent
+      },
+      {
+        path: 'category/:categoryName',
+        component: CategoryComponent
       }
+          
        
        
     ]

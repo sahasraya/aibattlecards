@@ -1,0 +1,17 @@
+<div class="backbtn-holder">
+    <a routerLink="/" class="backbtn">
+        <img src="../../../assets/images/leftarrow.png" alt="Back" class="back-icon">
+        <span class="category-text">{{ categoryName || 'Category' }}</span>
+    </a>
+</div>
+
+
+
+<div class="cards-container">
+    <app-smaller-product-card *ngFor="let tool of toolsArray" [product]="tool">
+    </app-smaller-product-card>
+
+
+</div>
+
+<span class="loadmorebtn">Load more</span>

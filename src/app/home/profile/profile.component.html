@@ -46,7 +46,7 @@
 
         <!-- Placeholder Tabs -->
         <div *ngIf="activeTab === 'Your Tools'" class="tools-tab">
-            <div class="cards-container flex-wrap" #toolsContainer>
+            <div class="cards-container flex-wrap" #toolsContainer *ngIf="!isaddingnewproduct">
 
                 <!-- Add Product Button -->
                 <div class="product-card add-product" (click)="onAddProduct()">
@@ -61,7 +61,119 @@
 
             </div>
 
-            <span class="loadmorebtn">Load more</span>
+            <span class="loadmorebtn" *ngIf="!isaddingnewproduct">Load more</span>
+
+
+
+            <div class="addingnewproduct-holder" *ngIf="isaddingnewproduct">
+                <div class="titale-holder">
+                    <img src="../../../assets/images/close.png" alt="close" class="close-productbtn"
+                        (click)="isaddingnewproduct = false">
+                    <h3>Add Product</h3>
+
+                </div>
+
+                <form [formGroup]="productAddingForm" (ngSubmit)="onSubmitProduct()" class="new-product-form">
+                    <!-- Basic Info -->
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input type="text" formControlName="name" placeholder="Enter product name" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Type</label>
+                        <input type="text" formControlName="type" placeholder="e.g., Agent, Utility" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>License</label>
+                        <input type="text" formControlName="license" placeholder="e.g., Free, Paid" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Website</label>
+                        <input type="url" formControlName="website" placeholder="Enter product website" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Funding Stage</label>
+                        <input type="text" formControlName="fundingStage" placeholder="e.g., Seed, Series A" />
+                    </div>
+
+                    <!-- Dynamic Fields -->
+                    <div class="form-group" formArrayName="founders">
+                        <label>Founders</label>
+                        <div *ngFor="let founder of founders.controls; let i = index" class="dynamic-field">
+                            <input type="text" [formControlName]="i" placeholder="Enter founder name" />
+                            <button type="button" class="btn-add" (click)="addField(founders)">+</button>
+                            <button type="button" class="btn-remove" (click)="removeField(founders, i)">-</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group" formArrayName="useCases">
+                        <label>Use Case</label>
+                        <div *ngFor="let useCase of useCases.controls; let i = index" class="dynamic-field">
+                            <input type="text" [formControlName]="i" placeholder="Enter use case" />
+                            <button type="button" class="btn-add" (click)="addField(useCases)">+</button>
+                            <button type="button" class="btn-remove" (click)="removeField(useCases, i)">-</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group" formArrayName="technologies">
+                        <label>Technology</label>
+                        <div *ngFor="let tech of technologies.controls; let i = index" class="dynamic-field">
+                            <input type="text" [formControlName]="i" placeholder="Enter technology" />
+                            <button type="button" class="btn-add" (click)="addField(technologies)">+</button>
+                            <button type="button" class="btn-remove" (click)="removeField(technologies, i)">-</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group" formArrayName="baseModels">
+                        <label>Base AI Model</label>
+                        <div *ngFor="let model of baseModels.controls; let i = index" class="dynamic-field">
+                            <input type="text" [formControlName]="i" placeholder="Enter AI model" />
+                            <button type="button" class="btn-add" (click)="addField(baseModels)">+</button>
+                            <button type="button" class="btn-remove" (click)="removeField(baseModels, i)">-</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group" formArrayName="deployments">
+                        <label>Deployment</label>
+                        <div *ngFor="let deploy of deployments.controls; let i = index" class="dynamic-field">
+                            <input type="text" [formControlName]="i" placeholder="Enter deployment type" />
+                            <button type="button" class="btn-add" (click)="addField(deployments)">+</button>
+                            <button type="button" class="btn-remove" (click)="removeField(deployments, i)">-</button>
+                        </div>
+                    </div>
+
+                    <!-- Media Upload with + and - -->
+                    <label>Media Previews</label>
+                    <div *ngFor="let media of mediaPreviews.controls; let i = index" class="dynamic-field">
+
+                        <!-- File Input -->
+
+                        <!-- OR Link Input -->
+                        <input type="url" [formControlName]="i"
+                            placeholder="Enter media link (e.g., YouTube, Twitter)" />
+
+
+
+                        <!-- Add/Remove Buttons -->
+                        <button type="button" class="btn-add" (click)="addField(mediaPreviews)">+</button>
+                        <button type="button" class="btn-remove" (click)="removeField(mediaPreviews, i)">-</button>
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit">Submit Product</button>
+                    </div>
+                </form>
+            </div>
+
+
+
+
+
         </div>
 
 
@@ -112,20 +224,48 @@
             <!-- Change Password Section -->
             <form [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()" class="access-form">
                 <h3 class="sub-title">Change Password</h3>
+
                 <div class="form-group">
-                    <label>Old Password</label>
-                    <input type="password" formControlName="oldPassword" required>
+                    <label for="oldPassword">Old Password</label>
+                    <div class="password-wrapper">
+                        <input id="oldPassword" [type]="showOldPassword ? 'text' : 'password'"
+                            formControlName="oldPassword" required>
+                        <img src="../../../assets/images/eyeclosed_password.svg" alt="Toggle visibility"
+                            class="eye-icon" *ngIf="!showOldPassword" (click)="togglePassword('old')">
+                        <img src="../../../assets/images/visible_password.svg" alt="Toggle visibility" class="eye-icon"
+                            *ngIf="showOldPassword" (click)="togglePassword('old')">
+                    </div>
                 </div>
+
                 <div class="form-group">
-                    <label>New Password</label>
-                    <input type="password" formControlName="newPassword" required>
+                    <label for="newPassword">New Password</label>
+                    <div class="password-wrapper">
+                        <input id="newPassword" [type]="showNewPassword ? 'text' : 'password'"
+                            formControlName="newPassword" required>
+                        <img src="../../../assets/images/eyeclosed_password.svg" alt="Toggle visibility"
+                            class="eye-icon" *ngIf="!showNewPassword" (click)="togglePassword('new')">
+                        <img src="../../../assets/images/visible_password.svg" alt="Toggle visibility" class="eye-icon"
+                            *ngIf="showNewPassword" (click)="togglePassword('new')">
+                    </div>
                 </div>
+
                 <div class="form-group">
-                    <label>Re-enter New Password</label>
-                    <input type="password" formControlName="confirmPassword" required>
+                    <label for="confirmPassword">Re-enter New Password</label>
+                    <div class="password-wrapper">
+                        <input id="confirmPassword" [type]="showConfirmPassword ? 'text' : 'password'"
+                            formControlName="confirmPassword" required>
+                        <img src="../../../assets/images/eyeclosed_password.svg" alt="Toggle visibility"
+                            class="eye-icon" *ngIf="!showConfirmPassword" (click)="togglePassword('confirm')">
+                        <img src="../../../assets/images/visible_password.svg" alt="Toggle visibility" class="eye-icon"
+                            *ngIf="showConfirmPassword" (click)="togglePassword('confirm')">
+                    </div>
                 </div>
-                <button type="submit" [disabled]="passwordForm.invalid">Update Password</button>
+
+                <button type="submit" [disabled]="passwordForm.invalid" class="update-btn">
+                    Update Password
+                </button>
             </form>
+
 
             <!-- Danger Zone Section -->
 
@@ -147,9 +287,12 @@
                             Deleting your account will permanently remove your account and all associated data.
                         </p>
                         <ul class="modal-bullets">
-                            <li>All published products will be permanently deleted.</li>
-                            <li>All reviews will be permanently removed.</li>
-                            <li>You will lose access to your account and all related data.</li>
+                            <li><img src="../../../assets/images/points.svg" alt=""> All published products will be
+                                permanently deleted.</li>
+                            <li><img src="../../../assets/images/points.svg" alt="">All reviews will be permanently
+                                removed.</li>
+                            <li><img src="../../../assets/images/points.svg" alt="">You will lose access to your account
+                                and all related data.</li>
                         </ul>
                         <div class="modal-actions">
                             <button class="cancel-btn" (click)="showDeleteConfirm = false">Cancel</button>

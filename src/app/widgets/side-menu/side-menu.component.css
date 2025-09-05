@@ -13,17 +13,63 @@
 
 /* Optional sticky for tiles if you want titles to stick inside */
 .menu-tile {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  padding: 1.2rem;
-  border: 1px solid #eaeaea;
-  transition: all 0.3s ease;
+  margin: 20px 0;
 }
 
-.menu-tile:hover {
-  border-color: #4a90e2;
-  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.15);
+.tile-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.chips-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  background-color: #f1f3f5;
+  padding: 6px 12px;
+}
+
+.chip a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: #333;
+}
+
+.chip a img {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+}
+
+.chip a:hover img {
+  transform: translateX(3px);
+}
+
+.chip a:hover {
+  color: #007bff;
+}
+
+.chip.active {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.chip.active a {
+  color: #fff;
+  pointer-events: none;
 }
 
 .tile-title {
@@ -74,30 +120,4 @@
 
 .categories-list a:hover img {
   opacity: 1;
-}
-
-.chips-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-}
-
-.chip {
-  background: #e6eaf5;
-  color: #333;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.chip:hover {
-  background: #4a90e2;
-  color: #fff;
-}
-
-.chip.active {
-  background: #00e676;
-  color: #fff;
 }

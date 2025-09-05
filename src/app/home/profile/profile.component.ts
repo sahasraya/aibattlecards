@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SmallerProductCardComponent } from '../../widgets/smaller-product-card/smaller-product-card.component';
 interface Tool {
@@ -28,7 +28,13 @@ export class ProfileComponent implements OnInit {
   activeTab: string = 'Profile';
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
+  productAddingForm!: FormGroup;
   showDeleteConfirm: boolean = false;
+  isaddingnewproduct: boolean = false;
+  selectedProductImage: string | null = null;
+  showOldPassword: boolean = false;
+  showNewPassword: boolean = false;
+  showConfirmPassword: boolean = false;
 
   toolsArray: Tool[] = [
     {
@@ -89,6 +95,28 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+
+
+this.productAddingForm = this.fb.group({
+    name: ['', Validators.required],
+    type: ['', Validators.required],
+    license: ['', Validators.required],
+    website: ['', Validators.required],
+    fundingStage: ['', Validators.required],
+
+    founders: this.fb.array([this.fb.control('', Validators.required)]),
+    useCases: this.fb.array([this.fb.control('', Validators.required)]),
+    technologies: this.fb.array([this.fb.control('', Validators.required)]),
+    baseModels: this.fb.array([this.fb.control('', Validators.required)]),
+    deployments: this.fb.array([this.fb.control('', Validators.required)]),
+
+    mediaPreviews: this.fb.array([this.fb.control(null)])
+  });
+
+
+
+
+
     this.profileForm = this.fb.group({
       name: ['', Validators.required],
       linkedin: ['', Validators.required],
@@ -113,6 +141,93 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
+
+
+togglePassword(field: 'old' | 'new' | 'confirm') {
+  if (field === 'old') {
+    this.showOldPassword = !this.showOldPassword;
+  } else if (field === 'new') {
+    this.showNewPassword = !this.showNewPassword;
+  } else if (field === 'confirm') {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+}
+
+  get founders() { return this.productAddingForm.get('founders') as FormArray; }
+  get useCases() { return this.productAddingForm.get('useCases') as FormArray; }
+  get technologies() { return this.productAddingForm.get('technologies') as FormArray; }
+  get baseModels() { return this.productAddingForm.get('baseModels') as FormArray; }
+  get deployments() { return this.productAddingForm.get('deployments') as FormArray; }
+
+ get mediaPreviews() {
+  return this.productAddingForm.get('mediaPreviews') as FormArray;
+}
+
+onProductImageSelected(event: any) {
+  const file = event.target.files[0];
+  if (file) {
+    this.productAddingForm.patchValue({ productImage: file });
+
+    // For preview
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.selectedProductImage = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+onMediaSelected(event: any, index: number) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.mediaPreviews.at(index).setValue(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+removeMedia(index: number) {
+  this.mediaPreviews.removeAt(index);
+}
+  
+  addField(formArray: FormArray) {
+    formArray.push(this.fb.control('', Validators.required));
+  }
+
+  removeField(formArray: FormArray, index: number) {
+    if (formArray.length > 1) {
+      formArray.removeAt(index);
+    }
+  }
+ 
+
+  onSubmitProduct() {
+    if (this.productAddingForm.invalid) {
+      this.productAddingForm.markAllAsTouched();
+      return;
+    }
+    console.log(this.productAddingForm.value);
+    alert('✅ Product submitted successfully!');
+    this.productAddingForm.reset();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
  passwordMatchValidator(form: FormGroup) {
     const newPassword = form.get('newPassword')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
@@ -160,7 +275,7 @@ export class ProfileComponent implements OnInit {
   }
 
   onAddProduct() {
-    alert('Add Product clicked!');
+    this.isaddingnewproduct = true;
   }
 
   toggleDropdown(tool: Tool, event: Event) {

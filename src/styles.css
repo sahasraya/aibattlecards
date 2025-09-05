@@ -74,6 +74,7 @@ body {
 .chip:hover {
   background: #4a90e2;
   color: #fff;
+  cursor: pointer;
 }
 /* Modal Styles */
 .review-btn {
@@ -213,6 +214,26 @@ body {
 .loadmorebtn:active {
   transform: translateY(0);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+.modal-bullets {
+  list-style: none; /* remove default bullets */
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.modal-bullets li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px; /* space between image and text */
+  margin-bottom: 12px;
+  font-size: 15px;
+  color: #444;
+}
+
+.modal-bullets li img {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px; /* align image with text */
 }
 
 /* Animations */

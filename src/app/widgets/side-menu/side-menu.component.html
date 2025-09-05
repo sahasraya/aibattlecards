@@ -5,37 +5,37 @@
         <h3 class="tile-title">Categories</h3>
         <ul class="categories-list">
             <li>
-                <a routerLink="/ai-model">
+                <a [routerLink]="['/home/category', 'AI model']">
                     <span>AI model</span>
                     <img src="../../../assets/images/rightarrow.png" alt="arrow">
                 </a>
             </li>
             <li>
-                <a routerLink="/agent">
+                <a [routerLink]="['/home/category', 'Agent']">
                     <span>Agent</span>
                     <img src="../../../assets/images/rightarrow.png" alt="arrow">
                 </a>
             </li>
             <li>
-                <a routerLink="/voice">
+                <a [routerLink]="['/home/category', 'Voice']">
                     <span>Voice</span>
                     <img src="../../../assets/images/rightarrow.png" alt="arrow">
                 </a>
             </li>
             <li>
-                <a routerLink="/image">
+                <a [routerLink]="['/home/category', 'Image']">
                     <span>Image</span>
                     <img src="../../../assets/images/rightarrow.png" alt="arrow">
                 </a>
             </li>
             <li>
-                <a routerLink="/video-editing">
+                <a [routerLink]="['/home/category', 'Video Editing']">
                     <span>Video Editing</span>
                     <img src="../../../assets/images/rightarrow.png" alt="arrow">
                 </a>
             </li>
             <li>
-                <a routerLink="/dev-tools">
+                <a [routerLink]="['/home/category', 'Dev Tools']">
                     <span>Dev Tools</span>
                     <img src="../../../assets/images/rightarrow.png" alt="arrow">
                 </a>
@@ -45,16 +45,24 @@
 
     <!-- Use Cases Section -->
     <div class="menu-tile">
-        <h3 class="tile-title">Use cases</h3>
+        <h3 class="tile-title">Use Cases</h3>
         <div class="chips-wrapper">
-            <span class="chip">sells</span>
-            <span class="chip">Productivity</span>
-            <span class="chip active">sells</span>
+            <span class="chip" *ngFor="let useCase of useCases" [ngClass]="{'active': activeUseCase === useCase.name}">
 
-            <span class="chip">sells</span>
-            <span class="chip">Productivity</span>
-            <span class="chip">sells</span>
+                <ng-container *ngIf="useCase.route; else staticChip">
+                    <a [routerLink]="['/home/category', useCase.route]" (click)="setActive(useCase.name)">
+                        <span>{{ useCase.name }}</span>
+                        <img src="../../../assets/images/rightarrow.png" alt="arrow">
+                    </a>
+                </ng-container>
+
+                <ng-template #staticChip>
+                    {{ useCase.name }}
+                </ng-template>
+            </span>
         </div>
     </div>
+
+
 
 </div>
