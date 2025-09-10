@@ -1,58 +1,66 @@
 <div class="battle-card-wrapper">
 
-    <!-- Search Bar -->
-    <div class="search-bar-wrapper">
-        <img src="../../../assets/images/search.png" alt="search icon" class="search-icon">
-        <input type="text" placeholder="Search for tools like ChatGPT..." [(ngModel)]="searchTerm"
-            (input)="onSearchChange()">
+    <select class="select-category" [(ngModel)]="selectedCategory" (change)="onCategoryChange()">
+        <option value="" disabled selected>Select a Category</option>
+        <option value="AI model">AI model</option>
+        <option value="Agent">Agent</option>
+        <option value="Voice">Voice</option>
+        <option value="Image">Image</option>
+        <option value="Video Editing">Video Editing</option>
+        <option value="Dev Tools">Dev Tools</option>
+        <option value="Utility">Utility</option>
+    </select>
 
-        <!-- Search Dropdown -->
-        <ul class="search-dropdown" *ngIf="searchTerm && filteredTools.length">
-            <li *ngFor="let tool of filteredTools" (click)="onSelectSearchTool(tool)">
-                {{tool.name}}
-            </li>
-        </ul>
-    </div>
-
-    <!-- 🎴 Filtered Tools (after selecting from search) -->
-    <div *ngIf="selectedTypeTools.length > 0" class="filtered-cards-wrapper">
-
-
+    <div class="searchinputwrapper" *ngIf="iscategoryselected">
         <h3>Select Tools for Battle (max 3)</h3>
+
         <input type="text" placeholder="Filter by name..." [(ngModel)]="filterTerm" (input)="onFilterChange()"
             class="search-bar-products">
 
-        <div class="filtered-cards-container">
-            <div class="filtered-card" *ngFor="let tool of displayedTypeTools" (click)="toggleSelect(tool)">
-                <img [src]="tool.icon" alt="" class="tool-img">
-                <span class="tool-name">{{tool.name}}</span>
-                <div class="select-circle" *ngIf="tool.selected">{{tool.selected}}</div>
-            </div>
+    </div>
+
+
+    <div class="filtered-cards-container" *ngIf="displayedTypeTools.length > 0; else noItems">
+
+
+        <div class="filtered-card" *ngFor="let tool of displayedTypeTools" (click)="toggleSelect(tool)">
+            <img [src]="tool.icon" alt="tool" class="tool-img" />
+            <span class="tool-name">{{ tool.name }}</span>
+        </div>
+    </div>
+
+    <ng-template #noItems>
+        <div class="no-items-message">
+            No category items found
+        </div>
+    </ng-template>
+</div>
+
+<!-- Selected tools -->
+<div *ngIf="selectedTools.length > 0" class="filtered-cards-wrapper">
+    <h3>Selected Tools</h3>
+    <div class="filtered-cards-container">
+        <div class="filtered-card" *ngFor="let tool of selectedTools">
+            <img [src]="tool.icon" alt="" class="tool-img">
+            <span class="tool-name">{{ tool.name }}</span>
+            <div class="select-circle" *ngIf="tool.selected">{{ tool.selected }}</div>
         </div>
     </div>
 
 
-    <div class="modal-backdrop" *ngIf="isSearchingAnythingElseProduct">
-        <div class="modal">
-            <div class="modal-content">
-                <h3 class="modal-title">Do you want to search something else?</h3>
-                <p class="modal-warning">Multiple products are available. You can reset your search to select something
-                    different.</p>
-                <div class="modal-actions">
-                    <button class="cancel-btn" (click)="onSearchSomethingElse(false)">No</button>
-                    <button class="confirm-btn" (click)="onSearchSomethingElse(true)">Yes</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
+
+
+
+
+
+
+
 
 
 
     <!-- ✅ Selected Models Section -->
     <div *ngIf="selectedTools.length > 0" class="selected-models-wrapper">
-        <!-- <input type="text" placeholder="Search selected models.dddddddddddddddddd.." [(ngModel)]="selectedFilterTerm"
-            (input)="onSelectedFilterChange()"> -->
-
         <span class="separater"></span>
 
         <div class="filtered-cards-container">
@@ -63,15 +71,6 @@
             </div>
         </div>
     </div>
-
-
-
-
-
-
-
-
-
 
 
 
@@ -136,6 +135,5 @@
 
 
 
-    <app-common-product-list></app-common-product-list>
 
 </div>

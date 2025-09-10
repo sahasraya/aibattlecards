@@ -61,10 +61,15 @@
 
             </div>
 
+
+
+
+
+
+
+
+
             <span class="loadmorebtn" *ngIf="!isaddingnewproduct">Load more</span>
-
-
-
             <div class="addingnewproduct-holder" *ngIf="isaddingnewproduct">
                 <div class="titale-holder">
                     <img src="../../../assets/images/close.png" alt="close" class="close-productbtn"
@@ -74,21 +79,68 @@
                 </div>
 
                 <form [formGroup]="productAddingForm" (ngSubmit)="onSubmitProduct()" class="new-product-form">
-                    <!-- Basic Info -->
+
+                    <img [src]="selectedImage || '../../../assets/images/12.png'" alt="Profile Image"
+                        class="profile-image">
+
+                    <div class="form-group">
+                        <label>Profile Image</label>
+                        <input type="file" (change)="onImageSelected($event)" accept="image/*">
+                    </div>
+
+
                     <div class="form-group">
                         <label>Product Name</label>
                         <input type="text" formControlName="name" placeholder="Enter product name" />
                     </div>
 
+
+
+
                     <div class="form-group">
-                        <label>Type</label>
-                        <input type="text" formControlName="type" placeholder="e.g., Agent, Utility" />
+                        <label>Product Category</label>
+                        <select class="select-category" formControlName="type">
+                            <option value="" disabled selected>Select a Category</option>
+                            <option value="AI model">AI model</option>
+                            <option value="Agent">Agent</option>
+                            <option value="Voice">Voice</option>
+                            <option value="Image">Image</option>
+                            <option value="Video Editing">Video Editing</option>
+                            <option value="Dev Tools">Dev Tools</option>
+                            <option value="Utility">Utility</option>
+                        </select>
+
                     </div>
+
+
+
 
                     <div class="form-group">
                         <label>License</label>
-                        <input type="text" formControlName="license" placeholder="e.g., Free, Paid" />
+                        <select class="select-category" formControlName="license">
+                            <option value="" disabled selected>Select License</option>
+                            <option value="Free">Free</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Free&Paid">Free & Paid</option>
+                        </select>
+
                     </div>
+
+
+
+                    <div class="form-group">
+                        <label>Technology</label>
+                        <select class="select-category" formControlName="technology">
+                            <option value="" disabled selected>Select Technology</option>
+                            <option value="sass">SASS</option>
+                            <option value="pass">PASS</option>
+                        </select>
+
+                    </div>
+
+
+
+
 
                     <div class="form-group">
                         <label>Website</label>
@@ -100,7 +152,45 @@
                         <input type="text" formControlName="fundingStage" placeholder="e.g., Seed, Series A" />
                     </div>
 
-                    <!-- Dynamic Fields -->
+                    <div class="form-group">
+                        <label>Use Cases</label>
+
+                        <!-- Selected chips -->
+                        <div class="selected-chips">
+                            <div class="chip" *ngFor="let usecase of selectedUseCases">
+                                {{ usecase }}
+                                <span class="close-icon" (click)="removeUseCase(usecase)">✕</span>
+                            </div>
+                        </div>
+
+                        <!-- Input field -->
+                        <div class="dropwdown-wrapper">
+                            <input type="text" placeholder="Search or add use case" [value]="useCaseInput"
+                                (input)="onUseCaseInput($event)" />
+
+                            <!-- Dropdown list -->
+                            <div class="dropdown" *ngIf="filteredUseCases.length > 0">
+                                <div class="dropdown-item" *ngFor="let usecase of filteredUseCases"
+                                    (click)="selectUseCase(usecase)">
+                                    {{ usecase }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="form-group">
+                        <label>Product Facebook Link</label>
+                        <input type="text" formControlName="productfb" placeholder="Product Facebook Link" />
+                    </div>
+                    <div class="form-group">
+                        <label>Product LinkedIn Link</label>
+                        <input type="text" formControlName="productlinkedin" placeholder="Product LinkedIn Link" />
+                    </div>
+
                     <div class="form-group" formArrayName="founders">
                         <label>Founders</label>
                         <div *ngFor="let founder of founders.controls; let i = index" class="dynamic-field">
@@ -110,23 +200,14 @@
                         </div>
                     </div>
 
-                    <div class="form-group" formArrayName="useCases">
-                        <label>Use Case</label>
-                        <div *ngFor="let useCase of useCases.controls; let i = index" class="dynamic-field">
-                            <input type="text" [formControlName]="i" placeholder="Enter use case" />
-                            <button type="button" class="btn-add" (click)="addField(useCases)">+</button>
-                            <button type="button" class="btn-remove" (click)="removeField(useCases, i)">-</button>
-                        </div>
-                    </div>
 
-                    <div class="form-group" formArrayName="technologies">
-                        <label>Technology</label>
-                        <div *ngFor="let tech of technologies.controls; let i = index" class="dynamic-field">
-                            <input type="text" [formControlName]="i" placeholder="Enter technology" />
-                            <button type="button" class="btn-add" (click)="addField(technologies)">+</button>
-                            <button type="button" class="btn-remove" (click)="removeField(technologies, i)">-</button>
-                        </div>
-                    </div>
+
+
+
+
+
+
+
 
                     <div class="form-group" formArrayName="baseModels">
                         <label>Base AI Model</label>
@@ -169,8 +250,6 @@
                     </div>
                 </form>
             </div>
-
-
 
 
 

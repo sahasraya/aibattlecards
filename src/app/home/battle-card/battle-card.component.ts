@@ -2,7 +2,6 @@ import { Component, HostListener } from '@angular/core';
 import { SmallerProductCardComponent } from '../../widgets/smaller-product-card/smaller-product-card.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CommonProductListComponent } from '../../widgets/common-product-list/common-product-list.component';
 
 
 
@@ -20,7 +19,7 @@ interface Tool {
 @Component({
   selector: 'app-battle-card',
   standalone: true,
-  imports: [CommonProductListComponent,CommonModule,FormsModule],
+  imports: [ CommonModule,FormsModule],
   templateUrl: './battle-card.component.html',
   styleUrl: './battle-card.component.css'
 })
@@ -38,7 +37,8 @@ toolsArray: Tool[] = [
   ];
 
   searchTerm: string = '';
-  filteredTools: Tool[] = [...this.toolsArray];
+  filteredTools: Tool[] = [];
+   selectedCategory: string = '';
 
   selectedTypeTools: Tool[] = [];
   displayedTypeTools: Tool[] = []; // filtered subset
@@ -51,54 +51,62 @@ toolsArray: Tool[] = [
   popupSelected: Tool[] = [];
   isproductisselectedfromsearch: boolean = true;
   isSearchingAnythingElseProduct: boolean = false;
+  iscategoryselected: boolean = false;
   /** --- Search --- */
 
 
+onCategoryChange() {
+  const category = this.selectedCategory.toLowerCase();
+  this.iscategoryselected = true;
 
-  onSearchChange() {
-  const term = this.searchTerm.toLowerCase();
-  this.filteredTools = this.toolsArray.filter(tool =>
-    tool.name.toLowerCase().includes(term)
+  // Base filter by category
+  this.filteredTools = this.toolsArray.filter(
+    tool => tool.type.toLowerCase() === category
   );
 
-  // Check if there are already selected tools
+  // Initialize both arrays so search works
+  this.selectedTypeTools = [...this.filteredTools];
+  this.displayedTypeTools = [...this.filteredTools];
+
   if (this.selectedTools.length > 0) {
-    // Open modal to ask if user wants to reset selections
     this.isSearchingAnythingElseProduct = true;
   }
 }
 
-/** User clicks Yes/No in modal */
-onSearchSomethingElse(choice: boolean) {
-  this.isSearchingAnythingElseProduct = false;
+/** Filter search */
+onFilterChange() {
+  const term = this.filterTerm.toLowerCase();
 
-  if (choice) {
-    // User chose Yes: reset all selections and displayedTypeTools
-    this.resetSelections();
-    this.displayedTypeTools = [];
-    this.selectedTypeTools = [];
-    this.isproductisselectedfromsearch = true;
+  // Filter the category tools by name
+  this.displayedTypeTools = this.selectedTypeTools.filter(tool =>
+    tool.name.toLowerCase().includes(term)
+  );
+}
+
+toggleSelect(tool: Tool) {
+  const index = this.selectedTools.findIndex(t => t.name === tool.name);
+
+  if (index > -1) {
+    // Remove the tool
+    this.selectedTools.splice(index, 1);
   } else {
-    // User chose No: keep previous selections and search input as is
-    this.isproductisselectedfromsearch = false;
-  }
-}
-
-/** Selecting a tool from dropdown */
-onSelectSearchTool(tool: Tool) {
-  // If modal is open, don't immediately select, wait for user choice
-  if (this.selectedTools.length > 0) {
-    this.isSearchingAnythingElseProduct = true;
-    return;
+    // Add tool if less than 3
+    if (this.selectedTools.length < 3) {
+      this.selectedTools.push(tool);
+    }
   }
 
-  // Filter tools by selected tool's type
-  this.selectedTypeTools = this.toolsArray.filter(t => t.type === tool.type);
-  this.displayedTypeTools = [...this.selectedTypeTools]; // update displayedTypeTools
-  this.searchTerm = '';
-  this.filteredTools = [];
-  this.isproductisselectedfromsearch = false;
+  // Reassign numbers based on current selected order
+  this.selectedTools.forEach((t, i) => t.selected = i + 1);
+
+  // Also reset 'selected' for unselected tools
+  this.displayedTypeTools.forEach(t => {
+    if (!this.selectedTools.includes(t)) {
+      t.selected = undefined;
+    }
+  });
 }
+ 
 
 /** Reset selected tools and filters */
 resetSelections() {
@@ -112,28 +120,10 @@ resetSelections() {
 /** User clicks Yes/No in modal */
 
   /** --- Filter Type Tools --- */
-  onFilterChange() {
-    const term = this.filterTerm.toLowerCase();
-    this.displayedTypeTools = this.selectedTypeTools.filter(tool =>
-      tool.name.toLowerCase().includes(term)
-    );
-  }
+ 
 
   /** --- Select/Deselect Tools --- */
-  toggleSelect(tool: Tool) {
-    if (tool.selected) {
-      // remove from selected
-      this.selectedTools = this.selectedTools.filter(t => t !== tool);
-      this.selectedTools.forEach((t, idx) => t.selected = idx + 1);
-      tool.selected = undefined;
-    } else if (this.selectedTools.length < 3) {
-      // add to selected
-      this.selectedTools.push(tool);
-      tool.selected = this.selectedTools.length;
-    }
 
-    this.updateDisplayedSelectedTools();
-  }
 
   /** --- Selected Models Filter --- */
   onSelectedFilterChange() {
@@ -161,7 +151,7 @@ resetSelections() {
     const target = event.target as HTMLElement;
     // Check if click is outside the search-bar-wrapper
     if (!target.closest('.search-bar-wrapper')) {
-      this.filteredTools = [];
+      // this.filteredTools = [];
     }
   }
 }

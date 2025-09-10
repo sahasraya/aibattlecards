@@ -30,7 +30,7 @@ export class ProfileComponent implements OnInit {
   passwordForm!: FormGroup;
   productAddingForm!: FormGroup;
   showDeleteConfirm: boolean = false;
-  isaddingnewproduct: boolean = false;
+  isaddingnewproduct: boolean = true;
   selectedProductImage: string | null = null;
   showOldPassword: boolean = false;
   showNewPassword: boolean = false;
@@ -85,8 +85,22 @@ export class ProfileComponent implements OnInit {
     comment: 'Excellent support and features.',
   }
 ];
-
-  
+useCasesArray: string[] = [
+  'Customer Support',
+  'Lead Generation',
+  'Marketing Automation',
+  'Content Creation',
+  'Sales Outreach',
+  'Data Analysis',
+  'Fraud Detection',
+  'Recommendation Engine',
+  'Speech Recognition',
+  'Image Classification'
+];
+  filteredUseCases: string[] = [];
+selectedUseCases: string[] = [];
+  useCaseInput: string = '';
+  selectedImage: string | ArrayBuffer | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -97,7 +111,7 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
 
 
-this.productAddingForm = this.fb.group({
+ this.productAddingForm = this.fb.group({
     name: ['', Validators.required],
     type: ['', Validators.required],
     license: ['', Validators.required],
@@ -105,10 +119,11 @@ this.productAddingForm = this.fb.group({
     fundingStage: ['', Validators.required],
 
     founders: this.fb.array([this.fb.control('', Validators.required)]),
-    useCases: this.fb.array([this.fb.control('', Validators.required)]),
+    useCases: this.fb.array([]), // Start empty, we push selectedUseCases later
     technologies: this.fb.array([this.fb.control('', Validators.required)]),
     baseModels: this.fb.array([this.fb.control('', Validators.required)]),
     deployments: this.fb.array([this.fb.control('', Validators.required)]),
+    technology: this.fb.array([this.fb.control('', Validators.required)]),
 
     mediaPreviews: this.fb.array([this.fb.control(null)])
   });
@@ -153,15 +168,69 @@ togglePassword(field: 'old' | 'new' | 'confirm') {
   }
 }
 
-  get founders() { return this.productAddingForm.get('founders') as FormArray; }
-  get useCases() { return this.productAddingForm.get('useCases') as FormArray; }
-  get technologies() { return this.productAddingForm.get('technologies') as FormArray; }
-  get baseModels() { return this.productAddingForm.get('baseModels') as FormArray; }
-  get deployments() { return this.productAddingForm.get('deployments') as FormArray; }
-
- get mediaPreviews() {
-  return this.productAddingForm.get('mediaPreviews') as FormArray;
+get founders(): FormArray {
+  return this.productAddingForm.get('founders') as FormArray;
 }
+get useCases(): FormArray {
+  return this.productAddingForm.get('useCases') as FormArray;
+}
+get technologies(): FormArray {
+  return this.productAddingForm.get('technologies') as FormArray;
+}
+get baseModels(): FormArray {
+  return this.productAddingForm.get('baseModels') as FormArray;
+}
+get deployments(): FormArray {
+  return this.productAddingForm.get('deployments') as FormArray;
+}
+get mediaPreviews(): FormArray {
+  return this.productAddingForm.get('mediaPreviews') as FormArray;
+  }
+  
+  get technology(): FormArray {
+  return this.productAddingForm.get('technology') as FormArray;
+  }
+  
+onImageSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            this.selectedImage = reader.result;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+  
+  onUseCaseInput(event: any) {
+  const value = event.target.value.toLowerCase();
+  this.useCaseInput = event.target.value;
+
+  if (value) {
+    this.filteredUseCases = this.useCasesArray.filter(usecase =>
+      usecase.toLowerCase().includes(value) &&
+      !this.selectedUseCases.includes(usecase)
+    );
+  } else {
+    this.filteredUseCases = [];
+  }
+}
+
+/** Select use case */
+selectUseCase(usecase: string) {
+  if (!this.selectedUseCases.includes(usecase)) {
+    this.selectedUseCases.push(usecase);
+    this.useCaseInput = '';
+    this.filteredUseCases = [];
+  }
+}
+
+/** Remove selected use case */
+removeUseCase(usecase: string) {
+  this.selectedUseCases = this.selectedUseCases.filter(u => u !== usecase);
+  }
+  
+
 
 onProductImageSelected(event: any) {
   const file = event.target.files[0];

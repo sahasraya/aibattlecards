@@ -221,6 +221,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  margin-bottom: 15px;
 }
 
 .filtered-card {
@@ -270,7 +271,94 @@
   font-size: 12px;
   font-weight: 600;
 }
+/* Category Select */
+.select-category {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 220px;
+  padding: 0.6rem 1rem;
+  font-size: 15px;
+  font-weight: 500;
+  color: #374151;
+  background: #fff
+    url("data:image/svg+xml;utf8,<svg fill='%23666' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>")
+    no-repeat right 12px center;
+  background-size: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 1rem;
+}
 
+.select-category:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  outline: none;
+}
+
+/* Cards */
+.filtered-card {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  cursor: pointer;
+  flex: 0 0 calc(33.333% - 12px);
+  transition: all 0.2s ease;
+}
+
+.filtered-card:hover {
+  transform: scale(1.02);
+  border-color: #3b82f6;
+  box-shadow: 0 2px 10px rgba(59, 130, 246, 0.15);
+}
+
+.filtered-card.selected {
+  border: 2px solid #3b82f6;
+  background: #f0f9ff;
+}
+
+/* Tool text */
+.tool-name {
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+}
+
+/* Selection circle */
+.select-circle {
+  margin-left: auto;
+  background: #3b82f6;
+  color: #fff;
+  font-size: 12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* No items */
+.no-items-message {
+  padding: 1rem;
+  text-align: center;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+.searchinputwrapper {
+  display: flex;
+  flex-direction: column;
+}
 /* Responsive */
 @media (max-width: 768px) {
   .cards-container app-smaller-product-card {
