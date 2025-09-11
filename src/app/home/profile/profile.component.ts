@@ -1,13 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SmallerProductCardComponent } from '../../widgets/smaller-product-card/smaller-product-card.component';
+import { environment } from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../services/getuserid.service';
 interface Tool {
-  icon: string;
-  name: string;
-  type: string;
-  tags: string[];
+  productimage: string;
+  productname: string;
+  productid: string;
+  productcategory: string;
+  productusecase: string[];
   showDropdown?: boolean; // optional property for dropdown toggle
 }
 interface Review {
@@ -25,51 +29,22 @@ interface Review {
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
+  @ViewChildren('formField') formFields!: QueryList<ElementRef>;
+  
   activeTab: string = 'Profile';
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
   productAddingForm!: FormGroup;
   showDeleteConfirm: boolean = false;
-  isaddingnewproduct: boolean = true;
+  isaddingnewproduct: boolean = false;
   selectedProductImage: string | null = null;
   showOldPassword: boolean = false;
   showNewPassword: boolean = false;
   showConfirmPassword: boolean = false;
+  APIURL = environment.APIURL;
+  selectedProductFile: File | null = null;
 
-  toolsArray: Tool[] = [
-    {
-      icon: '../../../assets/images/12.png',
-      name: 'Tool One',
-      type: 'Agent',
-      tags: ['Sales', 'Productivity']
-    },
-    {
-      icon: '../../../assets/images/12.png',
-      name: 'Tool Two',
-      type: 'Utility',
-      tags: ['Marketing', 'Analytics']
-    },
-    {
-      icon: '../../../assets/images/12.png',
-      name: 'Tool Three',
-      type: 'Agent',
-      tags: ['AI', 'Automation']
-    }
-    ,
-    {
-      icon: '../../../assets/images/12.png',
-      name: 'Tool Three',
-      type: 'Agent',
-      tags: ['AI', 'Automation']
-    }
-    ,
-    {
-      icon: '../../../assets/images/12.png',
-      name: 'Tool Three',
-      type: 'Agent',
-      tags: ['AI', 'Automation']
-    }
-  ];
+ toolsArray: Tool[] = [];
 
   reviewsArray: Review[] = [
   {
@@ -98,40 +73,42 @@ useCasesArray: string[] = [
   'Image Classification'
 ];
   filteredUseCases: string[] = [];
-selectedUseCases: string[] = [];
+  selectedUseCases: string[] = [];
   useCaseInput: string = '';
   selectedImage: string | ArrayBuffer | null = null;
+  userid: string = '';
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private http: HttpClient,
+    private authService:AuthService
   ) {}
 
   ngOnInit(): void {
 
 
- this.productAddingForm = this.fb.group({
-    name: ['', Validators.required],
-    type: ['', Validators.required],
-    license: ['', Validators.required],
-    website: ['', Validators.required],
-    fundingStage: ['', Validators.required],
+this.productAddingForm = this.fb.group({
+      name: ['', Validators.required],
+      type: ['', Validators.required],
+      license: ['', Validators.required],
+      technology: ['', Validators.required],  // fixed to string (dropdown)
+      website: ['', Validators.required],
+      fundingStage: ['', Validators.required],
+      productdescription: ['', Validators.required],
 
-    founders: this.fb.array([this.fb.control('', Validators.required)]),
-    useCases: this.fb.array([]), // Start empty, we push selectedUseCases later
-    technologies: this.fb.array([this.fb.control('', Validators.required)]),
-    baseModels: this.fb.array([this.fb.control('', Validators.required)]),
-    deployments: this.fb.array([this.fb.control('', Validators.required)]),
-    technology: this.fb.array([this.fb.control('', Validators.required)]),
+      founders: this.fb.array([this.fb.control('', Validators.required)]),
+      useCases: this.fb.array([]),
+      baseModels: this.fb.array([this.fb.control('', Validators.required)]),
+      deployments: this.fb.array([this.fb.control('', Validators.required)]),
 
-    mediaPreviews: this.fb.array([this.fb.control(null)])
-  });
+      mediaPreviews: this.fb.array([this.fb.control(null)]),
 
-
-
-
-
+      productfb: [''],
+      productlinkedin: ['']
+    });
+ 
     this.profileForm = this.fb.group({
       name: ['', Validators.required],
       linkedin: ['', Validators.required],
@@ -155,7 +132,118 @@ selectedUseCases: string[] = [];
         this.activeTab = tab;
       }
     });
+
+
+    this.userid=this.authService.getUserid()!;
+    if (this.userid) { 
+      this.getProductDetails(this.userid);
+    }
   }
+async onSubmitProduct(): Promise<void> {
+  const useCasesFormArray = this.productAddingForm.get('useCases') as FormArray;
+  useCasesFormArray.clear();
+  this.selectedUseCases.forEach(uc => useCasesFormArray.push(this.fb.control(uc)));
+
+  if (this.productAddingForm.valid) {
+    const formData = new FormData();
+
+    // Append all form values
+    formData.append('name', this.productAddingForm.get('name')?.value);
+    formData.append('type', this.productAddingForm.get('type')?.value);
+    formData.append('license', this.productAddingForm.get('license')?.value);
+    formData.append('technology', this.productAddingForm.get('technology')?.value);
+    formData.append('website', this.productAddingForm.get('website')?.value);
+    formData.append('fundingStage', this.productAddingForm.get('fundingStage')?.value);
+    formData.append('productdescription', this.productAddingForm.get('productdescription')?.value);
+    formData.append('userid', this.userid);
+
+    // Append array fields
+    const founders = this.productAddingForm.get('founders')?.value || [];
+    founders.forEach((f: string, i: number) => formData.append(`founders[${i}]`, f));
+
+    const useCases = this.selectedUseCases || [];
+    useCases.forEach((uc: string, i: number) => formData.append(`useCases[${i}]`, uc));
+
+    const baseModels = this.productAddingForm.get('baseModels')?.value || [];
+    baseModels.forEach((b: string, i: number) => formData.append(`baseModels[${i}]`, b));
+
+    const deployments = this.productAddingForm.get('deployments')?.value || [];
+    deployments.forEach((d: string, i: number) => formData.append(`deployments[${i}]`, d));
+
+    const mediaPreviews = this.productAddingForm.get('mediaPreviews')?.value || [];
+    mediaPreviews.forEach((m: string, i: number) => formData.append(`mediaPreviews[${i}]`, m));
+
+    // Append product image as File
+    const fileInput = (document.querySelector('input[type="file"]') as HTMLInputElement);
+    if (fileInput?.files?.[0]) {
+      formData.append('productImage', fileInput.files[0]); // ✅ send as File
+    }
+
+    // Append optional social links
+    formData.append('productfb', this.productAddingForm.get('productfb')?.value || '');
+    formData.append('productlinkedin', this.productAddingForm.get('productlinkedin')?.value || '');
+
+    // --- LOG ALL FORM DATA ---
+// formData.forEach((value, key) => {
+//   console.log(key, value);
+// });
+
+    // Send to backend
+    this.http.post(this.APIURL + 'insert_product', formData).subscribe({
+      next: (response: any) => {
+        if (response.message === "yes") {
+          this.isaddingnewproduct = false;
+          this.productAddingForm.reset();
+          this.selectedUseCases = [];
+          this.selectedProductImage = null;
+          this.selectedImage = null;
+          this.getProductDetails(this.userid);
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error inserting product:', error);
+      }
+    });
+
+  } else {
+    this.productAddingForm.markAllAsTouched();
+    console.warn('❌ Form is invalid.');
+  }
+}
+
+  
+async getProductDetails(userid: string): Promise<void> {
+  const payload = { userid };
+
+  this.http.post(this.APIURL + 'get_all_product_details', payload).subscribe({
+    next: (response: any) => {
+      if (response.message === "yes" && response.products?.length) {
+        this.toolsArray = response.products.map((prod: any) => ({
+          productimage: prod.productimage 
+            ? `data:image/jpeg;base64,${prod.productimage}`
+            : '../../../assets/images/12.png',
+          productname: prod.productname,
+          productid: prod.productid,
+          productcategory: prod.productcategory,
+          productusecase: prod.useCases || [],
+          showDropdown: false
+        }));
+
+      } else {
+        console.warn("No product found");
+        this.toolsArray = [];
+      }
+    },
+    error: (error) => {
+      console.error('❌ Error fetching product details:', error);
+    }
+  });
+}
+
+
+
+
+
 
 
 togglePassword(field: 'old' | 'new' | 'confirm') {
@@ -171,35 +259,37 @@ togglePassword(field: 'old' | 'new' | 'confirm') {
 get founders(): FormArray {
   return this.productAddingForm.get('founders') as FormArray;
 }
-get useCases(): FormArray {
-  return this.productAddingForm.get('useCases') as FormArray;
-}
-get technologies(): FormArray {
-  return this.productAddingForm.get('technologies') as FormArray;
-}
+
 get baseModels(): FormArray {
   return this.productAddingForm.get('baseModels') as FormArray;
 }
+
 get deployments(): FormArray {
   return this.productAddingForm.get('deployments') as FormArray;
 }
+
 get mediaPreviews(): FormArray {
   return this.productAddingForm.get('mediaPreviews') as FormArray;
-  }
-  
-  get technology(): FormArray {
-  return this.productAddingForm.get('technology') as FormArray;
-  }
+}
+
+get useCases(): FormArray {
+  return this.productAddingForm.get('useCases') as FormArray;
+}
+
   
 onImageSelected(event: Event): void {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-            this.selectedImage = reader.result;
-        };
-        reader.readAsDataURL(file);
-    }
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    this.selectedProductFile = file; // ✅ store File
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = e => {
+      this.selectedImage = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
 }
   
   onUseCaseInput(event: any) {
@@ -271,18 +361,7 @@ removeMedia(index: number) {
     }
   }
  
-
-  onSubmitProduct() {
-    if (this.productAddingForm.invalid) {
-      this.productAddingForm.markAllAsTouched();
-      return;
-    }
-    console.log(this.productAddingForm.value);
-    alert('✅ Product submitted successfully!');
-    this.productAddingForm.reset();
-  }
-
-
+ 
 
 
 
@@ -362,11 +441,9 @@ removeMedia(index: number) {
   }
 
   onEditProduct(tool: Tool) {
-    alert(`Edit ${tool.name}`);
   }
 
   onDeleteProduct(tool: Tool) {
-    alert(`Delete ${tool.name}`);
   }
 
   toggleReviewDropdown(review: Review, event: Event) {

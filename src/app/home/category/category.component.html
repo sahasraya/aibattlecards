@@ -1,7 +1,7 @@
 <div class="backbtn-holder">
     <a routerLink="/" class="backbtn">
         <img src="../../../assets/images/leftarrow.png" alt="Back" class="back-icon">
-        <span class="category-text">{{ categoryName || 'Category' }}</span>
+        <span class="category-text">{{ newCategory || 'Category' }}</span>
     </a>
 </div>
 
@@ -13,5 +13,9 @@
 
 
 </div>
+<div class="no-data-message" *ngIf="noData">
+    <p>No products found for <strong>{{ newCategory }}</strong></p>
+</div>
 
-<span class="loadmorebtn">Load more</span>
+
+<span class="loadmorebtn" *ngIf="!noData">Load more</span>

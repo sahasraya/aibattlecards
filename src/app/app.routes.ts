@@ -41,7 +41,7 @@ export const routes: Routes = [
         component: BattleCardComponent
       },
       {
-        path: 'category/:categoryName',
+        path: 'category/:categoryName/:type',
         component: CategoryComponent
       }
           

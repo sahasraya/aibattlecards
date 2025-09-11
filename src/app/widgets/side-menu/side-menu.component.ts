@@ -13,12 +13,12 @@ export class SideMenuComponent {
  activeUseCase: string = '';
 
   // List of use cases
-  useCases: { name: string; route?: string }[] = [
-    { name: 'Sells', route: 'Sells' },
-    { name: 'Dev Tools', route: 'Dev Tools' },
-    { name: 'Productivity',route: 'Productivity' },  
-    { name: 'Marketing', route: 'Marketing' },
-    { name: 'Design', route: 'Design' }
+  useCases: { name: string; route?: string; type?: string}[] = [
+    { name: 'Sells', route: 'Sells' ,type:'usecase'},
+    { name: 'Dev Tools', route: 'Dev Tools' ,type:'usecase'},
+    { name: 'Productivity',route: 'Productivity' ,type:'usecase'},  
+    { name: 'Marketing', route: 'Marketing',type:'usecase' },
+    { name: 'Design', route: 'Design' ,type:'usecase'}
   ];
 
   setActive(useCaseName: string) {

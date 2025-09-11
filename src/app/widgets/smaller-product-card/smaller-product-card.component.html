@@ -1,4 +1,5 @@
-<div class="product-card" [routerLink]="['/home/product-item']" routerLinkActive="active-card">
+<div class="product-card" [routerLink]="['/home/product-item']" [queryParams]="{ productid: product.productid }"
+    routerLinkActive="active-card">
     <img src="../../../assets/images/dotmenu.svg" alt="Menu" class="dotmenu" (click)="toggleDropdown($event)">
 
     <div class="dotmenudropdown" *ngIf="product.showDropdown">
@@ -7,15 +8,15 @@
             <li>Delete</li>
         </ul>
     </div>
-
     <div class="product-icon">
-        <img [src]="product.icon" alt="tool icon" />
+        <img [src]="product.productimage" alt="tool icon" />
     </div>
-    <h3 class="product-name">{{ product.name }}</h3>
+    <h3 class="product-name">{{ product.productname }}</h3>
     <p class="product-type">
-        <span>Type</span> {{ product.type }}
+        <span>Category</span> {{ product.productcategory }}
     </p>
+
     <div class="chip-wrapper">
-        <span class="chip" *ngFor="let tag of product.tags">{{ tag }}</span>
+        <span class="chip" *ngFor="let tag of product.productusecase">{{ tag }}</span>
     </div>
 </div>

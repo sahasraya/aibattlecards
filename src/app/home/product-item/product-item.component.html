@@ -115,85 +115,92 @@
 
 
 
-    <div class="product-header">
-        <img src="../../../assets/images/12.png" alt="Product" class="product-image-sm" />
+
+    <div class="product-header" *ngIf="productDetails">
+        <img [src]="productDetails.productimage || '../../../assets/images/12.png'" alt="Product"
+            class="product-image-sm" />
         <div class="product-info">
-            <h2 class="product-title">New Product <span class="rating">★ 4.6 / 5</span></h2>
+            <h2 class="product-title">{{ productDetails.productname }}
+                <span class="rating">★ {{ productDetails.rating }} / 5</span>
+            </h2>
             <p class="description">
-                Discover the largest library of UI/UX design inspiration for mobile and web apps. Access searchable app
-                screenshots and save your time on design research.
+                {{ productDetails.productdescription }}
             </p>
             <div class="social-media-icons">
-                <img src="../../../assets/images/12.png" alt="LinkedIn" class="social-icon" />
-                <img src="../../../assets/images/12.png" alt="Facebook" class="social-icon" />
+                <a *ngIf="productDetails.productlinkedin" [href]="productDetails.productlinkedin" target="_blank">
+                    <img src="../../../assets/images/linkedin.png" alt="LinkedIn" class="social-icon" />
+                </a>
+                <a *ngIf="productDetails.productfb" [href]="productDetails.productfb" target="_blank">
+                    <img src="../../../assets/images/facebook.png" alt="Facebook" class="social-icon" />
+                </a>
             </div>
         </div>
     </div>
 
-    <div class="details">
+    <div class="details" *ngIf="productDetails">
         <ul>
-
-            <li>
+            <li *ngIf="productDetails.useCases.length">
                 <strong>Use Case:</strong>
                 <div class="chip-wrapper">
-                    <span class="chip">Sales</span>
-                    <span class="chip">Productivity</span>
+                    <span class="chip" *ngFor="let uc of productDetails.useCases">{{ uc }}</span>
                 </div>
             </li>
 
-            <li>
+            <li *ngIf="productDetails.founders.length">
                 <strong>Founders:</strong>
                 <div class="chip-wrapper">
-                    <span class="chip">Mithila</span>
-                    <span class="chip">Dilshan</span>
+                    <span class="chip" *ngFor="let f of productDetails.founders">{{ f }}</span>
                 </div>
             </li>
 
-
-
-            <li>
+            <li *ngIf="productDetails.producttechnology.length">
                 <strong>Technology:</strong>
                 <div class="chip-wrapper">
-                    <span class="chip">Java</span>
-                    <span class="chip">Python</span>
+                    <span class="chip" *ngFor="let t of productDetails.producttechnology">{{ t }}</span>
                 </div>
             </li>
 
-            <li>
+            <li *ngIf="productDetails.baseModels.length">
                 <strong>Base AI Model:</strong>
                 <div class="chip-wrapper">
-                    <span class="chip">Grok</span>
-                    <span class="chip">GPT</span>
+                    <span class="chip" *ngFor="let b of productDetails.baseModels">{{ b }}</span>
                 </div>
             </li>
 
-            <li>
+            <li *ngIf="productDetails.deployments.length">
                 <strong>Deployment:</strong>
                 <div class="chip-wrapper">
-                    <span class="chip">SaaS</span>
-                    <span class="chip">Hybrid</span>
+                    <span class="chip" *ngFor="let d of productDetails.deployments">{{ d }}</span>
                 </div>
             </li>
 
-            <li><strong>Funding Stage:</strong> Seed</li>
-            <li><strong>License:</strong> Free</li>
-            <li><strong>Type:</strong> Agent</li>
-            <li><strong>Website:</strong> <a href="#">Click Here</a></li>
-
-
-
+            <li><strong>Funding Stage:</strong> {{ productDetails.productfundingstage }}</li>
+            <li><strong>License:</strong> {{ productDetails.productlicense }}</li>
+            <li><strong>Type:</strong> {{ productDetails.productcategory }}</li>
+            <li><strong>Website:</strong>
+                <a *ngIf="productDetails.productwebsite" [href]="productDetails.productwebsite" target="_blank">Click
+                    Here</a>
+            </li>
         </ul>
     </div>
 
-
-    <div class="media-holder">
+    <div class="media-holder" *ngIf="productDetails?.mediaPreviews?.length">
         <h3>Media Previews</h3>
         <div class="media-icons">
-            <img src="../../../assets/images/12.png" alt="Preview 1" class="media-icon" />
-            <img src="../../../assets/images/12.png" alt="Preview 2" class="media-icon" />
-            <img src="../../../assets/images/12.png" alt="Preview 3" class="media-icon" />
+            <a *ngFor="let m of productDetails?.mediaPreviews" [href]="m.includes('youtube') ? m : null" target="_blank"
+                [style.pointerEvents]="m.includes('youtube') ? 'auto' : 'none'">
+                <img [src]="m.includes('youtube') ? '../../../assets/images/youtube.png' : '../../../assets/images/12.png'"
+                    alt="Preview" class="media-icon" />
+            </a>
         </div>
     </div>
+
+
+
+
+
+
+
 
     <div class="reviews">
         <h3>User Reviews</h3>

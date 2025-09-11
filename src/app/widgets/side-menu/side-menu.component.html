@@ -5,37 +5,37 @@
         <h3 class="tile-title">Categories</h3>
         <ul class="categories-list">
             <li>
-                <a [routerLink]="['/home/category', 'AI model']">
+                <a [routerLink]="['/home/category', 'AI model','category']">
                     <span>AI model</span>
                     <img src="../../../assets/images/rightarrow.png" alt="arrow">
                 </a>
             </li>
             <li>
-                <a [routerLink]="['/home/category', 'Agent']">
+                <a [routerLink]="['/home/category', 'Agent','category']">
                     <span>Agent</span>
                     <img src="../../../assets/images/rightarrow.png" alt="arrow">
                 </a>
             </li>
             <li>
-                <a [routerLink]="['/home/category', 'Voice']">
+                <a [routerLink]="['/home/category', 'Voice','category']">
                     <span>Voice</span>
                     <img src="../../../assets/images/rightarrow.png" alt="arrow">
                 </a>
             </li>
             <li>
-                <a [routerLink]="['/home/category', 'Image']">
+                <a [routerLink]="['/home/category', 'Image','category']">
                     <span>Image</span>
                     <img src="../../../assets/images/rightarrow.png" alt="arrow">
                 </a>
             </li>
             <li>
-                <a [routerLink]="['/home/category', 'Video Editing']">
+                <a [routerLink]="['/home/category', 'Video Editing','category']">
                     <span>Video Editing</span>
                     <img src="../../../assets/images/rightarrow.png" alt="arrow">
                 </a>
             </li>
             <li>
-                <a [routerLink]="['/home/category', 'Dev Tools']">
+                <a [routerLink]="['/home/category', 'Dev Tools','category']">
                     <span>Dev Tools</span>
                     <img src="../../../assets/images/rightarrow.png" alt="arrow">
                 </a>
@@ -50,7 +50,7 @@
             <span class="chip" *ngFor="let useCase of useCases" [ngClass]="{'active': activeUseCase === useCase.name}">
 
                 <ng-container *ngIf="useCase.route; else staticChip">
-                    <a [routerLink]="['/home/category', useCase.route]" (click)="setActive(useCase.name)">
+                    <a [routerLink]="['/home/category', useCase.route, useCase.type]" (click)="setActive(useCase.name)">
                         <span>{{ useCase.name }}</span>
                         <img src="../../../assets/images/rightarrow.png" alt="arrow">
                     </a>
