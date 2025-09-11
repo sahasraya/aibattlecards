@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-log-in',
@@ -13,10 +14,14 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class LogInComponent {
   loginForm: FormGroup;
+  APIURL = environment.APIURL;
+  message:string = '';
 
 
      constructor(
     private fb: FormBuilder,
+    private http: HttpClient,
+    private route: Router
     
   ) {
   
@@ -29,10 +34,43 @@ export class LogInComponent {
 
   }
 
- onSubmit() {
-    if (this.loginForm.valid) {
-      console.log(this.loginForm.value);
-   
+async onSubmitLoginDetails(): Promise<void> {
+  const email = this.loginForm.get("email")?.value || '';
+  const password = this.loginForm.get("password")?.value || '';
+
+  const formData = new FormData();
+ formData.append("emailaddress", email);
+formData.append("password", password);
+  this.http.post(this.APIURL + 'user_log_in', formData).subscribe({
+    next: (response: any) => {
+      if (response.message === "Please confirm the email") {
+        this.showMessage('Please confirm your email before logging in.');
+      } else if (response.message === "No user found") {
+        this.showMessage('No user found with this email.');
+      } else if (response.message === "Invalid email or password") {
+        this.showMessage('Incorrect password. Please try again.');
+      } else if (response.message === "Login successful") {
+        this.route.navigate(['/home/dashboard']);
+        sessionStorage.setItem('adminid', response.userid);
+        
+        // Store the user ID or redirect
+      } else {
+        this.showMessage("Unexpected error: " + response.message);
+  
+      }
+    },
+    error: (error) => {
+      console.error('Login failed:', error);
+      alert("Server error. Please try again.");
     }
-  }
+  });
+}
+
+   showMessage(msg: string) {
+  this.message = msg;
+  setTimeout(() => {
+    this.message = '';
+  }, 4000);  
+} 
+
 }

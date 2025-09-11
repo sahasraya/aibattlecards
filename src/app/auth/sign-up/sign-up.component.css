@@ -8,7 +8,33 @@
   background-size: 400% 400%;
   animation: gradientBG 15s ease infinite;
 }
-
+.message-div {
+ 
+  background-color: #323232;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  opacity: 0;
+  animation: fadeInOut 4s ease-in-out forwards;
+  font-size: 16px;
+}
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+ 
 @keyframes gradientBG {
   0% {
     background-position: 0% 50%;
