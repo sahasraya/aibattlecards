@@ -183,6 +183,7 @@ button[type="submit"]:hover:not(:disabled) {
   justify-content: center;
   text-align: center;
   position: relative;
+  height: 100%;
 }
 
 .product-card:hover {
@@ -587,4 +588,53 @@ label {
   align-items: center;
   gap: 20px;
   margin-bottom: 25px;
+}
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4a90e2, #357abd);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 28px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  user-select: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.toast-message {
+  position: fixed;
+  bottom: 20px;
+  left: -300px; /* start off-screen */
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  transition: all 0.5s ease, opacity 0.5s ease;
+  opacity: 0;
+  z-index: 1000;
+}
+
+/* Slide in when visible */
+.toast-message[style*="opacity: 1"] {
+  left: 20px;
+}
+
+/* Success style */
+.green-good {
+  background-color: #28a745;
+}
+
+/* Error style */
+.red-bad {
+  background-color: #dc3545;
 }

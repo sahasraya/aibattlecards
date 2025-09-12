@@ -2,15 +2,28 @@ import { Component, HostListener } from '@angular/core';
 import { SmallerProductCardComponent } from '../../widgets/smaller-product-card/smaller-product-card.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 
 
 interface Tool {
-  icon: string;
-  name: string;
-  type: string;
-  tags: string[];
-  showDropdown?: boolean; 
+  productimage: string;
+  productname: string;
+  productid: string;
+  productcategory: string;
+
+  productdescription: string;
+  productfundingstage: string;
+  productlicense: string;
+  rating: string;
+  producttechnology: string;
+  productwebsite: string;
+  productlinkedin: string;
+  productfacebook: string;
+
+  productusecase: string[];
+  showDropdown?: boolean; // optional property for dropdown toggle
   selected?: number;
 
 }
@@ -28,13 +41,11 @@ interface Tool {
   
 export class BattleCardComponent {
 
-toolsArray: Tool[] = [
-    { icon: '../../../assets/images/12.png', name: 'ChatGPT', type: 'Agent', tags: ['AI', 'Productivity'] },
-    { icon: '../../../assets/images/12.png', name: 'Tool Two', type: 'Utility', tags: ['Marketing', 'Analytics'] },
-    { icon: '../../../assets/images/12.png', name: 'Tool Three', type: 'Agent', tags: ['AI', 'Automation'] },
-    { icon: '../../../assets/images/12.png', name: 'Tool Four', type: 'Agent', tags: ['AI', 'Automation'] },
-    { icon: '../../../assets/images/12.png', name: 'Tool Five', type: 'Agent', tags: ['AI', 'Automation'] }
-  ];
+
+  constructor(  private http: HttpClient,) { }
+  
+  
+toolsArray: Tool[] = [];
 
   searchTerm: string = '';
   filteredTools: Tool[] = [];
@@ -52,26 +63,69 @@ toolsArray: Tool[] = [
   isproductisselectedfromsearch: boolean = true;
   isSearchingAnythingElseProduct: boolean = false;
   iscategoryselected: boolean = false;
+  APIURL = environment.APIURL;
+  noData: boolean = false;
   /** --- Search --- */
 
 
 onCategoryChange() {
-  const category = this.selectedCategory.toLowerCase();
+  const newCategory = this.selectedCategory;
   this.iscategoryselected = true;
 
-  // Base filter by category
-  this.filteredTools = this.toolsArray.filter(
-    tool => tool.type.toLowerCase() === category
-  );
+  const payload = { newCategory };
 
-  // Initialize both arrays so search works
-  this.selectedTypeTools = [...this.filteredTools];
-  this.displayedTypeTools = [...this.filteredTools];
+  this.http.post(this.APIURL + 'get_product_details_basedon_categoryname', payload).subscribe({
+    next: (response: any) => {
 
-  if (this.selectedTools.length > 0) {
-    this.isSearchingAnythingElseProduct = true;
-  }
+
+      
+      if (response.message === "yes" && response.products?.length > 0) {
+        this.toolsArray = response.products.map((prod: any) => ({
+          productimage: prod.productimage
+            ? `data:image/jpeg;base64,${prod.productimage}`
+            : '../../../assets/images/12.png',
+          productname: prod.productname,
+          productid: prod.productid,
+          productdescription: prod.productdescription,
+          productfundingstage: prod.productfundingstage,
+          productlicense: prod.productlicense,
+          rating: prod.rating,
+          productwebsite: prod.productwebsite,
+          producttechnology: prod.producttechnology,
+          productfacebook: prod.productfacebook,
+          productlinkedin: prod.productlinkedin,
+          productcategory: prod.productcategory,
+          productusecase: prod.useCases || [],
+          showDropdown: false
+        }));
+
+        // Apply filtering by category
+        this.filteredTools = this.toolsArray.filter(
+          tool => tool.productcategory.toLowerCase() === newCategory.toLowerCase()
+        );
+
+        // Setup for searching + displaying
+        this.selectedTypeTools = [...this.filteredTools];
+        this.displayedTypeTools = [...this.filteredTools];
+        this.noData = false;
+
+      } else {
+        this.toolsArray = [];
+        this.filteredTools = [];
+        this.displayedTypeTools = [];
+        this.noData = true;
+      }
+    },
+    error: (error) => {
+      console.error('❌ Error fetching product details:', error);
+      this.toolsArray = [];
+      this.filteredTools = [];
+      this.displayedTypeTools = [];
+      this.noData = true;
+    }
+  });
 }
+
 
 /** Filter search */
 onFilterChange() {
@@ -79,12 +133,12 @@ onFilterChange() {
 
   // Filter the category tools by name
   this.displayedTypeTools = this.selectedTypeTools.filter(tool =>
-    tool.name.toLowerCase().includes(term)
+    tool.productname.toLowerCase().includes(term)
   );
 }
 
 toggleSelect(tool: Tool) {
-  const index = this.selectedTools.findIndex(t => t.name === tool.name);
+  const index = this.selectedTools.findIndex(t => t.productname === tool.productname);
 
   if (index > -1) {
     // Remove the tool
@@ -129,7 +183,7 @@ resetSelections() {
   onSelectedFilterChange() {
     const term = this.selectedFilterTerm.toLowerCase();
     this.displayedSelectedTools = this.selectedTools.filter(tool =>
-      tool.name.toLowerCase().includes(term)
+      tool.productname.toLowerCase().includes(term)
     );
   }
 

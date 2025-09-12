@@ -17,11 +17,7 @@
   height: 40px;
   object-fit: contain;
 }
-.palcehodler{
-  width: 40px;
-  height: 40px;
-  background-color: beige;
-}
+
 /* Search Bar */
 app-search-bar {
   min-width: 550px;
@@ -47,7 +43,11 @@ app-search-bar {
 
 /* VS Button */
 .vs-btn {
- background: linear-gradient(100deg,rgba(90, 103, 216, 1) 20%, rgba(255, 75, 43, 1) 100%);
+  background: linear-gradient(
+    100deg,
+    rgba(90, 103, 216, 1) 20%,
+    rgba(255, 75, 43, 1) 100%
+  );
   color: #fff !important;
   padding: 0.5rem 1rem;
   font-weight: 600;
@@ -131,6 +131,27 @@ app-search-bar {
 .profile-dropdown a:hover {
   background: #f0f4ff;
   color: #4a90e2;
+}
+.profile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4a90e2, #357abd);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  user-select: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
 @keyframes fadeIn {

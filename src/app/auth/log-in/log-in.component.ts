@@ -51,7 +51,7 @@ formData.append("password", password);
         this.showMessage('Incorrect password. Please try again.');
       } else if (response.message === "Login successful") {
         this.route.navigate(['/home/dashboard']);
-        sessionStorage.setItem('adminid', response.userid);
+        sessionStorage.setItem('userid', response.userid);
         
         // Store the user ID or redirect
       } else {

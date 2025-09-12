@@ -1,9 +1,8 @@
 <div class="header-holder">
     <!-- Left Logo -->
     <!-- <img src="../../../assets/images/12.png" alt="logo" class="logo"> -->
-     <div class="palcehodler">
-        
-     </div>
+    <img src="../../../assets/images/logo.png" alt="logo" class="logo">
+
 
     <!-- Search Bar (centered) -->
     <app-search-bar></app-search-bar>
@@ -11,10 +10,12 @@
     <div class="auth-function-holder">
         <a routerLink="/home/battle-card" class="vs-btn">Vs</a>
 
-        <a routerLink="/auth/sign-up">Sign Up</a>
-        <a routerLink="/auth/log-in">Log in</a>
-        <div class="profile-wrapper" (click)="toggleDropdown()">
-            <img src="../../../assets/images/12.png" alt="profile icon" class="profile-icon">
+        <a routerLink="/auth/sign-up" *ngIf="!isuserloggedin">Sign Up</a>
+        <a routerLink="/auth/log-in" *ngIf="!isuserloggedin">Log in</a>
+        <div class="profile-wrapper" (click)="toggleDropdown()" *ngIf="isuserloggedin">
+            <div class="profile-avatar">
+                {{ userInitials }}
+            </div>
 
             <div class="profile-dropdown" *ngIf="dropdownOpen">
                 <ul>

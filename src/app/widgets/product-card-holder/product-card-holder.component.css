@@ -40,12 +40,13 @@
   transition: all 0.3s ease;
   flex-shrink: 0;
   border: 1px solid #f0f0f0;
+  height: 100%;
 }
 
 .product-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 6px 16px rgba(74, 144, 226, 0.25);
-  border-color:var(--accent-color);
+  border-color: var(--accent-color);
 }
 
 .product-icon {
@@ -85,12 +86,11 @@
   justify-content: center;
   gap: 0.5rem;
 }
-.product-icon{
+.product-icon {
   width: 150px;
   height: 150px;
   background-color: #555;
   margin: auto;
-
 }
 .chip {
   background: #e6eaf5;
@@ -103,7 +103,7 @@
 }
 
 .chip:hover {
-  background:var(--accent-color);
+  background: var(--accent-color);
   color: #fff;
 }
 

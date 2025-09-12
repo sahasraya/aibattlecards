@@ -42,7 +42,9 @@ export class ProfileComponent implements OnInit {
   showNewPassword: boolean = false;
   showConfirmPassword: boolean = false;
   APIURL = environment.APIURL;
+  idforauthafteruserloggedin = environment.idforauthafteruserloggedin;
   selectedProductFile: File | null = null;
+  userInitials: string = "";
 
  toolsArray: Tool[] = [];
 
@@ -77,7 +79,11 @@ useCasesArray: string[] = [
   useCaseInput: string = '';
   selectedImage: string | ArrayBuffer | null = null;
   userid: string = '';
-
+  curruntpassword: string = '';
+  message: string = '';
+  messageClass: string = '';
+  curruntemailaddress: string = '';
+  messageVisible: boolean = false;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -137,8 +143,115 @@ this.productAddingForm = this.fb.group({
     this.userid=this.authService.getUserid()!;
     if (this.userid) { 
       this.getProductDetails(this.userid);
+      this.getUserDetails(this.userid);
     }
   }
+
+
+
+    
+async getUserDetails(userid: string): Promise<void> {
+  const payload = { userid };
+
+  this.http.post(this.APIURL + 'get_user_details', payload).subscribe({
+    next: (response: any) => {
+      if (response.message === 'yes') {
+        const user = response.user;
+
+        // Patch values into profileForm
+        this.profileForm.patchValue({
+          name: user.username || '',
+          email: user.email || '',
+          linkedin: user.linkedin || '',
+          facebook: user.facebook || '',
+          designation: user.designation || '',
+          about: user.about || ''
+        });
+        this.userInitials = this.generateInitials(user.username || '');
+        this.curruntpassword = user.password ;
+        this.curruntemailaddress = user.email ;
+         
+      } else {
+        console.warn("No user found");
+      }
+    },
+    error: (error) => {
+      console.error('❌ Error fetching user details:', error);
+    }
+  });
+}
+
+   passwordMatchValidator(form: FormGroup) {
+    const newPassword = form.get('newPassword')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
+    return newPassword === confirmPassword ? null : { mismatch: true };
+  }
+
+onPasswordSubmit() {
+  if (this.passwordForm.invalid) return;
+
+  const oldPassword = this.passwordForm.get('oldPassword')?.value;
+  const newPassword = this.passwordForm.get('newPassword')?.value;
+  const confirmPassword = this.passwordForm.get('confirmPassword')?.value;
+
+  // Old password validation
+  if (oldPassword !== this.curruntpassword) {
+    this.showMessage("Old password is incorrect!", "error");
+    return;
+  }
+
+  // New password same as old password
+  if (newPassword === oldPassword) {
+    this.showMessage("New password must be different from old password!", "error");
+    return;
+  }
+
+  // New password and confirm password match
+  if (newPassword !== confirmPassword) {
+    this.showMessage("New password and confirm password do not match!", "error");
+    return;
+  }
+
+ 
+  this.passwordForm.reset();
+  this.showMessage("Password updated successfully!", "success");
+  this.router.navigate(['/auth/reset', this.idforauthafteruserloggedin]);
+  sessionStorage.setItem('emailforauthafteruserloggedin', this.curruntemailaddress);
+  sessionStorage.setItem('confirmPassword', confirmPassword);
+
+}
+
+  
+  
+  
+showMessage(msg: string, type: 'success' | 'error') {
+  this.message = msg;
+  this.messageClass = type === 'success' ? 'green-good' : 'red-bad';
+  this.messageVisible = true;
+
+  // hide message after 3 seconds
+  setTimeout(() => {
+    this.messageVisible = false;
+  }, 3000);
+}
+
+
+
+private generateInitials(name: string): string {
+  if (!name) return "";
+  const words = name.trim().split(" ");
+  const initials = words
+    .slice(0, 2) // Take at most 2 words
+    .map(w => w[0]?.toUpperCase() || "")
+    .join("");
+  return initials;
+}
+
+
+
+
+
+  
 async onSubmitProduct(): Promise<void> {
   const useCasesFormArray = this.productAddingForm.get('useCases') as FormArray;
   useCasesFormArray.clear();
@@ -376,23 +489,7 @@ removeMedia(index: number) {
 
 
   
- passwordMatchValidator(form: FormGroup) {
-    const newPassword = form.get('newPassword')?.value;
-    const confirmPassword = form.get('confirmPassword')?.value;
-    return newPassword === confirmPassword ? null : { mismatch: true };
-  }
 
-  // Submit change password
-  onPasswordSubmit() {
-    if (this.passwordForm.invalid) return;
-
-    const { oldPassword, newPassword } = this.passwordForm.value;
-    console.log('Change password:', { oldPassword, newPassword });
-
-    // TODO: Call your API to update the password
-    alert('Password updated successfully!');
-    this.passwordForm.reset();
-  }
 
   // Delete account
   onDeleteAccount() {
@@ -415,12 +512,41 @@ removeMedia(index: number) {
     });
   }
 
-  onSubmit() {
-    if (this.profileForm.valid) {
-      console.log(this.profileForm.value);
-      alert('Profile submitted successfully!');
-    }
+
+
+
+
+async onSubmit(): Promise<void> {
+  const userid = this.authService.getUserid()!;
+  if (!userid) {
+    console.error("❌ No userid found in authService");
+    return;
   }
+
+  const payload = {
+    userid,
+    username: this.profileForm.get('name')?.value,
+    email: this.profileForm.get('email')?.value,
+    linkedin: this.profileForm.get('linkedin')?.value,
+    facebook: this.profileForm.get('facebook')?.value,
+    designation: this.profileForm.get('designation')?.value,
+    about: this.profileForm.get('about')?.value
+  };
+
+  this.http.post(this.APIURL + 'update_user_details', payload).subscribe({
+    next: (response: any) => {
+      if (response.message === 'updated') {
+        this.getUserDetails(userid); // refresh form with updated details
+      } else {
+        console.warn("⚠️ Update failed:", response.message);
+      }
+    },
+    error: (error) => {
+      console.error('❌ Error updating user details:', error);
+    }
+  });
+}
+
 
   onAddProduct() {
     this.isaddingnewproduct = true;

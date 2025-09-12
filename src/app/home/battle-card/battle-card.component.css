@@ -359,7 +359,36 @@
   display: flex;
   flex-direction: column;
 }
-/* Responsive */
+.website-link {
+  color: #0073e6;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease-in-out;
+}
+
+.website-link:hover {
+  color: #005bb5;
+  text-decoration: underline;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.social-icon {
+  width: 22px;
+  height: 22px;
+  transition: transform 0.2s ease, filter 0.2s ease;
+  cursor: pointer;
+}
+
+.social-icon:hover {
+  transform: scale(1.15);
+  filter: brightness(0.85);
+}
+
 @media (max-width: 768px) {
   .cards-container app-smaller-product-card {
     flex: 1 1 100%;

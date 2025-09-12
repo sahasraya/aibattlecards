@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -15,9 +15,10 @@ import { environment } from '../../environments/environment';
 export class SignUpComponent {
   signupForm: FormGroup;
   APIURL = environment.APIURL;
+  isforauth_without_userloggedin = environment.isforauth_without_userloggedin;
   message:string = '';
 
-  constructor(private fb: FormBuilder,private http:HttpClient) {
+  constructor(private fb: FormBuilder,private http:HttpClient,private router:Router) {
     this.signupForm = this.fb.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -73,6 +74,8 @@ async onSubmit(): Promise<void> {
     this.message = '';
   }, 4000);  
 } 
-
+  gotoforgetpassword() {
+  this.router.navigate(['/auth/reset', this.isforauth_without_userloggedin]);
+}
 
 }

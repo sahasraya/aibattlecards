@@ -11,27 +11,25 @@
         <option value="Utility">Utility</option>
     </select>
 
+    <!-- Search Input (only show after category selected) -->
     <div class="searchinputwrapper" *ngIf="iscategoryselected">
         <h3>Select Tools for Battle (max 3)</h3>
-
         <input type="text" placeholder="Filter by name..." [(ngModel)]="filterTerm" (input)="onFilterChange()"
             class="search-bar-products">
-
     </div>
 
-
+    <!-- Tools list -->
     <div class="filtered-cards-container" *ngIf="displayedTypeTools.length > 0; else noItems">
-
-
         <div class="filtered-card" *ngFor="let tool of displayedTypeTools" (click)="toggleSelect(tool)">
-            <img [src]="tool.icon" alt="tool" class="tool-img" />
-            <span class="tool-name">{{ tool.name }}</span>
+            <img [src]="tool.productimage" alt="tool" class="tool-img" />
+            <span class="tool-name">{{ tool.productname }}</span>
         </div>
     </div>
 
+    <!-- No items message -->
     <ng-template #noItems>
         <div class="no-items-message">
-            No category items found
+            No items found for "{{ selectedCategory === '' ? 'Yet' : selectedCategory }}"
         </div>
     </ng-template>
 </div>
@@ -41,12 +39,11 @@
     <h3>Selected Tools</h3>
     <div class="filtered-cards-container">
         <div class="filtered-card" *ngFor="let tool of selectedTools">
-            <img [src]="tool.icon" alt="" class="tool-img">
-            <span class="tool-name">{{ tool.name }}</span>
+            <img [src]="tool.productimage" alt="" class="tool-img">
+            <span class="tool-name">{{ tool.productname }}</span>
             <div class="select-circle" *ngIf="tool.selected">{{ tool.selected }}</div>
         </div>
     </div>
-
 
 
 
@@ -65,8 +62,8 @@
 
         <div class="filtered-cards-container">
             <div class="filtered-card" *ngFor="let tool of displayedSelectedTools" (click)="toggleSelect(tool)">
-                <img [src]="tool.icon" alt="" class="tool-img">
-                <span class="tool-name">{{tool.name}}</span>
+                <img [src]="tool.productimage" alt="" class="tool-img">
+                <span class="tool-name">{{tool.productname}}</span>
                 <div class="select-circle">{{tool.selected}}</div>
             </div>
         </div>
@@ -84,7 +81,7 @@
                 <th class="property-col">Property</th>
                 <th *ngFor="let tool of selectedTools" class="tool-col">
                     <div class="tool-header">
-                        <img [src]="tool.icon" alt="{{tool.name}}" class="header-tool-img">
+                        <img [src]="tool.productimage" alt="{{tool.productname}}" class="header-tool-img">
                     </div>
                 </th>
             </tr>
@@ -93,24 +90,82 @@
             <!-- Product Names -->
             <tr>
                 <td class="property">Name</td>
-                <td *ngFor="let tool of selectedTools">{{ tool.name }}</td>
+                <td *ngFor="let tool of selectedTools">{{ tool.productname }}</td>
             </tr>
+
+            <tr>
+                <td class="property">Rating</td>
+                <td *ngFor="let tool of selectedTools">{{ tool.rating }} / 5</td>
+            </tr>
+
+            <tr>
+                <td class="property">Technology</td>
+                <td *ngFor="let tool of selectedTools">{{ tool.producttechnology }}</td>
+            </tr>
+
+
 
             <!-- Type -->
             <tr>
-                <td class="property">Type</td>
-                <td *ngFor="let tool of selectedTools">{{ tool.type }}</td>
+                <td class="property">Category</td>
+                <td *ngFor="let tool of selectedTools">{{ tool.productcategory }}</td>
             </tr>
 
             <!-- Tags -->
             <tr>
                 <td class="property">Tags</td>
-                <td *ngFor="let tool of selectedTools">{{ tool.tags.join(', ') }}</td>
+                <td *ngFor="let tool of selectedTools">{{ tool.productusecase.join(', ') }}</td>
             </tr>
+
+            <tr>
+                <td class="property">Funding Stage</td>
+                <td *ngFor="let tool of selectedTools">{{ tool.productfundingstage }}</td>
+            </tr>
+
+            <tr>
+                <td class="property">License</td>
+                <td *ngFor="let tool of selectedTools">{{ tool.productlicense }}</td>
+            </tr>
+
+
+            <tr>
+                <td class="property">Description</td>
+                <td *ngFor="let tool of selectedTools">{{ tool.productdescription }}</td>
+            </tr>
+
+            <tr>
+                <td class="property">Web Site</td>
+                <td *ngFor="let tool of selectedTools">
+                    <a [href]="tool.productwebsite" target="_blank" class="website-link">
+                        Visite
+                    </a>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="property">Social</td>
+                <td *ngFor="let tool of selectedTools">
+                    <div class="social-links">
+                        <a *ngIf="tool.productfacebook" [href]="tool.productfacebook" target="_blank">
+                            <img src="../../../assets/images/facebook.png" alt="Facebook" class="social-icon">
+                        </a>
+                        <a *ngIf="tool.productlinkedin" [href]="tool.productlinkedin" target="_blank">
+                            <img src="../../../assets/images/linkedin.png" alt="LinkedIn" class="social-icon">
+                        </a>
+                    </div>
+                </td>
+            </tr>
+
+
+
+
+
+
+
 
             <!-- See Review Button -->
             <tr>
-                <td class="property">Actions</td>
+                <td class="property"></td>
                 <td *ngFor="let tool of selectedTools">
                     <button class="review-btn" (click)="openReview(tool)">See Reviews</button>
                 </td>
@@ -123,9 +178,9 @@
         <div class="modal">
             <span class="close-btn" (click)="closePopup()"> <img src="../../../assets/images/close.png" alt=""></span>
             <div class="modal-content" *ngFor="let product of popupSelected">
-                <h3>{{ product.name }}</h3>
-                <p><strong>Type:</strong> {{ product.type }}</p>
-                <p><strong>Tags:</strong> {{ product.tags.join(', ') }}</p>
+                <h3>{{ product.productcategory }}</h3>
+                <p><strong>Type:</strong> {{ product.productusecase }}</p>
+                <p><strong>Tags:</strong> {{ product.productusecase.join(', ') }}</p>
             </div>
             <div class="modal-actions">
             </div>

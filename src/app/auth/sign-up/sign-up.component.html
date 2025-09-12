@@ -1,34 +1,31 @@
-
-
-
 <div class="signup-container">
-    <div class="signup-card">
-         <div class="message-div" *ngIf="message">
-  <span>{{ message }}</span>
-</div> 
+    <div class="signup-left">
+        <img src="../../../assets/images/logo.png" alt="Logo" class="signup-logo" routerLink="/home/dashboard">
+        <h1>Welcome Back!</h1>
+        <p>To stay connected with us, please login with your personal info</p>
+        <a routerLink="/auth/log-in" class="signin-btn">LOG IN</a>
+    </div>
+
+    <div class="signup-right">
         <h2 class="signup-title">Create Account</h2>
-        <p class="signup-subtitle">Fill in the details to sign up</p>
 
         <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" formControlName="username" placeholder="Enter username" />
+                <input type="text" formControlName="username" placeholder="Name" />
                 <small *ngIf="signupForm.get('username')?.touched && signupForm.get('username')?.invalid">
-                    Username is required
+                    Name is required
                 </small>
             </div>
 
             <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" formControlName="email" placeholder="Enter email" />
+                <input type="email" formControlName="email" placeholder="Email" />
                 <small *ngIf="signupForm.get('email')?.touched && signupForm.get('email')?.invalid">
                     Valid email is required
                 </small>
             </div>
 
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" formControlName="password" placeholder="Enter password" />
+                <input type="password" formControlName="password" placeholder="Password" />
                 <small *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.errors?.['required']">
                     Password is required
                 </small>
@@ -38,26 +35,25 @@
             </div>
 
             <div class="form-group">
-                <label for="reenterPassword">Re-enter Password</label>
-                <input type="password" id="reenterPassword" formControlName="reenterPassword"
-                    placeholder="Re-enter password" />
+                <input type="password" formControlName="reenterPassword" placeholder="Re-enter Password" />
                 <small
                     *ngIf="signupForm.get('reenterPassword')?.touched && signupForm.get('reenterPassword')?.errors?.['required']">
                     Password confirmation is required
                 </small>
-                <small
-                    *ngIf="signupForm.get('reenterPassword')?.touched && signupForm.get('reenterPassword')?.errors?.['minlength']">
-                    Password must be at least 6 characters
-                </small>
             </div>
+
             <button type="submit" [disabled]="!signupForm.valid" class="signup-btn">
-                Sign Up
+                SIGN UP
             </button>
         </form>
 
         <p class="login-text">
-            Already have an account?
-            <a routerLink="/auth/log-in">Log In</a>
+            Already have an account? <a routerLink="/auth/log-in">Log In</a>
         </p>
+
+        <p class="login-text">
+            <a routerLink="#" (click)="gotoforgetpassword()">Forgot Password</a>
+        </p>
+
     </div>
 </div>

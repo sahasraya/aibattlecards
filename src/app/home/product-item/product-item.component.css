@@ -6,6 +6,7 @@
   box-shadow: var(--shadow);
   padding: 2rem;
   transition: box-shadow 0.3s ease;
+  height: 100%;
 }
 
 .product-card:hover {

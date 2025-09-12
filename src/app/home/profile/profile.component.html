@@ -13,7 +13,9 @@
         <!-- Profile Tab -->
         <div *ngIf="activeTab === 'Profile'">
             <div class="profile-header">
-                <img src="../../../assets/images/12.png" alt="Profile Image" class="profile-image">
+                <div class="profile-avatar">
+                    {{ userInitials }}
+                </div>
             </div>
             <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
                 <div class="form-group">
@@ -40,7 +42,7 @@
                     <label>Email</label>
                     <input type="email" formControlName="email">
                 </div>
-                <button type="submit" [disabled]="profileForm.invalid">Submit</button>
+                <button type="submit" [disabled]="profileForm.invalid">Update</button>
             </form>
         </div>
 
@@ -370,4 +372,8 @@
 
 
     </div>
+</div>
+
+<div class="toast-message" [ngClass]="messageClass" [style.opacity]="messageVisible ? 1 : 0">
+    {{ message }}
 </div>
