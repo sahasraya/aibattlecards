@@ -59,7 +59,9 @@
                 </div>
 
                 <!-- Product Cards -->
-                <app-smaller-product-card *ngFor="let tool of toolsArray" [product]="tool"></app-smaller-product-card>
+                <app-smaller-product-card *ngFor="let tool of toolsArray" [product]="tool"
+                    (productDeleted)="onProductDeleted($event)">
+                </app-smaller-product-card>
 
             </div>
 
@@ -73,9 +75,8 @@
 
             <span class="loadmorebtn" *ngIf="!isaddingnewproduct">Load more</span>
             <div class="addingnewproduct-holder" *ngIf="isaddingnewproduct">
-                <div class="titale-holder">
-                    <img src="../../../assets/images/leftarrow.png" alt="close" class="close-productbtn"
-                        (click)="isaddingnewproduct = false">
+                <div class="titale-holder" (click)="closeAddProduct()">
+                    <img src="../../../assets/images/leftarrow.png" alt="close" class="close-productbtn">
                     <h3>Add Product</h3>
 
                 </div>
@@ -228,9 +229,15 @@
 
                     <!-- Submit -->
                     <div class="form-actions">
-                        <button type="submit" class="btn-submit">Submit Product</button>
+                        <button type="submit" class="btn-submit" [disabled]="productAddingForm.invalid">
+                            {{ submitButtonText }}
+                        </button>
                     </div>
                 </form>
+
+
+
+
             </div>
 
 

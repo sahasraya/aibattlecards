@@ -1,7 +1,15 @@
+<div class="back-arrow-container" *ngIf="showBackArrow">
+    <div class="gobackimage" (click)="goBack()">
+        <img src="../../../assets/images/leftarrow.png" alt="Go Back" />
+    </div>
+</div>
+
+
 <div class="main-holder">
+
     <div class="reset-card">
-        <div class="message" [ngClass]="messageClass" *ngIf="message">
-            {{ message }}
+        <div class="message-box" [ngClass]="messageClass" *ngIf="message">
+            <span class="main-text">{{ message }}</span>
         </div>
 
         <h2>Reset Password</h2>

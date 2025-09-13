@@ -236,6 +236,32 @@ body {
   height: 20px;
   margin-top: 2px; /* align image with text */
 }
+.toast-message {
+  position: fixed;
+  bottom: 20px;
+  left: -300px; /* start off-screen */
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  transition: all 0.5s ease, opacity 0.5s ease;
+  opacity: 0;
+  z-index: 1000;
+}
+
+/* Slide in when visible */
+.toast-message[style*="opacity: 1"] {
+  left: 20px;
+}
+/* Success style */
+.green-good {
+  background-color: #28a745;
+}
+
+/* Error style */
+.red-bad {
+  background-color: #dc3545;
+}
 
 /* Animations */
 @keyframes fadeIn {

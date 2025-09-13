@@ -15,6 +15,7 @@ interface ProductDetails {
   productwebsite: string;
   productfundingstage: string;
   productdescription: string;
+  userid: string;
   rating: number;
   productfb: string;
   productlinkedin: string;
@@ -65,8 +66,8 @@ export class ProductItemComponent {
     this.route.queryParams.subscribe(params => {
       this.productid = params['productid'];
       this.userid=this.authService.getUserid()!;
-       if (this.userid) { 
-      this.getProductDetails(this.productid,this.userid);
+       if (this.productid) { 
+      this.getProductDetails(this.productid);
       }
       
     });
@@ -74,17 +75,17 @@ export class ProductItemComponent {
 
   }
 
- async getProductDetails(productid: string, userid: string): Promise<void> {
-    const payload = { productid, userid };
+ async getProductDetails(productid: string): Promise<void> {
+   const payload = { productid };
 
     this.http.post(this.APIURL + 'get_product_details', payload).subscribe({
       next: (response: any) => {
-        console.log("🔍 Response from get_product_details:", response);
         if (response.message === "yes") {
           const prod = response.product;
           this.productDetails = {
             productimage: prod.productimage ? `data:image/jpeg;base64,${prod.productimage}` : '../../../assets/images/12.png',
             productname: prod.productname,
+            userid: prod.userid,
             productcategory: prod.productcategory,
             productdescription: prod.productdescription,
             rating: prod.rating,

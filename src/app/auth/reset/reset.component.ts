@@ -31,9 +31,10 @@ export class ResetComponent implements OnInit {
   idforauthafteruserloggedin = environment.idforauthafteruserloggedin;
   isforauth_without_userloggedin = environment.isforauth_without_userloggedin;
   isuserloggedin: boolean = false;
+  showBackArrow: boolean = false;
   otpiscoorectwithoutlogin: boolean = false;
-newPassword: string = '';
-confirmNewPassword: string = '';
+  newPassword: string = '';
+  confirmNewPassword: string = '';
 
 
   constructor(private route: ActivatedRoute, private http: HttpClient,private router:Router) {}
@@ -45,12 +46,18 @@ confirmNewPassword: string = '';
       if (this.routerid == this.idforauthafteruserloggedin) {
         this.isuserloggedin = true;
         this.sendingemailtoresetpassword(this.auth_emailaddress);
+        this.showBackArrow = false;
       } else if (this.routerid == this.isforauth_without_userloggedin) {
-      this.isuserloggedin = false;
+        this.isuserloggedin = false;
+        this.showBackArrow = true;
       }
 
     });
   }
+  goBack() {
+     this.router.navigate(['/auth/sign-up']);
+  }
+
 
   async sendingemailtoresetpassword(emailaddress: string): Promise<void> {
     const payload = { emailaddress };

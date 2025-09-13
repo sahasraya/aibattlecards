@@ -9,6 +9,7 @@ import { AuthService } from '../../services/getuserid.service';
 interface Tool {
   productimage: string;
   productname: string;
+  userid: string;
   productid: string;
   productcategory: string;
   productusecase: string[];
@@ -45,6 +46,7 @@ export class ProfileComponent implements OnInit {
   idforauthafteruserloggedin = environment.idforauthafteruserloggedin;
   selectedProductFile: File | null = null;
   userInitials: string = "";
+  isEditMode: boolean = false;
 
  toolsArray: Tool[] = [];
 
@@ -83,7 +85,13 @@ useCasesArray: string[] = [
   message: string = '';
   messageClass: string = '';
   curruntemailaddress: string = '';
+  updatingproductid: string = '';
   messageVisible: boolean = false;
+  submitButtonText: string = 'Submit Product';
+
+
+
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -105,8 +113,9 @@ this.productAddingForm = this.fb.group({
       productdescription: ['', Validators.required],
 
       founders: this.fb.array([this.fb.control('', Validators.required)]),
-      useCases: this.fb.array([]),
       baseModels: this.fb.array([this.fb.control('', Validators.required)]),
+      useCases: this.fb.array([]),
+      
       deployments: this.fb.array([this.fb.control('', Validators.required)]),
 
       mediaPreviews: this.fb.array([this.fb.control(null)]),
@@ -133,14 +142,34 @@ this.productAddingForm = this.fb.group({
 
     // Check query param for active tab
     this.route.queryParams.subscribe((params: any) => {
-      const tab = params['tab'];
-      if (tab) {
-        this.activeTab = tab;
-      }
-    });
+  const tab = params['tab'];
+  const action = params['action'];
+  const productId = params['productid']; // get productid from query string
+
+  if (tab) this.activeTab = tab;
+
+  // Open Add Product form if action=add_product and tab=Your Tools
+  if (tab === 'Your Tools' && action === 'add_product') {
+    this.isaddingnewproduct = true;
+    
+    
+    if (productId) {
+      this.isEditMode = true;
+      this.getProductDetailsToUpdate(productId);
+      this.submitButtonText = 'Update Product';
+      this.updatingproductid = productId;
+      
+    }
+  } else {
+    this.isEditMode = false;
+    this.resetProductForm();
+    this.submitButtonText = 'Submit Product';
+    this.isaddingnewproduct = false;
+  }
+});
 
 
-    this.userid=this.authService.getUserid()!;
+ this.userid=this.authService.getUserid()!;
     if (this.userid) { 
       this.getProductDetails(this.userid);
       this.getUserDetails(this.userid);
@@ -148,6 +177,201 @@ this.productAddingForm = this.fb.group({
   }
 
 
+
+private resetProductForm(): void {
+    // Reset the form to initial state
+    this.productAddingForm.reset();
+    
+    // Reset form arrays to have single empty controls
+    this.resetFormArray('founders');
+    this.resetFormArray('baseModels');
+    this.resetFormArray('deployments');
+    this.resetFormArray('mediaPreviews');
+    
+    // Clear use cases
+    this.selectedUseCases = [];
+    this.useCaseInput = '';
+    this.filteredUseCases = [];
+    
+    // Reset image
+    this.selectedImage = null;
+    this.selectedProductFile = null;
+    this.selectedProductImage = null;
+    
+    // Reset form validation state
+    this.productAddingForm.markAsUntouched();
+    this.productAddingForm.markAsPristine();
+  }
+
+  private resetFormArray(arrayName: string): void {
+    const formArray = this.productAddingForm.get(arrayName) as FormArray;
+    
+    // Clear all existing controls
+    while (formArray.length !== 0) {
+      formArray.removeAt(0);
+    }
+    
+    // Add single empty control based on array type
+    if (arrayName === 'mediaPreviews') {
+      formArray.push(this.fb.control(null));
+    } else {
+      formArray.push(this.fb.control('', Validators.required));
+    }
+  }
+
+
+
+  
+
+
+async getProductDetailsToUpdate(productId: string): Promise<void> {
+    const payload = { productid: productId };
+
+    this.http.post(this.APIURL + 'get_product_details', payload).subscribe({
+      next: (response: any) => {
+
+        if (response.message === 'yes' && response.product) {
+          this.populateProductForm(response);
+        }
+      },
+      error: err => console.error('Error fetching product details for update:', err)
+    });
+  }
+
+  private populateProductForm(response: any): void {
+    const prod = response.product;
+
+    // Patch basic form fields
+    this.productAddingForm.patchValue({
+      name: prod.productname || '',
+      type: prod.productcategory || '',
+      license: prod.productlicense || '',
+      technology: prod.producttechnology || '',
+      website: prod.productwebsite || '',
+      fundingStage: prod.productfundingstage || '',
+      productdescription: prod.productdescription || '',
+      productfb: prod.productfacebook || '',
+      productlinkedin: prod.productlinkedin || ''
+    });
+
+    // Handle product image if it exists
+    if (prod.productimage) {
+      this.selectedImage = `data:image/png;base64,${prod.productimage}`;
+    }
+
+    // Populate form arrays
+    this.populateFormArray('founders', response.founders || []);
+    this.populateFormArray('baseModels', response.baseModels || []);
+    this.populateFormArray('deployments', response.deployments || []);
+    this.populateFormArray('mediaPreviews', response.mediaPreviews || []);
+
+    // Populate use cases
+    if (response.useCases && response.useCases.length > 0) {
+      this.selectedUseCases = [...response.useCases];
+    }
+  }
+
+  private populateFormArray(arrayName: string, dataArray: string[]): void {
+    const formArray = this.productAddingForm.get(arrayName) as FormArray;
+    
+    // Clear existing controls
+    while (formArray.length !== 0) {
+      formArray.removeAt(0);
+    }
+
+    // Add new controls with data
+    if (dataArray && dataArray.length > 0) {
+      dataArray.forEach(item => {
+        formArray.push(this.fb.control(item, Validators.required));
+      });
+    } else {
+      // Add at least one empty control if no data
+      formArray.push(this.fb.control('', Validators.required));
+    }
+  }
+
+  // Getter methods for form arrays
+  get founders(): FormArray {
+    return this.productAddingForm.get('founders') as FormArray;
+  }
+
+  get baseModels(): FormArray {
+    return this.productAddingForm.get('baseModels') as FormArray;
+  }
+
+  get deployments(): FormArray {
+    return this.productAddingForm.get('deployments') as FormArray;
+  }
+
+  get mediaPreviews(): FormArray {
+    return this.productAddingForm.get('mediaPreviews') as FormArray;
+  }
+
+ 
+
+
+
+
+
+
+
+ setActiveTab(tab: string) {
+  this.activeTab = tab;
+
+  const queryParams: any = { tab };
+
+  // If tab is "Your Tools" and we are adding a product, include action
+  if (tab === 'Your Tools' && this.isaddingnewproduct) {
+    queryParams.action = 'add_product';
+  }
+
+  this.router.navigate([], {
+    relativeTo: this.route,
+    queryParams,
+    queryParamsHandling: 'merge'
+  });
+}
+
+
+
+
+onAddProduct(): void {
+  this.isaddingnewproduct = true;
+
+  // Copy current query params and remove 'productid'
+  const queryParams = { ...this.route.snapshot.queryParams };
+  delete queryParams['productid'];  // remove productid if exists
+  queryParams['action'] = 'add_product'; // set action
+
+  // Navigate with updated params
+  this.router.navigate([], {
+    relativeTo: this.route,
+    queryParams: queryParams,
+    queryParamsHandling: '', // use these params explicitly
+  });
+}
+
+  closeAddProduct(): void {
+  this.isaddingnewproduct = false;
+
+  // Copy current query params and remove 'action' and 'productid'
+  const queryParams = { ...this.route.snapshot.queryParams };
+  delete queryParams['action'];
+  delete queryParams['productid'];
+
+  // Navigate with remaining params
+  this.router.navigate([], {
+    relativeTo: this.route,
+    queryParams: queryParams,
+    queryParamsHandling: '', // replace with these params
+  });
+}
+
+    
+ onProductDeleted(productId: string): void {
+   
+    this.getProductDetails(this.userid);
+  }
 
     
 async getUserDetails(userid: string): Promise<void> {
@@ -224,16 +448,7 @@ onPasswordSubmit() {
   
   
   
-showMessage(msg: string, type: 'success' | 'error') {
-  this.message = msg;
-  this.messageClass = type === 'success' ? 'green-good' : 'red-bad';
-  this.messageVisible = true;
 
-  // hide message after 3 seconds
-  setTimeout(() => {
-    this.messageVisible = false;
-  }, 3000);
-}
 
 
 
@@ -250,9 +465,98 @@ private generateInitials(name: string): string {
 
 
 
+  onSubmitProduct(): void {
+    if (this.productAddingForm.valid) {
+      const formData = this.productAddingForm.value;
+      formData.useCases = this.selectedUseCases;
+      
+      if (this.isEditMode) {
+        this.updateProductDetails(formData);
+      } else {
 
+        this.createProduct();
+      }
+    } else {
+      console.log('Form is invalid');
+    }
+  }
+
+  private updateProductDetails(formData: any): void {
+     const payload: any = {
+    productid: this.updatingproductid,
+    userid: this.userid,
+    productname: formData.name,
+    productcategory: formData.type,
+    productlicense: formData.license,
+    producttechnology: formData.technology,
+    productwebsite: formData.website,
+    productfundingstage: formData.fundingStage,
+    productdescription: formData.productdescription,
+    productfacebook: formData.productfb,
+    productlinkedin: formData.productlinkedin,
+    founders: formData.founders.filter((f: string) => f.trim() !== ''),
+    baseModels: formData.baseModels.filter((b: string) => b.trim() !== ''),
+    deployments: formData.deployments.filter((d: string) => d.trim() !== ''),
+    mediaPreviews: formData.mediaPreviews.filter((m: string) => m && m.trim() !== ''),
+    useCases: this.selectedUseCases
+  };
+
+    // Handle image if selected
+  if (this.selectedProductFile) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (reader.result) {
+        const base64String = (reader.result as string).split(',')[1];
+        payload.productimage = base64String;
+        this.sendUpdateRequest(payload);
+      }
+    };
+    reader.readAsDataURL(this.selectedProductFile);
+  } else {
+    this.sendUpdateRequest(payload);
+  }
+}
+
+  private sendUpdateRequest(payload: any): void {
+    this.http.post(this.APIURL + 'update_product_details', payload).subscribe({
+      next: (response: any) => {
+        if (response.message === 'success') {
+          this.showMessage('Product updated successfully!', 'success');
+          this.showMessage("Product Is Updated","success");
+          this.getProductDetails(this.userid);
+          setTimeout(() => {
+            this.router.navigate(['/home/user-profile'], { 
+              queryParams: { tab: 'Your Tools' } 
+            });
+          }, 1000);
+        } else {
+          this.showMessage('Failed to update product', 'error');
+        }
+      },
+      error: err => {
+        console.error('Error updating product:', err);
+        this.showMessage('Error updating product', 'error');
+      }
+    });
+  }
+
+
+onImageSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    this.selectedProductFile = file; // ✅ store File
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = e => {
+      this.selectedImage = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+}
   
-async onSubmitProduct(): Promise<void> {
+async createProduct(): Promise<void> {
   const useCasesFormArray = this.productAddingForm.get('useCases') as FormArray;
   useCasesFormArray.clear();
   this.selectedUseCases.forEach(uc => useCasesFormArray.push(this.fb.control(uc)));
@@ -311,6 +615,9 @@ async onSubmitProduct(): Promise<void> {
           this.selectedProductImage = null;
           this.selectedImage = null;
           this.getProductDetails(this.userid);
+          this.messageVisible = true;
+          this.showMessage("Product Is Added","success");
+       
         }
       },
       error: (error) => {
@@ -323,7 +630,16 @@ async onSubmitProduct(): Promise<void> {
     console.warn('❌ Form is invalid.');
   }
 }
+showMessage(msg: string, type: 'success' | 'error') {
+  this.message = msg;
+  this.messageClass = type === 'success' ? 'green-good' : 'red-bad';
+  this.messageVisible = true;
 
+  // hide message after 3 seconds
+  setTimeout(() => {
+    this.messageVisible = false;
+  }, 3000);
+}
   
 async getProductDetails(userid: string): Promise<void> {
   const payload = { userid };
@@ -336,9 +652,10 @@ async getProductDetails(userid: string): Promise<void> {
             ? `data:image/jpeg;base64,${prod.productimage}`
             : '../../../assets/images/12.png',
           productname: prod.productname,
+          userid: prod.userid,
           productid: prod.productid,
           productcategory: prod.productcategory,
-          productusecase: prod.useCases || [],
+          productusecase: prod.usecasenames || [],
           showDropdown: false
         }));
 
@@ -369,41 +686,10 @@ togglePassword(field: 'old' | 'new' | 'confirm') {
   }
 }
 
-get founders(): FormArray {
-  return this.productAddingForm.get('founders') as FormArray;
-}
 
-get baseModels(): FormArray {
-  return this.productAddingForm.get('baseModels') as FormArray;
-}
-
-get deployments(): FormArray {
-  return this.productAddingForm.get('deployments') as FormArray;
-}
-
-get mediaPreviews(): FormArray {
-  return this.productAddingForm.get('mediaPreviews') as FormArray;
-}
-
-get useCases(): FormArray {
-  return this.productAddingForm.get('useCases') as FormArray;
-}
 
   
-onImageSelected(event: Event): void {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files[0]) {
-    const file = input.files[0];
-    this.selectedProductFile = file; // ✅ store File
 
-    // Create preview
-    const reader = new FileReader();
-    reader.onload = e => {
-      this.selectedImage = reader.result;
-    };
-    reader.readAsDataURL(file);
-  }
-}
   
   onUseCaseInput(event: any) {
   const value = event.target.value.toLowerCase();
@@ -503,15 +789,7 @@ removeMedia(index: number) {
 
 
   
-  setActiveTab(tab: string) {
-    this.activeTab = tab;
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { tab },
-      queryParamsHandling: 'merge'
-    });
-  }
-
+ 
 
 
 
@@ -547,10 +825,7 @@ async onSubmit(): Promise<void> {
   });
 }
 
-
-  onAddProduct() {
-    this.isaddingnewproduct = true;
-  }
+ 
 
   toggleDropdown(tool: Tool, event: Event) {
     event.stopPropagation();

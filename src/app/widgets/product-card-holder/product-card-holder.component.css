@@ -40,7 +40,6 @@
   transition: all 0.3s ease;
   flex-shrink: 0;
   border: 1px solid #f0f0f0;
-  height: 100%;
 }
 
 .product-card:hover {
@@ -50,14 +49,21 @@
 }
 
 .product-icon {
+  width: 100%;
+  height: 180px; /* adjust height as needed */
   display: flex;
+  align-items: center;
   justify-content: center;
-  margin-bottom: 0.75rem;
+  overflow: hidden;
+  border-radius: 8px; /* optional: rounded edges */
+  background: #f9f9f9; /* optional: subtle background */
 }
 
 .product-icon img {
-  width: 48px;
-  height: 48px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* makes image fill without distortion */
+  display: block;
 }
 
 .product-name {

@@ -43,7 +43,6 @@ export class HeaderComponent implements OnInit{
   this.http.post(this.APIURL + 'get_user_details', payload).subscribe({
     next: (response: any) => {
       if (response.message === 'yes') {
-        console.log("✅ User details:", response.user);
         const user = response.user;
 
          

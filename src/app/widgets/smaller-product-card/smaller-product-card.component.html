@@ -1,11 +1,12 @@
 <div class="product-card" [routerLink]="['/home/product-item']" [queryParams]="{ productid: product.productid }"
     routerLinkActive="active-card">
     <img src="../../../assets/images/dotmenu.svg" alt="Menu" class="dotmenu" (click)="toggleDropdown($event)">
-
+    <!-- *ngIf="product.productid == userid" -->
     <div class="dotmenudropdown" *ngIf="product.showDropdown">
         <ul>
-            <li>Edit</li>
-            <li>Delete</li>
+            <li (click)="UpdateProduct(product, $event)" *ngIf="product.userid == userid">Edit </li>
+            <li (click)="confirmDelete(product, $event)" *ngIf="product.userid == userid">Delete </li>
+            <li (click)="confirmDelete(product, $event)">More </li>
         </ul>
     </div>
     <div class="product-icon">
@@ -18,5 +19,22 @@
 
     <div class="chip-wrapper">
         <span class="chip" *ngFor="let tag of product.productusecase">{{ tag }}</span>
+    </div>
+</div>
+
+
+
+
+<div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="cancelDelete()">
+    <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-content">
+            <h3 class="modal-title">
+                Are you sure you want to delete the product "{{ productToDelete?.productname }}"?
+            </h3>
+            <div class="modal-actions">
+                <button class="cancel-btn" (click)="cancelDelete()">Cancel</button>
+                <button class="confirm-btn" (click)="onDeleteProduct()">Yes, Delete</button>
+            </div>
+        </div>
     </div>
 </div>

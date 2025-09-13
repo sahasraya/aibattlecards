@@ -56,6 +56,7 @@ async getProductBasedonUsecase(newCategory: string): Promise<void> {
             : '../../../assets/images/12.png',
           productname: prod.productname,
           productid: prod.productid,
+          userid: prod.userid,
           productcategory: prod.productcategory,
           productusecase: prod.useCases || [],
           showDropdown: false
@@ -92,6 +93,7 @@ async getProductBasedoncategory(newCategory: string): Promise<void> {
             ? `data:image/jpeg;base64,${prod.productimage}`
             : '../../../assets/images/12.png',
           productname: prod.productname,
+          userid: prod.userid,
           productid: prod.productid,
           productcategory: prod.productcategory,
           productusecase: prod.useCases || [],

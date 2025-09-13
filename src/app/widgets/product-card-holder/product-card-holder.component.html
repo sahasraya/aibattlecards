@@ -1,5 +1,4 @@
 <div class="featured-container">
-
     <div class="scroll-wrapper">
         <!-- Left Arrow -->
         <button class="scroll-btn left" (click)="scrollLeft(cardContainer)">
@@ -8,10 +7,10 @@
 
         <!-- Cards Container -->
         <div class="cards-container" #cardContainer>
-            <div class="product-card" *ngFor="let product of featuredArrayDetails"
-                [routerLink]="['/home/product-item']">
+            <div class="product-card" *ngFor="let product of featuredArrayDetails" [routerLink]="['/home/product-item']"
+                [queryParams]="{ productid: product.productid }">
                 <div class="product-icon">
-                    <!-- <img src="{{ product.icon }}" alt="icon" /> -->
+                    <img [src]="product.icon" alt="icon" />
                 </div>
                 <h3 class="product-name">{{ product.name }}</h3>
                 <p class="product-type">

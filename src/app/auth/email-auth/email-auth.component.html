@@ -1,12 +1,40 @@
 <div class="auth-container">
     <div class="auth-card">
-        <img src="../../../assets/images/emailauth.png" alt="Email Auth" class="auth-image" />
+        <!-- Image with Success Icon -->
+        <div class="auth-image-container">
+            <img src="../../../assets/images/emailauth.png" alt="Email Authentication" class="auth-image" />
+            <div class="success-icon"></div>
+        </div>
 
+        <!-- Title and Subtitle -->
         <h2 class="auth-title">Email Verified!</h2>
-        <p class="auth-subtitle">You are successfully authenticated.</p>
+        <p class="auth-subtitle">Your email has been successfully verified. You can now access your account with full
+            privileges.</p>
 
+        <!-- Success Message Box -->
+        <div class="success-message">
+            <span class="success-message-text">Authentication completed successfully</span>
+        </div>
+
+        <!-- Feature Highlights -->
+        <div class="auth-features">
+            <div class="feature-item">
+                <div class="feature-icon">🔐</div>
+                <div class="feature-text">Secure Access</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">✨</div>
+                <div class="feature-text">Full Features</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🚀</div>
+                <div class="feature-text">Ready to Go</div>
+            </div>
+        </div>
+
+        <!-- Action Button -->
         <a routerLink="/auth/log-in" class="auth-btn">
-            Go to Login
+            Continue to Login
         </a>
     </div>
 </div>

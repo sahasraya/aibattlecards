@@ -27,6 +27,7 @@ export class CommonProductListComponent implements OnInit {
   APIURL = environment.APIURL;
   toolsArray: Tool[] = [];
 
+  NewArrayDetails: any[] = [];
 
   
     constructor(
@@ -43,30 +44,41 @@ export class CommonProductListComponent implements OnInit {
   }
 
     
-async getAllProductDetails(): Promise<void> {
+ 
+
+  
+  async getAllProductDetails(): Promise<void> {
   this.http.post(this.APIURL + 'get_all_product_details_all', {}).subscribe({
     next: (response: any) => {
       if (response.message === "yes" && response.products?.length) {
-        this.toolsArray = response.products.map((prod: any) => ({
-          productimage: prod.productimage 
+        const newProducts = response.products.map((prod: any) => ({
+          productname: prod.productname, // match template
+          productcategory: prod.productcategory,
+          productimage: prod.productimage
             ? `data:image/jpeg;base64,${prod.productimage}`
             : '../../../assets/images/12.png',
-          productname: prod.productname,
+          // ✅ use 'usecasenames' array instead of singular 'usecasename'
+          productusecase: prod.usecasenames && prod.usecasenames.length ? prod.usecasenames : [],
           productid: prod.productid,
-          productcategory: prod.productcategory,
-          productusecase: prod.useCases || [],
+          userid: prod.userid,
+          productusecaseid: prod.productusecaseid,
           showDropdown: false
         }));
+
+        // Append to existing array
+        this.toolsArray = [...this.toolsArray, ...newProducts];
+ 
+
       } else {
         console.warn("⚠️ No product found");
-        this.toolsArray = [];
       }
     },
     error: (error) => {
       console.error('❌ Error fetching product details:', error);
     }
   });
-}
+  }
+  
 
 
 

@@ -16,7 +16,9 @@ export class SignUpComponent {
   signupForm: FormGroup;
   APIURL = environment.APIURL;
   isforauth_without_userloggedin = environment.isforauth_without_userloggedin;
-  message:string = '';
+  message: string = '';
+  messageClass: string = '';
+  messageVisible: boolean = false;
 
   constructor(private fb: FormBuilder,private http:HttpClient,private router:Router) {
     this.signupForm = this.fb.group({
@@ -31,7 +33,7 @@ async onSubmit(): Promise<void> {
   const reenterPassword = this.signupForm.get("reenterPassword")?.value;
 
   if (password !== reenterPassword) {
-    this.showMessage('Passwords do not match.');
+    this.showMessage('Passwords do not match.','error');
     this.signupForm.get("password")?.reset();
     this.signupForm.get("reenterPassword")?.reset();
     return;
@@ -47,10 +49,10 @@ async onSubmit(): Promise<void> {
     next: (response: any) => {
       console.log('Signup response:', response);
       if (response.message === "registered") {
-        this.showMessage('Sign-up successful. Please confirm your email.');
+        this.showMessage('Sign-up successful. Please confirm your email.','success');
         this.signupForm.reset();
       } else if (response.message === "Email already registered") {
-        this.showMessage('Email already registered.');
+        this.showMessage('Email already registered.','error');
         this.signupForm.reset();
       } else {
         alert("Error: " + response.message);
@@ -68,12 +70,19 @@ async onSubmit(): Promise<void> {
 
 
 
-   showMessage(msg: string) {
+showMessage(msg: string, type: 'success' | 'error') {
   this.message = msg;
+  this.messageClass = type === 'success' ? 'green-good' : 'red-bad';
+  this.messageVisible = true;
+
+  // hide message after 3 seconds
   setTimeout(() => {
-    this.message = '';
-  }, 4000);  
-} 
+    this.messageVisible = false;
+  }, 3000);
+  }
+  
+
+
   gotoforgetpassword() {
   this.router.navigate(['/auth/reset', this.isforauth_without_userloggedin]);
 }

@@ -133,3 +133,11 @@
   background-color: #4a90e2;
   color: #fff;
 }
+.dotmenudropdown ul li:nth-child(2) {
+  color: red;
+}
+
+.dotmenudropdown ul li:nth-child(2):hover {
+  background-color: rgb(255, 0, 0);
+  color: #fff;
+}
