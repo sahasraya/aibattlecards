@@ -96,7 +96,6 @@ async onDeleteProduct(): Promise<void> {
 }
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event) {
-    // Hide dropdown when clicking outside
     if (this.product && this.product.showDropdown) {
       this.product.showDropdown = false;
     }

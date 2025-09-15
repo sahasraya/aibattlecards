@@ -1,3 +1,48 @@
+.moreiconholder {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #eaeaea;
+  padding: 6px 0;
+}
+
+.tile-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+/* Better button styling */
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn img {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.icon-btn:hover {
+  background-color: #f7f9fc;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  transform: scale(1.1);
+}
+
+.icon-btn:hover img {
+  filter: brightness(0.85);
+}
+
 .side-menu {
   width: 300px; /* larger width */
   display: flex;
@@ -19,8 +64,6 @@
 .tile-title {
   font-size: 20px;
   font-weight: 600;
-  margin-bottom: 12px;
-  color: #333;
 }
 
 .chips-wrapper {
@@ -32,12 +75,14 @@
 .chip {
   display: inline-flex;
   align-items: center;
-  border-radius: 25px;
+  border-radius: var(--border-radius);
   font-size: 14px;
   font-weight: 500;
   transition: all 0.3s ease;
-  background-color: #f1f3f5;
+  background-color: var(--input-bg);
   padding: 6px 12px;
+  cursor: pointer;
+  box-shadow: var(--shadow-light);
 }
 
 .chip a {
@@ -45,26 +90,21 @@
   align-items: center;
   gap: 6px;
   text-decoration: none;
-  color: #333;
+  color: var(--text-color);
 }
-
-.chip a img {
-  width: 16px;
-  height: 16px;
-  transition: transform 0.3s ease;
-}
-
-.chip a:hover img {
-  transform: translateX(3px);
-}
-
 .chip a:hover {
-  color: #007bff;
+  color: white;
+}
+.chip:hover {
+  background: var(--primary-gradient);
+  color: #fff;
+  transform: translateY(-2px);
 }
 
 .chip.active {
-  background-color: #007bff;
+  background-color: var(--primary-color);
   color: #fff;
+  pointer-events: none;
 }
 
 .chip.active a {
@@ -76,8 +116,6 @@
   font-size: 18px; /* a little larger */
   font-weight: 600;
   color: #6a1b9a; /* purple accent */
-  margin-bottom: 0.75rem;
-  border-bottom: 1px solid #eaeaea;
   padding-bottom: 0.5rem;
   position: sticky;
   top: 0;
@@ -120,4 +158,36 @@
 
 .categories-list a:hover img {
   opacity: 1;
+}
+.arrayholder {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.arrayholder .chip {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #f1f3f5;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.arrayholder .chip:hover {
+  background: #e0e7ff;
+}
+
+.close-btn {
+  align-self: flex-end;
+  background: #c0c0c0;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  background: #e4e4e4;
 }

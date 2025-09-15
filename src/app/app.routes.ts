@@ -9,6 +9,7 @@ import { SignUpComponent } from './auth/sign-up/sign-up.component';
 import { EmailAuthComponent } from './auth/email-auth/email-auth.component';
 import { CategoryComponent } from './home/category/category.component';
 import { ResetComponent } from './auth/reset/reset.component';
+import { SearchEnterResultComponent } from './home/search-enter-result/search-enter-result.component';
 
 export const routes: Routes = [
   {
@@ -44,7 +45,11 @@ export const routes: Routes = [
       {
         path: 'category/:categoryName/:type',
         component: CategoryComponent
-      }
+      },
+        {
+    path: 'search-result/:searchtext',
+    component: SearchEnterResultComponent
+  },
           
        
        

@@ -1,0 +1,50 @@
+<div class="search-results-container">
+    <!-- Search header -->
+    <div class="search-header">
+        <h2>Search Results for: "{{ searchText }}"</h2>
+        <p *ngIf="!isLoading && !noResultsFound" class="results-count">
+            Found {{ searchResults.length }} result(s)
+        </p>
+    </div>
+
+    <!-- Loading indicator -->
+    <div *ngIf="isLoading" class="loading-container">
+        <div class="spinner-large"></div>
+        <p>Searching products...</p>
+    </div>
+
+    <!-- No results found -->
+    <div *ngIf="noResultsFound && !isLoading" class="no-results-container">
+        <div class="no-results-icon">🔍</div>
+        <h3>No Results Found</h3>
+        <p>We couldn't find any products matching "{{ searchText }}"</p>
+        <p>Try searching with different keywords or check your spelling.</p>
+    </div>
+
+    <!-- Search results grid -->
+    <div *ngIf="searchResults.length > 0 && !isLoading" class="results-grid">
+        <div *ngFor="let product of searchResults" class="product-card" (click)="onProductClick(product)">
+            <div class="product-image-container">
+                <img [src]="product.productimage" [alt]="product.productname" class="product-image" />
+            </div>
+
+            <div class="product-details">
+                <h3 class="product-name">{{ product.productname }}</h3>
+                <p class="product-category">{{ product.productcategory }}</p>
+
+                <p *ngIf="product.productdescription" class="product-description">
+                    {{ product.productdescription }}
+                </p>
+
+                <div *ngIf="product.useCases.length > 0" class="product-usecases">
+                    <span class="usecases-label">Use Cases:</span>
+                    <div class="usecases-container">
+                        <span *ngFor="let usecase of product.useCases" class="usecase-badge">
+                            {{ usecase }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

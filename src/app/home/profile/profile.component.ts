@@ -814,12 +814,15 @@ async onSubmit(): Promise<void> {
   this.http.post(this.APIURL + 'update_user_details', payload).subscribe({
     next: (response: any) => {
       if (response.message === 'updated') {
-        this.getUserDetails(userid); // refresh form with updated details
+        this.showMessage("User Details Updated","success");
+        this.getUserDetails(userid);  
       } else {
+        this.showMessage("Update failed","error");
         console.warn("⚠️ Update failed:", response.message);
       }
     },
     error: (error) => {
+      this.showMessage("Error updating user details","error");
       console.error('❌ Error updating user details:', error);
     }
   });

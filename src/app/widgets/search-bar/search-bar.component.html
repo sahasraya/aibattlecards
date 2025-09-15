@@ -1,1 +1,34 @@
-<input type="text" class="search-bar" placeholder="Search for products, services, or categories...">
+<div class="search-container">
+    <input type="text" class="search-bar" placeholder="Search for products, services, or categories..."
+        [(ngModel)]="searchText" (input)="onSearchInput($event)" (focus)="onSearchFocus()" (blur)="onSearchBlur()"
+        (keydown.enter)="onEnterPress()" autocomplete="off" />
+
+    <!-- Loading indicator -->
+    <div *ngIf="isLoading" class="loading-indicator">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Search dropdown -->
+    <div *ngIf="showDropdown" class="search-dropdown">
+        <div *ngIf="searchResults.length === 0 && !isLoading" class="no-results">
+            No products found
+        </div>
+
+        <div *ngFor="let product of searchResults" class="search-result-item" (click)="onProductSelect(product)">
+            <div class="product-image">
+                <img [src]="product.productimage" [alt]="product.productname" />
+            </div>
+
+            <div class="product-info">
+                <div class="product-name">{{ product.productname }}</div>
+                <div class="product-category">{{ product.productcategory }}</div>
+                <div *ngIf="product.useCases.length > 0" class="product-usecases">
+                    <span class="usecase-label">Use cases:</span>
+                    <span *ngFor="let usecase of product.useCases; let last = last" class="usecase-tag">
+                        {{ usecase }}<span *ngIf="!last">, </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

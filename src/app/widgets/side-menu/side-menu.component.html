@@ -45,14 +45,18 @@
 
     <!-- Use Cases Section -->
     <div class="menu-tile">
-        <h3 class="tile-title">Use Cases</h3>
+        <div class="moreiconholder">
+            <h3 class="tile-title">Use Cases</h3>
+            <button class="icon-btn" aria-label="See more" (click)="openModal('Use Cases', useCases)">
+                <img src="../../../assets/images/seemore.svg" alt="See more" />
+            </button>
+        </div>
         <div class="chips-wrapper">
             <span class="chip" *ngFor="let useCase of useCases" [ngClass]="{'active': activeUseCase === useCase.name}">
 
                 <ng-container *ngIf="useCase.route; else staticChip">
                     <a [routerLink]="['/home/category', useCase.route, useCase.type]" (click)="setActive(useCase.name)">
                         <span>{{ useCase.name }}</span>
-                        <img src="../../../assets/images/rightarrow.png" alt="arrow">
                     </a>
                 </ng-container>
 
@@ -63,6 +67,58 @@
         </div>
     </div>
 
+
+
+
+
+
+
+
+    <div class="menu-tile">
+        <div class="moreiconholder">
+            <h3 class="tile-title">Technology</h3>
+            <button class="icon-btn" aria-label="See more" (click)="openModal('Technologies', technologies)">
+                <img src="../../../assets/images/seemore.svg" alt="See more" />
+            </button>
+        </div>
+        <div class="chips-wrapper">
+            <span class="chip" *ngFor="let technology of technologies"
+                [ngClass]="{'active': activeUseCase === technology.name}">
+
+                <ng-container *ngIf="technology.route; else staticChip">
+                    <a [routerLink]="['/home/category', technology.route, technology.type]"
+                        (click)="setActive(technology.name)">
+                        <span>{{ technology.name }}</span>
+                    </a>
+                </ng-container>
+
+                <ng-template #staticChip>
+                    {{ technology.name }}
+                </ng-template>
+            </span>
+        </div>
+    </div>
+
+
+
+
+    <div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="closeModal()">
+        <div class="modal" (click)="$event.stopPropagation()">
+            <div class="modal-content">
+                <h3 class="modal-title">{{ modalTitle }}</h3>
+                <p class="modal-warning">List of {{ modalTitle }}</p>
+                <div class="arrayholder">
+                    <span *ngFor="let item of modalItems" class="chip">
+                        <a [routerLink]="['/home/category', item.route, item.type]" (click)="setActive(item.name)">
+                            {{ item.name }}
+                        </a>
+                    </span>
+                </div>
+                <button class="close-btn" (click)="closeModal()"><img src="../../../assets/images/close.png"
+                        alt=""></button>
+            </div>
+        </div>
+    </div>
 
 
 </div>

@@ -30,6 +30,7 @@ featuredArrayDetails = [
 
 
   NewArrayDetails: any[] = [];
+  MostViewedArrayDetails: any[] = [];
 
 
 
@@ -43,8 +44,54 @@ featuredArrayDetails = [
   
   ngOnInit(): void {
   this.getAllProductDetailsNewProducts();
+  this.getAllProductDetailsMostViewedProducts();
   }
   
+
+
+
+
+
+
+  async getAllProductDetailsMostViewedProducts(): Promise<void> {
+  this.http.post(this.APIURL + 'get_all_product_details_all_most_viewed', {}).subscribe({
+    next: (response: any) => {
+      if (response.message === "yes" && response.products?.length) {
+        const newProducts = response.products.map((prod: any) => ({
+          name: prod.productname, // match template
+          type: prod.productcategory,
+          icon: prod.productimage
+            ? `data:image/jpeg;base64,${prod.productimage}`
+            : '../../../assets/images/12.png',
+          // ✅ use 'usecasenames' array instead of singular 'usecasename'
+          tags: prod.usecasenames && prod.usecasenames.length ? prod.usecasenames : [],
+          productid: prod.productid,
+          productusecaseid: prod.productusecaseid,
+          showDropdown: false
+        }));
+
+        // Append to existing array
+        this.MostViewedArrayDetails = [...this.MostViewedArrayDetails, ...newProducts];
+ 
+
+      } else {
+        console.warn("⚠️ No product found");
+      }
+    },
+    error: (error) => {
+      console.error('❌ Error fetching product details:', error);
+    }
+  });
+  }
+  
+
+
+
+
+
+
+
+
 async getAllProductDetailsNewProducts(): Promise<void> {
   this.http.post(this.APIURL + 'get_all_product_details_all_new', {}).subscribe({
     next: (response: any) => {
