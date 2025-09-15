@@ -819,6 +819,7 @@ async onSubmit(): Promise<void> {
       } else {
         this.showMessage("Update failed","error");
         console.warn("⚠️ Update failed:", response.message);
+        this.showMessage("⚠️ Update failed","error");
       }
     },
     error: (error) => {

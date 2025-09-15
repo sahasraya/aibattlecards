@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 
@@ -16,7 +16,8 @@ export class EmailAuthComponent implements OnInit{
 
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient
+    private http: HttpClient,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -30,14 +31,16 @@ export class EmailAuthComponent implements OnInit{
     }
   }
 
-  authenticateUser(userid: string): void {
+ async authenticateUser(userid: string): Promise<void> {
     const formData = new FormData();
     formData.append("userid", userid);
 
     this.http.post(this.APIURL + 'update_email_auth', formData).subscribe({
       next: (response: any) => {
         if (response.message === "updated") {
-          alert("✅ Email authentication successful!");
+        setTimeout(() => {
+                  this.router.navigate(['/auth/log-in']);
+        }, 4000);
         } else {
           alert("⚠️ Error: " + response.message);
         }

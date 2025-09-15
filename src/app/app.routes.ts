@@ -68,7 +68,7 @@ export const routes: Routes = [
         component: SignUpComponent
       },
        {
-        path: 'authentication:/userid',
+        path: 'authentication/:userid',
         component: EmailAuthComponent
       },
        
