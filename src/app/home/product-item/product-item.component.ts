@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { AuthService } from '../../services/getuserid.service';
+import { LoadingComponent } from '../../widgets/loading/loading.component';
 
 interface ProductDetails {
   productimage: string;
@@ -31,7 +32,7 @@ interface ProductDetails {
 @Component({
   selector: 'app-product-item',
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule],
+  imports: [ReactiveFormsModule,CommonModule,LoadingComponent],
   templateUrl: './product-item.component.html',
   styleUrl: './product-item.component.css'
 })
@@ -45,6 +46,8 @@ export class ProductItemComponent {
   userid: string = '';
   ratings: number[] = [1, 2, 3, 4, 5];
   productDetails: ProductDetails | null = null;
+   showPopup: boolean = false;
+   isLoading: boolean = false;
   
 
   
@@ -74,8 +77,15 @@ export class ProductItemComponent {
 
 
   }
+ openPopup(): void {
+    this.showPopup = true;
+  }
 
- async getProductDetails(productid: string): Promise<void> {
+  closePopup(): void {
+    this.showPopup = false;
+  }
+  async getProductDetails(productid: string): Promise<void> {
+    this.isLoading = true;
    const payload = { productid };
 
     this.http.post(this.APIURL + 'get_product_details', payload).subscribe({
@@ -101,12 +111,13 @@ export class ProductItemComponent {
             deployments: response.deployments || [],
             mediaPreviews: response.mediaPreviews || []
           };
-
+          this.isLoading = false;
         } else {
           console.warn("No product found");
         }
       },
       error: (error) => {
+         this.isLoading = false;
         console.error('❌ Error fetching product details:', error);
       }
     });

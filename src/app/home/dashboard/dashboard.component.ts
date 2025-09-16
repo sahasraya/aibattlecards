@@ -3,6 +3,7 @@ import { ProductCardHolderComponent } from '../../widgets/product-card-holder/pr
 import { CommonProductListComponent } from '../../widgets/common-product-list/common-product-list.component';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -28,7 +29,8 @@ featuredArrayDetails = [
 
   
 
-
+  currentPage: number = 1;
+  pageSize: number = 10;
   NewArrayDetails: any[] = [];
   MostViewedArrayDetails: any[] = [];
 
@@ -38,7 +40,8 @@ featuredArrayDetails = [
 
 
     constructor(
-        private http: HttpClient,
+      private http: HttpClient,
+      private router:Router
     ) { }
     
   
@@ -48,13 +51,19 @@ featuredArrayDetails = [
   }
   
 
-
+  getmoreresult(getmoretext: string) {
+    this.router.navigate(['/home/get-more-result/' + getmoretext]);
+}
 
 
 
 
   async getAllProductDetailsMostViewedProducts(): Promise<void> {
-  this.http.post(this.APIURL + 'get_all_product_details_all_most_viewed', {}).subscribe({
+     const requestBody = {
+      page: this.currentPage,
+      limit: this.pageSize
+    };
+  this.http.post(this.APIURL + 'get_all_product_details_all_most_viewed', requestBody).subscribe({
     next: (response: any) => {
       if (response.message === "yes" && response.products?.length) {
         const newProducts = response.products.map((prod: any) => ({
@@ -92,8 +101,14 @@ featuredArrayDetails = [
 
 
 
-async getAllProductDetailsNewProducts(): Promise<void> {
-  this.http.post(this.APIURL + 'get_all_product_details_all_new', {}).subscribe({
+  async getAllProductDetailsNewProducts(): Promise<void> {
+  
+     const requestBody = {
+      page: this.currentPage,
+      limit: this.pageSize
+    };
+
+  this.http.post(this.APIURL + 'get_all_product_details_all_new', requestBody).subscribe({
     next: (response: any) => {
       if (response.message === "yes" && response.products?.length) {
         const newProducts = response.products.map((prod: any) => ({

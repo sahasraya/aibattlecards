@@ -4,3 +4,23 @@
   margin-bottom: 1rem;
   color: #333;
 }
+.getmoreresult {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.getmoreresult img {
+  cursor: pointer;
+  border-radius: 50%;
+  object-fit: cover;
+  width: 30px; /* adjust size */
+  height: 30px; /* adjust size */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.getmoreresult img:hover {
+  transform: scale(1.08);
+  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.15);
+}

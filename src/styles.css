@@ -249,21 +249,24 @@ body {
   z-index: 1000;
 }
 
-/* Slide in when visible */
 .toast-message[style*="opacity: 1"] {
   left: 20px;
 }
-/* Success style */
 .green-good {
   background-color: #28a745;
 }
 
-/* Error style */
 .red-bad {
   background-color: #dc3545;
 }
+app-loading {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+}
 
-/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -282,4 +285,11 @@ body {
     transform: scale(1);
     opacity: 1;
   }
+}
+app-loading {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  width: 100%;
+  z-index: 9999; /* ensure it stays on top */
 }

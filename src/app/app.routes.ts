@@ -10,6 +10,7 @@ import { EmailAuthComponent } from './auth/email-auth/email-auth.component';
 import { CategoryComponent } from './home/category/category.component';
 import { ResetComponent } from './auth/reset/reset.component';
 import { SearchEnterResultComponent } from './home/search-enter-result/search-enter-result.component';
+import { GetMoreResultComponent } from './home/get-more-result/get-more-result.component';
 
 export const routes: Routes = [
   {
@@ -45,6 +46,10 @@ export const routes: Routes = [
       {
         path: 'category/:categoryName/:type',
         component: CategoryComponent
+      },
+      {
+        path: 'get-more-result/:lookingtext',
+        component: GetMoreResultComponent
       },
         {
     path: 'search-result/:searchtext',

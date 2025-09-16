@@ -1,4 +1,7 @@
-<h2 class="section-title">Featured</h2>
+<div class="getmoreresult">
+    <h2 class="section-title">Featured</h2>
+    <img src="../../../assets/images/getmoreresult.svg" alt="" (click)="getmoreresult('featured')">
+</div>
 
 
 
@@ -7,13 +10,20 @@
 
 
 
-<h2 class="section-title">New</h2>
+<div class="getmoreresult">
+    <h2 class="section-title">New</h2>
+    <img src="../../../assets/images/getmoreresult.svg" alt="" (click)="getmoreresult('new')">
+</div>
+
 
 <app-product-card-holder [featuredArrayDetails]="NewArrayDetails"></app-product-card-holder>
 
 
 
-<h2 class="section-title">Most Viewed</h2>
+<div class="getmoreresult">
+    <h2 class="section-title">Most Viewed</h2>
+    <img src="../../../assets/images/getmoreresult.svg" alt="" (click)="getmoreresult('mostviewed')">
+</div>
 
 <app-product-card-holder [featuredArrayDetails]="MostViewedArrayDetails"></app-product-card-holder>
 

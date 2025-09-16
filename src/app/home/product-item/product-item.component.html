@@ -1,3 +1,6 @@
+<app-loading *ngIf="isLoading"></app-loading>
+
+
 <div class="product-card">
 
     <div class="add-review-section">
@@ -117,8 +120,14 @@
 
 
     <div class="product-header" *ngIf="productDetails">
-        <img [src]="productDetails.productimage || '../../../assets/images/12.png'" alt="Product"
-            class="product-image-sm" />
+        <img [src]="productDetails.productimage || '../../../assets/images/12.png'" alt="User" class="product-image-sm"
+            (click)="openPopup()" />
+        <div class="image-popup-overlay" *ngIf="showPopup" (click)="closePopup()">
+            <div class="image-popup" (click)="$event.stopPropagation()">
+                <button class="close-btn" (click)="closePopup()">✖</button>
+                <img [src]="productDetails.productimage || '../../../assets/images/12.png'" alt="User Enlarged" />
+            </div>
+        </div>
         <div class="product-info">
             <h2 class="product-title">{{ productDetails.productname }}
                 <span class="rating">★ {{ productDetails.rating }} / 5</span>
