@@ -21,6 +21,8 @@ interface Review {
   date: Date;
   comment: string;
   showDropdown?: boolean;
+  createddate:string;
+  productid:string;
 }
 @Component({
   selector: 'app-profile',
@@ -50,20 +52,7 @@ export class ProfileComponent implements OnInit {
 
  toolsArray: Tool[] = [];
 
-  reviewsArray: Review[] = [
-  {
-    profileImg: '../../../assets/images/12.png',
-    username: 'John Doe',
-    date: new Date('2025-08-01'),
-    comment: 'Great product, really helped me improve my workflow!',
-  },
-  {
-    profileImg: '../../../assets/images/12.png',
-    username: 'Jane Smith',
-    date: new Date('2025-08-05'),
-    comment: 'Excellent support and features.',
-  }
-];
+  reviewsArray: Review[] = [];
 useCasesArray: string[] = [
   'Customer Support',
   'Lead Generation',
@@ -88,6 +77,14 @@ useCasesArray: string[] = [
   updatingproductid: string = '';
   messageVisible: boolean = false;
   submitButtonText: string = 'Submit Product';
+
+
+
+userReviewsOffset: number = 0;
+userReviewsLimit: number = 5;
+hasMoreUserReviews: boolean = false;
+isLoadingUserReviews: boolean = false;
+
 
 
 
@@ -173,8 +170,62 @@ this.productAddingForm = this.fb.group({
     if (this.userid) { 
       this.getProductDetails(this.userid);
       this.getUserDetails(this.userid);
+      this.getUserReviews(this.userid);
     }
   }
+
+
+async getUserReviews(userid: string, offset: number = 0, reset: boolean = false): Promise<void> {
+  if (reset) {
+    this.isLoadingUserReviews = true;
+  }
+
+  const payload = {
+    userid,
+    offset,
+    limit: this.userReviewsLimit
+  };
+
+  this.http.post<any>(this.APIURL + 'get_user_reviews_page', payload).subscribe({
+    next: (response) => {
+      if (response.message === "found") {
+        if (reset) {
+          this.reviewsArray = response.reviews || [];
+          this.userReviewsOffset = response.limit || this.userReviewsLimit;
+        } else {
+          this.reviewsArray = [...this.reviewsArray, ...(response.reviews || [])];
+          this.userReviewsOffset += (response.reviews || []).length;
+        }
+        this.hasMoreUserReviews = response.has_more || false;
+      } else {
+        if (reset) {
+          this.reviewsArray = [];
+          this.hasMoreUserReviews = false;
+          this.userReviewsOffset = 0;
+        }
+      }
+
+      this.isLoadingUserReviews = false;
+    },
+    error: (error) => {
+      console.error('❌ Error fetching user reviews:', error);
+      if (reset) {
+        this.reviewsArray = [];
+        this.hasMoreUserReviews = false;
+        this.userReviewsOffset = 0;
+      }
+      this.isLoadingUserReviews = false;
+    }
+  });
+}
+
+// Load more handler
+onLoadMoreUserReviews(): void {
+  if (this.hasMoreUserReviews) {
+    this.getUserReviews(this.userid, this.userReviewsOffset, false);
+  }
+}
+
 
 
 

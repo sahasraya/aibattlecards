@@ -27,17 +27,42 @@ interface ProductDetails {
   mediaPreviews: string[];
 }
 
+interface Review {
+  id: number;
+  reviewid: string;
+  userid: string;
+  productid: string;
+  commercialorpersonal: string;
+  howlong: string;
+  experiencerate: string;
+  comment: string;
+  efficiencyrate: string;
+  documentationrate: string;
+  paidornot: string;
+  paidrate?: string;
+  colorcode: string;
+  username: string;
+  createddate: string;
+  email?: string;
+}
 
+interface RatingData {
+  core_avg: number;
+  paid_support_avg?: number;
+  overall_score: number;
+  weighted_rating: number;
+  num_reviews: number;
+}
 
 @Component({
   selector: 'app-product-item',
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule,LoadingComponent],
+  imports: [ReactiveFormsModule, CommonModule, LoadingComponent],
   templateUrl: './product-item.component.html',
   styleUrl: './product-item.component.css'
 })
 export class ProductItemComponent {
- showReviewForm: boolean = false;
+  showReviewForm: boolean = false;
   showPaidRating: boolean = false;
 
   reviewForm!: FormGroup;
@@ -46,14 +71,35 @@ export class ProductItemComponent {
   userid: string = '';
   ratings: number[] = [1, 2, 3, 4, 5];
   productDetails: ProductDetails | null = null;
-   showPopup: boolean = false;
-   isLoading: boolean = false;
+  reviews: Review[] = [];
+  showPopup: boolean = false;
+  isLoading: boolean = false;
+  isSubmittingReview: boolean = false;
+  messageClass: string = '';
+  message: string = '';
+  messageVisible: boolean = false;
   
+  // Pagination properties
+  totalReviews: number = 0;
+  currentOffset: number = 0;
+  reviewsLimit: number = 5;
+  hasMoreReviews: boolean = false;
+  isLoadingMoreReviews: boolean = false;
 
-  
-  constructor(private fb: FormBuilder,private route:ActivatedRoute,private http:HttpClient,private authService:AuthService) {}
+  // Rating properties
+  isCalculatingRating: boolean = false;
+  ratingData: RatingData | null = null;
+  isuserloggedin:boolean=false;
+
+  constructor(
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private http: HttpClient,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.reviewForm = this.fb.group({
       isPaid: ['', Validators.required],
       ispaidtogglecommercialorpersonal: ['', Validators.required],
@@ -62,31 +108,235 @@ export class ProductItemComponent {
       efficiencyRating: [1, Validators.required],
       documentationRating: [1, Validators.required],
       paidVersionRating: [1],
-      paidtogglecommercialorpersonal: [3],
       additionalComments: ['']
     });
 
     this.route.queryParams.subscribe(params => {
       this.productid = params['productid'];
-      this.userid=this.authService.getUserid()!;
-       if (this.productid) { 
-      this.getProductDetails(this.productid);
+      this.userid = this.authService.getUserid()!;
+      if (this.productid) {
+        this.getProductDetails(this.productid);
+        this.getReviews(this.productid, 0, true);
+        this.calculateProductRating(this.productid);
+
+         if (this.userid) { 
+      this.isuserloggedin = true;
+    }else{
+       this.isuserloggedin = false ;
+    }
+
       }
       
     });
-
-
   }
- openPopup(): void {
+
+  async submitReview(): Promise<void> {
+    if (this.reviewForm.invalid) {
+      this.markFormGroupTouched(this.reviewForm);
+      this.showMessage("Please fill in all required fields", "error");
+      return;
+    }
+
+    this.isSubmittingReview = true;
+    
+    const formValues = this.reviewForm.value;
+    const payload = {
+      productid: this.productid,
+      userid: this.userid,
+      ispaidtogglecommercialorpersonal: formValues.ispaidtogglecommercialorpersonal,
+      usageDuration: formValues.usageDuration,
+      experienceRating: formValues.experienceRating,
+      efficiencyRating: formValues.efficiencyRating,
+      documentationRating: formValues.documentationRating,
+      isPaid: formValues.isPaid,
+      paidVersionRating: this.showPaidRating ? formValues.paidVersionRating : null,
+      additionalComments: formValues.additionalComments
+    };
+
+    this.http.post(this.APIURL + 'add_review', payload).subscribe({
+      next: (response: any) => {
+        if (response.message === "added") {
+          // Update the product rating immediately with the new rating from response
+          if (this.productDetails && response.new_rating !== undefined) {
+            this.productDetails.rating = response.new_rating;
+          }
+
+          // Reset form and hide review form
+          this.reviewForm.reset();
+          this.reviewForm.patchValue({
+            experienceRating: 1,
+            efficiencyRating: 1,
+            documentationRating: 1,
+            paidVersionRating: 1
+          });
+          this.showReviewForm = false;
+          this.showPaidRating = false;
+          
+          // Reset and refresh reviews from the beginning
+          this.currentOffset = 0;
+          this.getReviews(this.productid, 0, true);
+          
+          // Recalculate product rating to get detailed breakdown
+          this.calculateProductRating(this.productid);
+          
+          this.showMessage("Review added successfully!", "success");
+        } else {
+          this.showMessage("Failed to add review. Please try again.", "error");
+        }
+        this.isSubmittingReview = false;
+      },
+      error: (error) => {
+        this.isSubmittingReview = false;
+        console.error('❌ Error submitting review:', error);
+        let errorMessage = "Error submitting review. Please try again.";
+        if (error.error && error.error.detail) {
+          errorMessage = error.error.detail;
+        }
+        this.showMessage(errorMessage, "error");
+      }
+    });
+  }
+
+  async calculateProductRating(productid: string): Promise<void> {
+    this.isCalculatingRating = true;
+    const payload = { productid };
+
+    this.http.post<any>(this.APIURL + 'calculate_product_rating', payload).subscribe({
+      next: (response) => {
+        if (response.message === "calculated") {
+          this.ratingData = {
+            core_avg: response.core_avg || 0,
+            paid_support_avg: response.paid_support_avg,
+            overall_score: response.overall_score || 0,
+            weighted_rating: response.weighted_rating || 0,
+            num_reviews: response.num_reviews || 0
+          };
+          
+          // Update product details rating
+          if (this.productDetails) {
+            this.productDetails.rating = response.weighted_rating || 0;
+          }
+        } else if (response.message === "no_reviews") {
+          this.ratingData = {
+            core_avg: 0,
+            overall_score: 0,
+            weighted_rating: 0,
+            num_reviews: 0
+          };
+          
+          if (this.productDetails) {
+            this.productDetails.rating = 0;
+          }
+        }
+        this.isCalculatingRating = false;
+      },
+      error: (error) => {
+        console.error('❌ Error calculating rating:', error);
+        this.isCalculatingRating = false;
+        // Set default values on error
+        this.ratingData = {
+          core_avg: 0,
+          overall_score: 0,
+          weighted_rating: 0,
+          num_reviews: 0
+        };
+        if (this.productDetails) {
+          this.productDetails.rating = 0;
+        }
+      }
+    });
+  }
+
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach(key => {
+      const control = formGroup.get(key);
+      control?.markAsTouched();
+    });
+  }
+
+  showMessage(msg: string, type: 'success' | 'error') {
+    this.message = msg;
+    this.messageClass = type === 'success' ? 'green-good' : 'red-bad';
+    this.messageVisible = true;
+
+    setTimeout(() => {
+      this.messageVisible = false;
+    }, 3000);
+  }
+
+  async getReviews(productid: string, offset: number = 0, reset: boolean = false): Promise<void> {
+    if (reset) {
+      this.isLoading = true;
+    } else {
+      this.isLoadingMoreReviews = true;
+    }
+
+    const payload = { 
+      productid,
+      offset,
+      limit: this.reviewsLimit
+    };
+
+    this.http.post<any>(this.APIURL + 'get_reviews', payload).subscribe({
+      next: (response) => {
+        if (response.message === "found") {
+          if (reset) {
+            this.reviews = response.reviews || [];
+            this.currentOffset = response.limit || this.reviewsLimit;
+          } else {
+            this.reviews = [...this.reviews, ...(response.reviews || [])];
+            this.currentOffset += (response.reviews || []).length;
+          }
+          
+          this.totalReviews = response.total_reviews || 0;
+          this.hasMoreReviews = response.has_more || false;
+        } else {
+          // Handle case when no reviews found
+          if (reset) {
+            this.reviews = [];
+            this.totalReviews = 0;
+            this.hasMoreReviews = false;
+            this.currentOffset = 0;
+          }
+        }
+        
+        if (reset) {
+          this.isLoading = false;
+        } else {
+          this.isLoadingMoreReviews = false;
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error fetching reviews:', error);
+        if (reset) {
+          this.isLoading = false;
+          this.reviews = [];
+          this.totalReviews = 0;
+          this.hasMoreReviews = false;
+        } else {
+          this.isLoadingMoreReviews = false;
+        }
+      }
+    });
+  }
+
+  loadMoreReviews(): void {
+    if (this.hasMoreReviews && !this.isLoadingMoreReviews) {
+      this.getReviews(this.productid, this.currentOffset, false);
+    }
+  }
+
+  openPopup(): void {
     this.showPopup = true;
   }
 
   closePopup(): void {
     this.showPopup = false;
   }
+
   async getProductDetails(productid: string): Promise<void> {
     this.isLoading = true;
-   const payload = { productid };
+    const payload = { productid };
 
     this.http.post(this.APIURL + 'get_product_details', payload).subscribe({
       next: (response: any) => {
@@ -94,72 +344,134 @@ export class ProductItemComponent {
           const prod = response.product;
           this.productDetails = {
             productimage: prod.productimage ? `data:image/jpeg;base64,${prod.productimage}` : '../../../assets/images/12.png',
-            productname: prod.productname,
-            userid: prod.userid,
-            productcategory: prod.productcategory,
-            productdescription: prod.productdescription,
-            rating: prod.rating,
-            productlicense: prod.productlicense,
-            producttechnology: [prod.producttechnology], // can be array if needed
-            productwebsite: prod.productwebsite,
-            productfundingstage: prod.productfundingstage,
-            productfb: prod.productfacebook,
-            productlinkedin: prod.productlinkedin,
+            productname: prod.productname || 'Unknown Product',
+            userid: prod.userid || '',
+            productcategory: prod.productcategory || '',
+            productdescription: prod.productdescription || '',
+            rating: prod.rating || 0,
+            productlicense: prod.productlicense || '',
+            producttechnology: prod.producttechnology ? [prod.producttechnology] : [],
+            productwebsite: prod.productwebsite || '',
+            productfundingstage: prod.productfundingstage || '',
+            productfb: prod.productfacebook || '',
+            productlinkedin: prod.productlinkedin || '',
             useCases: response.useCases || [],
             founders: response.founders || [],
             baseModels: response.baseModels || [],
             deployments: response.deployments || [],
             mediaPreviews: response.mediaPreviews || []
           };
-          this.isLoading = false;
         } else {
           console.warn("No product found");
+          this.showMessage("Product not found", "error");
         }
+        this.isLoading = false;
       },
       error: (error) => {
-         this.isLoading = false;
+        this.isLoading = false;
         console.error('❌ Error fetching product details:', error);
+        this.showMessage("Error loading product details", "error");
       }
     });
   }
 
-
-
-
-
-
-
-
-
-
-
-
- togglePaidRating(show: boolean) {
+  togglePaidRating(show: boolean) {
     this.showPaidRating = show;
     if (!show) {
-      this.reviewForm.get('paidVersionRating')?.setValue(null);
+      this.reviewForm.get('paidVersionRating')?.setValue(1);
     }
   }
 
-  
- togglecommercialorpersonal(show: boolean) {
-   this.reviewForm.get('paidtogglecommercialorpersonal')?.setValue(null);
+  togglecommercialorpersonal(show: boolean) {
+    // This method can be used for additional logic if needed
   }
-
 
   setRating(controlName: string, value: number) {
     this.reviewForm.get(controlName)?.setValue(value);
   }
 
-  submitReview() {
-    if (this.reviewForm.valid) {
-      console.log('Review Submitted:', this.reviewForm.value);
-      this.reviewForm.reset({ experienceRating: 5, efficiencyRating: 5, documentationRating: 5 });
-      this.showReviewForm = false;
-      this.showPaidRating = false;
+  toggleReviewForm() {
+    this.showReviewForm = !this.showReviewForm;
+  }
+
+  // Helper methods for template
+  getStars(rating: string | number): string {
+    const numRating = typeof rating === 'string' ? parseInt(rating) || 0 : rating || 0;
+    const clampedRating = Math.max(0, Math.min(5, numRating));
+    const fullStars = '⭐'.repeat(clampedRating);
+    const emptyStars = '☆'.repeat(5 - clampedRating);
+    return fullStars + emptyStars;
+  }
+
+  // Helper method to get rating stars for product rating display
+  getProductRatingStars(rating: number): string {
+    const roundedRating = Math.max(0, Math.min(5, Math.round(rating || 0)));
+    const fullStars = '★'.repeat(roundedRating);
+    const emptyStars = '☆'.repeat(5 - roundedRating);
+    return fullStars + emptyStars;
+  }
+
+  formatDate(dateString: string): string {
+    if (!dateString) return 'Unknown date';
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+    } catch (error) {
+      return 'Invalid date';
     }
   }
- toggleReviewForm() {
-    this.showReviewForm = !this.showReviewForm;
+
+  getUsageDurationText(duration: string): string {
+    const durationMap: {[key: string]: string} = {
+      '1-2 years': '1-2 years',
+      '2-5 years': '2-5 years',
+      '5+ years': '5+ years'
+    };
+    return durationMap[duration] || duration || 'Unknown duration';
+  }
+
+  getCommercialPersonalText(value: string): string {
+    return value === 'yes' ? 'Commercial' : 'Personal';
+  }
+
+  getPaidVersionText(value: string): string {
+    return value === 'yes' ? 'Paid' : 'Free';
+  }
+
+  getUserInitials(username: string): string {
+    if (!username) return 'U';
+    
+    const names = username.trim().split(' ');
+    if (names.length === 1) {
+      return names[0].substring(0, 2).toUpperCase();
+    }
+    
+    const firstInitial = names[0].charAt(0);
+    const lastInitial = names[names.length - 1].charAt(0);
+    
+    return (firstInitial + lastInitial).toUpperCase();
+  }
+
+  // Helper method to get rating color based on rating value
+  getRatingColor(rating: number): string {
+    const safeRating = rating || 0;
+    if (safeRating >= 4.5) return '#4CAF50'; // Green
+    if (safeRating >= 3.5) return '#FF9800'; // Orange
+    if (safeRating >= 2.5) return '#FFC107'; // Yellow
+    return '#F44336'; // Red
+  }
+
+  // Helper method to check if rating data exists and is valid
+  hasValidRatingData(): boolean {
+    return this.ratingData !== null && this.ratingData.num_reviews > 0;
+  }
+
+  // Helper method to safely get rating value
+  getSafeRating(): number {
+    return this.productDetails?.rating || 0;
   }
 }

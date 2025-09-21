@@ -1,13 +1,12 @@
 <app-loading *ngIf="isLoading"></app-loading>
 
-
 <div class="product-card">
 
-    <div class="add-review-section">
-        <button class="add-review-btn" (click)="toggleReviewForm()">
-            {{ showReviewForm ? 'Hide Review' : 'Add Review' }}
-        </button>
-    </div>
+    <div class="add-review-section" *ngIf="isuserloggedin">
+    <button class="add-review-btn" (click)="toggleReviewForm()">
+      {{ showReviewForm ? 'Hide Review' : 'Add Review' }}
+    </button>
+  </div>
 
     <!-- Slide-down Review Form -->
     <div class="review-form-container" [class.active]="showReviewForm">
@@ -15,35 +14,34 @@
 
             <h2 class="form-title">Submit Your Review</h2>
 
-
             <div class="form-group">
                 <label>Are you using commercial/personal ?</label>
                 <div class="radio-group">
                     <label>
                         <input type="radio" formControlName="ispaidtogglecommercialorpersonal" value="yes"
                             (change)="togglecommercialorpersonal(true)" />
-                        Yes
+                        Commercial
                     </label>
                     <label>
                         <input type="radio" formControlName="ispaidtogglecommercialorpersonal" value="no"
                             (change)="togglecommercialorpersonal(false)" />
-                        No
+                        Personal
                     </label>
                 </div>
             </div>
 
-
-            <!-- 3. Duration of Usage -->
+            <!-- Duration of Usage -->
             <div class="form-group">
                 <label>How long have you been using this?</label>
                 <select formControlName="usageDuration">
+                    <option value="">Select duration</option>
                     <option value="1-2 years">1 to 2 years</option>
                     <option value="2-5 years">2 to 5 years</option>
                     <option value="5+ years">More than 5 years</option>
                 </select>
             </div>
 
-            <!-- 4. Experience Rating -->
+            <!-- Experience Rating -->
             <div class="form-group">
                 <label>How is your experience?</label>
                 <div class="star-rating">
@@ -54,7 +52,7 @@
                 </div>
             </div>
 
-            <!-- 5. Efficiency Rating -->
+            <!-- Efficiency Rating -->
             <div class="form-group">
                 <label>How is the efficiency of the tool?</label>
                 <div class="star-rating">
@@ -65,7 +63,7 @@
                 </div>
             </div>
 
-            <!-- 6. Documentation Quality -->
+            <!-- Documentation Quality -->
             <div class="form-group">
                 <label>How is the documentation quality?</label>
                 <div class="star-rating">
@@ -76,7 +74,7 @@
                 </div>
             </div>
 
-            <!-- 7. Paid Version Rating (Conditional) -->
+            <!-- Paid Version -->
             <div class="form-group">
                 <label>Are you using paid version ?</label>
                 <div class="radio-group">
@@ -91,7 +89,6 @@
                 </div>
             </div>
 
-
             <div class="form-group" *ngIf="showPaidRating">
                 <label>How do you rate your paid version?</label>
                 <div class="star-rating">
@@ -102,22 +99,17 @@
                 </div>
             </div>
 
-            <!-- 8. Additional Comments -->
+            <!-- Additional Comments -->
             <div class="form-group">
                 <label>Other Comments</label>
                 <textarea formControlName="additionalComments" placeholder="Add your comments here..."></textarea>
             </div>
 
-            <button type="submit" [disabled]="reviewForm.invalid" class="submit-btn">Submit Review</button>
+            <button type="submit" [disabled]="reviewForm.invalid || isSubmittingReview" class="submit-btn">
+                {{ isSubmittingReview ? 'Submitting...' : 'Submit Review' }}
+            </button>
         </form>
     </div>
-
-
-
-
-
-
-
 
     <div class="product-header" *ngIf="productDetails">
         <img [src]="productDetails.productimage || '../../../assets/images/12.png'" alt="User" class="product-image-sm"
@@ -130,8 +122,38 @@
         </div>
         <div class="product-info">
             <h2 class="product-title">{{ productDetails.productname }}
-                <span class="rating">★ {{ productDetails.rating }} / 5</span>
+                <span class="rating" [style.color]="getRatingColor(productDetails.rating)">
+                    <span *ngIf="!isCalculatingRating">
+                        ★ {{ productDetails.rating | number:'1.1-1' }} / 5
+                    </span>
+                    <span *ngIf="isCalculatingRating" class="calculating-rating">
+                        Calculating...
+                    </span>
+                </span>
             </h2>
+            
+            <!-- Rating Breakdown -->
+            <div class="rating-breakdown" *ngIf="ratingData && ratingData.num_reviews > 0">
+                <div class="rating-summary">
+                    <span class="rating-stars-display" [style.color]="getRatingColor(productDetails.rating)">
+                        {{ getProductRatingStars(productDetails.rating) }}
+                    </span>
+                    <span class="review-count">({{ ratingData.num_reviews }} {{ ratingData.num_reviews === 1 ? 'review' : 'reviews' }})</span>
+                </div>
+                
+                <!-- Detailed breakdown - shown on hover or click -->
+                <div class="rating-details" *ngIf="ratingData">
+                    <div class="rating-item-detail">
+                        <span class="label">Core Average:</span>
+                        <span class="value">{{ ratingData.core_avg }}/5</span>
+                    </div>
+                    <div class="rating-item-detail" *ngIf="ratingData.paid_support_avg">
+                        <span class="label">Paid Support:</span>
+                        <span class="value">{{ ratingData.paid_support_avg }}/5</span>
+                    </div>
+                </div>
+            </div>
+            
             <p class="description">
                 {{ productDetails.productdescription }}
             </p>
@@ -204,34 +226,91 @@
         </div>
     </div>
 
-
-
-
-
-
-
-
     <div class="reviews">
-        <h3>User Reviews</h3>
-        <div class="review-holder">
-            <div class="review">
-                <img src="../../../assets/images/12.png" alt="User" class="reviewuserprofile" />
-                <div>
-                    <p><strong>Mithila Dilshan</strong> – 2025/10/15</p>
-                    <p class="stars">⭐⭐⭐⭐☆</p>
-                    <p>Excellent UI/UX resource. Saves a lot of time with searchable previews.</p>
+        <h3>User Reviews ({{ totalReviews }})</h3>
+        <div class="review-holder" *ngIf="reviews.length > 0; else noReviews">
+            <div class="review" *ngFor="let review of reviews" [style.border-left]="'4px solid ' + review.colorcode">
+                <div class="user-avatar" [style.background-color]="review.colorcode">
+                    {{ getUserInitials(review.username) }}
                 </div>
-            </div>
-            <div class="review">
-                <img src="../../../assets/images/12.png" alt="User" class="reviewuserprofile" />
-                <div>
-                    <p><strong>Mithila Dilshan</strong> – 2025/10/15</p>
-                    <p class="stars">⭐⭐⭐⭐☆</p>
-                    <p>Great library of app design inspiration, especially useful for startups.</p>
+                <div class="review-content">
+                    <div class="review-header">
+                        <div class="user-info">
+                            <h4 class="username">{{ review.username }}</h4>
+                            <span class="review-date">{{ formatDate(review.createddate) }}</span>
+                        </div>
+                        <div class="review-badges">
+                            <span class="badge" [style.background-color]="review.colorcode">
+                                {{ getCommercialPersonalText(review.commercialorpersonal) }}
+                            </span>
+                            <span class="badge" [style.background-color]="review.colorcode">
+                                {{ getPaidVersionText(review.paidornot) }}
+                            </span>
+                            <span class="badge" [style.background-color]="review.colorcode">
+                                {{ getUsageDurationText(review.howlong) }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="review-ratings">
+                        <div class="rating-row">
+                            <div class="rating-item">
+                                <span class="rating-label">Experience</span>
+                                <span class="rating-stars">{{ getStars(review.experiencerate) }}</span>
+                            </div>
+                            <div class="rating-item">
+                                <span class="rating-label">Efficiency</span>
+                                <span class="rating-stars">{{ getStars(review.efficiencyrate) }}</span>
+                            </div>
+                        </div>
+                        <div class="rating-row">
+                            <div class="rating-item">
+                                <span class="rating-label">Documentation</span>
+                                <span class="rating-stars">{{ getStars(review.documentationrate) }}</span>
+                            </div>
+                            <div class="rating-item" *ngIf="review.paidrate && review.paidornot === 'yes'">
+                                <span class="rating-label">Paid Version</span>
+                                <span class="rating-stars">{{ getStars(review.paidrate) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p *ngIf="review.comment" class="review-comment">{{ review.comment }}</p>
                 </div>
             </div>
         </div>
+        
+        <ng-template #noReviews>
+            <div class="no-reviews">
+                <div class="no-reviews-icon">📝</div>
+                <h4>No reviews yet</h4>
+                <p>Be the first to review this product!</p>
+            </div>
+        </ng-template>
 
-        <span class="loadmorebtn">Load more</span>
+        <!-- Load More Button with Loading State -->
+        <div class="load-more-container" *ngIf="hasMoreReviews">
+            <button 
+                class="loadmorebtn" 
+                (click)="loadMoreReviews()" 
+                [disabled]="isLoadingMoreReviews">
+                <span *ngIf="!isLoadingMoreReviews">Load More Reviews</span>
+                <span *ngIf="isLoadingMoreReviews">Loading...</span>
+                <svg *ngIf="!isLoadingMoreReviews" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                </svg>
+                <div *ngIf="isLoadingMoreReviews" class="loading-spinner"></div>
+            </button>
+            <p class="reviews-counter">Showing {{ reviews.length }} of {{ totalReviews }} reviews</p>
+        </div>
+
+        <!-- Show when all reviews are loaded -->
+        <div class="all-reviews-loaded" *ngIf="!hasMoreReviews && reviews.length > 0">
+            <p>All reviews loaded</p>
+        </div>
     </div>
+</div>
+
+<div class="toast-message" [ngClass]="messageClass" [style.opacity]="messageVisible ? 1 : 0">
+    {{ message }}
 </div>

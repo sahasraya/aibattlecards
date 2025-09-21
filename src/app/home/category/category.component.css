@@ -7,45 +7,9 @@
   scroll-behavior: smooth;
   padding: 0.5rem;
 }
-.backbtn-holder {
-  padding: 10px 20px;
-  background-color: #f8f9fa;
-}
 
-.backbtn {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: #333;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 18px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  border-radius: 8px;
-  padding: 8px 12px;
-  width: fit-content;
-}
 
-.backbtn:hover {
-  background-color: #e2e6ea;
-  color: #007bff;
-  cursor: pointer;
-}
 
-.back-icon {
-  width: 24px;
-  height: 24px;
-  margin-right: 8px;
-  transition: transform 0.3s ease;
-}
-
-.backbtn:hover .back-icon {
-  transform: translateX(-5px);
-}
-
-.category-text {
-  margin: 0;
-}
 .no-data-message {
   text-align: center;
   margin-top: 50px;

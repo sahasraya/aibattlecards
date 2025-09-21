@@ -248,41 +248,54 @@
 
 
 
-        <div *ngIf="activeTab === 'Reviews'" class="reviews-tab">
-            <h2>Reviews</h2>
+<div *ngIf="activeTab === 'Reviews'" class="reviews-tab">
+  <h2>Reviews</h2>
 
-            <div *ngIf="reviewsArray.length === 0" class="no-reviews">
-                <p>No reviews available.</p>
-            </div>
+  <div *ngIf="reviewsArray.length === 0 && !isLoadingUserReviews" class="no-reviews">
+    <p>No reviews available.</p>
+  </div>
 
-            <div class="review-card" *ngFor="let review of reviewsArray">
+  <div *ngIf="isLoadingUserReviews" class="loading-reviews">
+    <p>Loading reviews...</p>
+  </div>
 
-                <!-- User Profile Image -->
-                <img [src]="review.profileImg" alt="{{review.username}}" class="review-profile-img">
+  <div class="review-card" *ngFor="let review of reviewsArray">
+    <!-- User Profile Image -->
 
-                <!-- Review Content -->
-                <div class="review-content">
-                    <div class="review-header">
-                        <span class="review-username">{{ review.username }}</span>
-                        <span class="review-date">{{ review.date | date:'mediumDate' }}</span>
-                    </div>
-                    <p class="review-comment">{{ review.comment }}</p>
-                </div>
+    <!-- Review Content -->
+    <div class="review-content">
+      <div class="review-header">
+        <span class="review-username">{{ review.username }}</span>
+        <span class="review-date">{{ review.createddate | date:'mediumDate' }}</span>
+         
+        
+      </div>
+      <p class="review-comment">{{ review.comment }}</p>
+    
+    </div>
 
-                <!-- Three-dot Menu -->
-                <img src="../../../assets/images/dotmenu.svg" alt="Menu" class="dotmenu"
-                    (click)="toggleReviewDropdown(review, $event)">
+    <!-- Three-dot Menu -->
+    <img src="../../../assets/images/dotmenu.svg" alt="Menu" class="dotmenu"
+      (click)="toggleReviewDropdown(review, $event)">
 
-                <div class="dotmenudropdown" *ngIf="review.showDropdown">
-                    <ul>
-                        <li (click)="onDeleteReview(review)">Delete</li>
-                    </ul>
-                </div>
+    <div class="dotmenudropdown" *ngIf="review.showDropdown">
+      <ul>
+        <li  > <a [routerLink]="['/home/product-item']" [queryParams]="{ productid: review.productid }" class="see-product-link">
+         See product
+       </a></li>
+        <li (click)="onDeleteReview(review)">Delete</li>
+      </ul>
+    </div>
+  </div>
 
-            </div>
-            <span class="loadmorebtn">Load more</span>
+  <!-- Load More Button -->
+  <div class="load-more-container" *ngIf="hasMoreUserReviews">
+    <button class="loadmorebtn" (click)="onLoadMoreUserReviews()">
+      Load more
+    </button>
+  </div>
+</div>
 
-        </div>
 
 
 
