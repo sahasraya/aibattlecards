@@ -248,53 +248,81 @@
 
 
 
-<div *ngIf="activeTab === 'Reviews'" class="reviews-tab">
-  <h2>Reviews</h2>
+        <div *ngIf="activeTab === 'Reviews'" class="reviews-tab">
+            <h2>Reviews</h2>
 
-  <div *ngIf="reviewsArray.length === 0 && !isLoadingUserReviews" class="no-reviews">
-    <p>No reviews available.</p>
-  </div>
+            <div *ngIf="reviewsArray.length === 0 && !isLoadingUserReviews" class="no-reviews">
+                <p>No reviews available.</p>
+            </div>
 
-  <div *ngIf="isLoadingUserReviews" class="loading-reviews">
-    <p>Loading reviews...</p>
-  </div>
+            <div *ngIf="isLoadingUserReviews" class="loading-reviews">
+                <p>Loading reviews...</p>
+            </div>
 
-  <div class="review-card" *ngFor="let review of reviewsArray">
-    <!-- User Profile Image -->
+            <div class="review-card" *ngFor="let review of reviewsArray">
+                <!-- User Profile Image -->
 
-    <!-- Review Content -->
-    <div class="review-content">
-      <div class="review-header">
-        <span class="review-username">{{ review.username }}</span>
-        <span class="review-date">{{ review.createddate | date:'mediumDate' }}</span>
-         
-        
-      </div>
-      <p class="review-comment">{{ review.comment }}</p>
-    
-    </div>
+                <!-- Review Content -->
+                <div class="review-content">
+                    <div class="review-header">
+                        <span class="review-username">{{ review.username }}</span>
+                        <span class="review-date">{{ review.createddate | date:'mediumDate' }}</span>
 
-    <!-- Three-dot Menu -->
-    <img src="../../../assets/images/dotmenu.svg" alt="Menu" class="dotmenu"
-      (click)="toggleReviewDropdown(review, $event)">
 
-    <div class="dotmenudropdown" *ngIf="review.showDropdown">
-      <ul>
-        <li  > <a [routerLink]="['/home/product-item']" [queryParams]="{ productid: review.productid }" class="see-product-link">
-         See product
-       </a></li>
-        <li (click)="onDeleteReview(review)">Delete</li>
-      </ul>
-    </div>
-  </div>
+                    </div>
+                    <p class="review-comment">{{ review.comment }}</p>
 
-  <!-- Load More Button -->
-  <div class="load-more-container" *ngIf="hasMoreUserReviews">
-    <button class="loadmorebtn" (click)="onLoadMoreUserReviews()">
-      Load more
-    </button>
-  </div>
-</div>
+                </div>
+
+                <!-- Three-dot Menu -->
+                <img src="../../../assets/images/dotmenu.svg" alt="Menu" class="dotmenu"
+                    (click)="toggleReviewDropdown(review, $event)">
+
+                <div class="dotmenudropdown" *ngIf="review.showDropdown">
+                    <ul>
+                        <li> <a [routerLink]="['/home/product-item']" [queryParams]="{ productid: review.productid }"
+                                class="see-product-link">
+                                See product
+                            </a></li>
+                        <li (click)="onDeleteReviewPopUp(review)">Delete</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Load More Button -->
+            <div class="load-more-container" *ngIf="hasMoreUserReviews">
+                <button class="loadmorebtn" (click)="onLoadMoreUserReviews()">
+                    Load more
+                </button>
+            </div>
+        </div>
+
+
+
+
+
+
+
+        <div class="modal-backdrop" *ngIf="showReviewDeleteConfirm" (click)="showReviewDeleteConfirm = false">
+
+            <div class="modal" *ngIf="showReviewDeleteConfirm">
+                <div class="modal-content">
+                    <h3 class="modal-title">Are you sure?</h3>
+                    <p class="modal-warning">
+                        Deleting your Review.
+                    </p>
+
+                    <div class="modal-actions">
+                        <button class="cancel-btn" (click)="showReviewDeleteConfirm = false">Cancel</button>
+                        <button class="confirm-btn" (click)="onDeleteReview()">Yes, Delete</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
 
 
 
@@ -360,8 +388,7 @@
 
             <!-- Delete Confirmation Modal -->
             <div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="showDeleteConfirm = false">
-
-                <div class="modal" *ngIf="showDeleteConfirm">
+                <div class="modal" *ngIf="showDeleteConfirm" (click)="$event.stopPropagation()">
                     <div class="modal-content">
                         <h3 class="modal-title">Are you sure?</h3>
                         <p class="modal-warning">
@@ -370,19 +397,31 @@
                         <ul class="modal-bullets">
                             <li><img src="../../../assets/images/points.svg" alt=""> All published products will be
                                 permanently deleted.</li>
-                            <li><img src="../../../assets/images/points.svg" alt="">All reviews will be permanently
+                            <li><img src="../../../assets/images/points.svg" alt=""> All reviews will be permanently
                                 removed.</li>
-                            <li><img src="../../../assets/images/points.svg" alt="">You will lose access to your account
-                                and all related data.</li>
+                            <li><img src="../../../assets/images/points.svg" alt=""> You will lose access to your
+                                account and all related data.</li>
                         </ul>
+
+                        <!-- 🔹 Input confirmation -->
+                        <div class="delete-confirm-input">
+                            <label for="deleteInput">To confirm, type <b>delete-account</b> below:</label>
+                            <input id="deleteInput" type="text" [(ngModel)]="deleteConfirmText"
+                                (paste)="disablePaste($event)" (copy)="disableCopy($event)"
+                                placeholder="Type delete-account" autocomplete="off" />
+                        </div>
+
                         <div class="modal-actions">
                             <button class="cancel-btn" (click)="showDeleteConfirm = false">Cancel</button>
-                            <button class="confirm-btn" (click)="onDeleteAccount()">Yes, Delete</button>
+                            <button class="confirm-btn" (click)="onDeleteAccount()"
+                                [disabled]="deleteConfirmText !== 'delete-account'">
+                                Yes, Delete
+                            </button>
                         </div>
                     </div>
                 </div>
-
             </div>
+
 
         </div>
 

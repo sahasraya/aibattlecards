@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SmallerProductCardComponent } from '../../widgets/smaller-product-card/smaller-product-card.component';
 import { environment } from '../../environments/environment';
@@ -27,7 +27,7 @@ interface Review {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterModule,SmallerProductCardComponent],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule,SmallerProductCardComponent,FormsModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -39,6 +39,7 @@ export class ProfileComponent implements OnInit {
   passwordForm!: FormGroup;
   productAddingForm!: FormGroup;
   showDeleteConfirm: boolean = false;
+  showReviewDeleteConfirm: boolean = false;
   isaddingnewproduct: boolean = false;
   selectedProductImage: string | null = null;
   showOldPassword: boolean = false;
@@ -74,6 +75,7 @@ useCasesArray: string[] = [
   message: string = '';
   messageClass: string = '';
   curruntemailaddress: string = '';
+  deleteConfirmText: string = '';
   updatingproductid: string = '';
   messageVisible: boolean = false;
   submitButtonText: string = 'Submit Product';
@@ -83,7 +85,8 @@ useCasesArray: string[] = [
 userReviewsOffset: number = 0;
 userReviewsLimit: number = 5;
 hasMoreUserReviews: boolean = false;
-isLoadingUserReviews: boolean = false;
+  isLoadingUserReviews: boolean = false;
+  selectedReview: any;
 
 
 
@@ -174,6 +177,23 @@ this.productAddingForm = this.fb.group({
     }
   }
 
+  disablePaste(event: ClipboardEvent) {
+    event.preventDefault();
+  }
+
+  disableCopy(event: ClipboardEvent) {
+    event.preventDefault();
+  }
+
+  onDeleteAccount() {
+    if (this.deleteConfirmText === 'delete-account') {
+      this.showMessage("Accountis deleting!", "success");
+      this.showDeleteConfirm = false;
+      this.deleteConfirmText = '';  
+    }
+  }
+
+  
 
 async getUserReviews(userid: string, offset: number = 0, reset: boolean = false): Promise<void> {
   if (reset) {
@@ -230,7 +250,8 @@ onLoadMoreUserReviews(): void {
 
 
 private resetProductForm(): void {
-    // Reset the form to initial state
+  // Reset the form to initial state
+  
     this.productAddingForm.reset();
     
     // Reset form arrays to have single empty controls
@@ -829,19 +850,11 @@ removeMedia(index: number) {
 
 
   // Delete account
-  onDeleteAccount() {
-    console.log('Delete account confirmed');
-
-    // TODO: Call your API to delete account
-    alert('Account deleted successfully!');
-    this.showDeleteConfirm = false;
-  }
-
+ 
 
 
   
  
-
 
 
 
@@ -911,10 +924,41 @@ async onSubmit(): Promise<void> {
 }
 
  
-// Delete review
-onDeleteReview(review: Review) {
-  this.reviewsArray = this.reviewsArray.filter(r => r !== review);
-  alert(`Deleted review from ${review.username}`);
-  }
+onDeleteReviewPopUp(review: Review) {
+  this.showReviewDeleteConfirm = true;
+  this.selectedReview = review; // store review for later
+}
+
+// Confirm delete
+onDeleteReview(): void {
+  if (!this.selectedReview) return;
+
+  const payload = {
+    userid: this.userid,
+    reviewid: this.selectedReview.reviewid
+  };
+
+  this.http.post(this.APIURL + 'delete_review', payload).subscribe({
+    next: (response: any) => {
+      if (response.message === 'deleted') {
+        this.showMessage("Review deleted successfully", "success");
+
+        // hide modal
+        this.showReviewDeleteConfirm = false;
+
+        // optionally remove review from UI list
+        this.reviewsArray = this.reviewsArray.filter(
+          (r: any) => r.reviewid !== this.selectedReview.reviewid
+        );
+      }
+    },
+    error: (error) => {
+      this.showMessage("Error deleting review", "error");
+      console.error('❌ Error deleting review:', error);
+    }
+  });
+}
+
+
   
 }

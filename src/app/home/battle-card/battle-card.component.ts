@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { ReviewCardComponent } from '../../widgets/review-card/review-card.component';
 
 
 
@@ -27,12 +28,29 @@ interface Tool {
   selected?: number;
 
 }
-
+interface Review {
+  id: number;
+  reviewid: string;
+  userid: string;
+  productid: string;
+  commercialorpersonal: string;
+  howlong: string;
+  experiencerate: string;
+  comment: string;
+  efficiencyrate: string;
+  documentationrate: string;
+  paidornot: string;
+  paidrate?: string;
+  colorcode: string;
+  username: string;
+  createddate: string;
+  email?: string;
+}
 
 @Component({
   selector: 'app-battle-card',
   standalone: true,
-  imports: [ CommonModule,FormsModule],
+  imports: [ CommonModule,FormsModule,ReviewCardComponent],
   templateUrl: './battle-card.component.html',
   styleUrl: './battle-card.component.css'
 })
@@ -65,10 +83,98 @@ toolsArray: Tool[] = [];
   iscategoryselected: boolean = false;
   APIURL = environment.APIURL;
   noData: boolean = false;
-  /** --- Search --- */
+
+  
+
+  isLoading: boolean = false;
+  isSubmittingReview: boolean = false;
+  messageClass: string = ''; 
+  
+  // Pagination properties
+  totalReviews: number = 0;
+  currentOffset: number = 0;
+  reviewsLimit: number = 5;
+  hasMoreReviews: boolean = false;
+  isLoadingMoreReviews: boolean = false;
+  reviews: Review[] = [];
+  currentProductId: string | null = null;
 
 
-onCategoryChange() {
+openReview(tool: Tool) {
+  this.popupSelected = [tool];
+  this.reviews = [];              
+  this.totalReviews = 0;
+  this.currentOffset = 0;
+  this.currentProductId = tool.productid; // store productid
+
+  // call getReviews with reset = true
+  this.getReviews(this.currentProductId, 0, true);
+}
+
+loadMoreReviews(): void {
+  if (this.hasMoreReviews && !this.isLoadingMoreReviews && this.currentProductId) {
+    this.getReviews(this.currentProductId, this.currentOffset, false);
+  }
+}
+
+ async getReviews(productid: string, offset: number = 0, reset: boolean = false): Promise<void> {
+    if (reset) {
+      this.isLoading = true;
+    } else {
+      this.isLoadingMoreReviews = true;
+    }
+
+    const payload = { 
+      productid,
+      offset,
+      limit: this.reviewsLimit
+    };
+
+    this.http.post<any>(this.APIURL + 'get_reviews', payload).subscribe({
+      next: (response) => {
+        if (response.message === "found") {
+          if (reset) {
+            this.reviews = response.reviews || [];
+            this.currentOffset = response.limit || this.reviewsLimit;
+          } else {
+            this.reviews = [...this.reviews, ...(response.reviews || [])];
+            this.currentOffset += (response.reviews || []).length;
+          }
+          
+          this.totalReviews = response.total_reviews || 0;
+          this.hasMoreReviews = response.has_more || false;
+        } else {
+          // Handle case when no reviews found
+          if (reset) {
+            this.reviews = [];
+            this.totalReviews = 0;
+            this.hasMoreReviews = false;
+            this.currentOffset = 0;
+          }
+        }
+        
+        if (reset) {
+          this.isLoading = false;
+        } else {
+          this.isLoadingMoreReviews = false;
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error fetching reviews:', error);
+        if (reset) {
+          this.isLoading = false;
+          this.reviews = [];
+          this.totalReviews = 0;
+          this.hasMoreReviews = false;
+        } else {
+          this.isLoadingMoreReviews = false;
+        }
+      }
+    });
+  }
+
+
+async onCategoryChange():Promise<void> {
   const newCategory = this.selectedCategory;
   this.iscategoryselected = true;
 
@@ -76,9 +182,7 @@ onCategoryChange() {
 
   this.http.post(this.APIURL + 'get_product_details_basedon_categoryname', payload).subscribe({
     next: (response: any) => {
-
-
-      
+    
       if (response.message === "yes" && response.products?.length > 0) {
         this.toolsArray = response.products.map((prod: any) => ({
           productimage: prod.productimage
@@ -192,14 +296,22 @@ resetSelections() {
     this.onSelectedFilterChange();
   }
 
-  /** --- Popup --- */
-  openReview(tool: Tool) {
-    this.popupSelected = [tool];
-  }
+
+
+
+
 
   closePopup() {
     this.popupSelected = [];
+     this.popupSelected = [];
+  this.reviews = [];
+  this.totalReviews = 0;
+  this.currentOffset = 0;
   }
+
+  
+
+
    @HostListener('document:click', ['$event'])
   handleClickOutside(event: Event) {
     const target = event.target as HTMLElement;

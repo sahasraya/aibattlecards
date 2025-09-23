@@ -1,0 +1,160 @@
+/* review-card.component.css */
+.review {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border-left-width: 4px;
+  border-left-style: solid;
+  transition: all 0.3s ease;
+}
+
+.review:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.review-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.username {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+.review-date {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.review-badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.review-ratings {
+  margin-bottom: 1rem;
+}
+
+.rating-row {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.rating-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 120px;
+}
+
+.rating-label {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.rating-stars {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.review-comment {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #555;
+  border-left: 3px solid #e9ecef;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .review {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .user-avatar {
+    align-self: flex-start;
+  }
+
+  .review-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .rating-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .review-badges {
+    order: -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .rating-row {
+    gap: 0.5rem;
+  }
+
+  .rating-item {
+    min-width: auto;
+  }
+
+  .badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+  }
+}

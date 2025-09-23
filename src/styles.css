@@ -115,7 +115,7 @@ body {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   z-index: 1000;
   width: 95%;
-  max-width: 420px;
+  max-width: 720px;
   /* animation: popIn 0.3s ease forwards; */
 }
 
@@ -137,6 +137,48 @@ body {
   justify-content: flex-end;
   gap: 1rem;
 }
+/* Delete Confirmation Input */
+.delete-confirm-input {
+  margin: 1.2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.delete-confirm-input label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151; /* neutral gray */
+}
+
+.delete-confirm-input input {
+  padding: 0.7rem 1rem;
+  font-size: 15px;
+  border: 2px solid #d1d5db; /* light gray border */
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+/* Focus and valid state */
+.delete-confirm-input input:focus {
+  border-color: #ef4444; /* red warning */
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+/* Disabled copy/paste cursor feedback */
+.delete-confirm-input input:disabled,
+.delete-confirm-input input[readonly] {
+  background-color: #f9fafb;
+  cursor: not-allowed;
+  color: #9ca3af;
+}
+
+/* When user types correctly */
+.delete-confirm-input input.correct {
+  border-color: #16a34a; /* green */
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
+}
 
 .cancel-btn {
   padding: 0.6rem 1.2rem;
@@ -155,8 +197,8 @@ body {
 /* Close Button */
 .close-btn {
   position: absolute;
-  top: 12px;
-  right: 16px;
+  top: 5px;
+  right: 5px;
   font-size: 20px;
   color: #6b7280; /* default gray */
   cursor: pointer;
@@ -308,7 +350,6 @@ app-loading {
   transform: translateX(-5px);
 }
 
-
 .category-text {
   margin: 0;
 }
@@ -330,4 +371,87 @@ app-loading {
   background-color: #e2e6ea;
   color: #007bff;
   cursor: pointer;
+}
+.loadmorebtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+  text-decoration: none;
+}
+
+.loadmorebtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+}
+
+.loadmorebtn svg {
+  transition: transform 0.3s ease;
+}
+
+.loadmorebtn:hover svg {
+  transform: translateY(2px);
+}
+.reviews-counter {
+  font-size: 0.875rem;
+  color: var(--light-gray-color);
+  margin: 0;
+  text-align: center;
+}
+.rating-details {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  margin-top: 10px;
+}
+.rating-item-detail {
+  background: #e6eaf5;
+  padding: 5px;
+  border-radius: 10px;
+}
+.all-reviews-loaded {
+  text-align: center;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--secondary-color);
+}
+
+.all-reviews-loaded p {
+  font-size: 0.95rem;
+  color: var(--light-gray-color);
+  margin: 0;
+  font-style: italic;
+}
+.no-reviews-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.no-reviews h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+.no-reviews p {
+  color: var(--light-gray-color);
+  font-size: 1rem;
+}
+.no-reviews {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: var(--secondary-color);
+  border-radius: 16px;
+  border: 2px dashed var(--light-gray-color);
 }

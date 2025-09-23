@@ -1,0 +1,50 @@
+<!-- review-card.component.html -->
+<div class="review" [style.border-left]="'4px solid ' + review.colorcode">
+    <div class="user-avatar" [style.background-color]="review.colorcode">
+        {{ getUserInitials(review.username) }}
+    </div>
+    <div class="review-content">
+        <div class="review-header">
+            <div class="user-info">
+                <h4 class="username">{{ review.username }}</h4>
+                <span class="review-date">{{ formatDate(review.createddate) }}</span>
+            </div>
+            <div class="review-badges">
+                <span class="badge" [style.background-color]="review.colorcode">
+                    {{ getCommercialPersonalText(review.commercialorpersonal) }}
+                </span>
+                <span class="badge" [style.background-color]="review.colorcode">
+                    {{ getPaidVersionText(review.paidornot) }}
+                </span>
+                <span class="badge" [style.background-color]="review.colorcode">
+                    {{ getUsageDurationText(review.howlong) }}
+                </span>
+            </div>
+        </div>
+
+        <div class="review-ratings">
+            <div class="rating-row">
+                <div class="rating-item">
+                    <span class="rating-label">Experience</span>
+                    <span class="rating-stars">{{ getStars(review.experiencerate) }}</span>
+                </div>
+                <div class="rating-item">
+                    <span class="rating-label">Efficiency</span>
+                    <span class="rating-stars">{{ getStars(review.efficiencyrate) }}</span>
+                </div>
+            </div>
+            <div class="rating-row">
+                <div class="rating-item">
+                    <span class="rating-label">Documentation</span>
+                    <span class="rating-stars">{{ getStars(review.documentationrate) }}</span>
+                </div>
+                <div class="rating-item" *ngIf="review.paidrate && review.paidornot === 'yes'">
+                    <span class="rating-label">Paid Version</span>
+                    <span class="rating-stars">{{ getStars(review.paidrate) }}</span>
+                </div>
+            </div>
+        </div>
+
+        <p *ngIf="review.comment" class="review-comment">{{ review.comment }}</p>
+    </div>
+</div>

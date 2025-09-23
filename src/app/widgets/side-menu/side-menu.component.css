@@ -177,17 +177,3 @@
 .arrayholder .chip:hover {
   background: #e0e7ff;
 }
-
-.close-btn {
-  align-self: flex-end;
-  background: #c0c0c0;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.close-btn:hover {
-  background: #e4e4e4;
-}

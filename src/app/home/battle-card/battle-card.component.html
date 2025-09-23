@@ -157,12 +157,6 @@
             </tr>
 
 
-
-
-
-
-
-
             <!-- See Review Button -->
             <tr>
                 <td class="property"></td>
@@ -178,13 +172,43 @@
         <div class="modal">
             <span class="close-btn" (click)="closePopup()"> <img src="../../../assets/images/close.png" alt=""></span>
             <div class="modal-content" *ngFor="let product of popupSelected">
-                <h3>{{ product.productcategory }}</h3>
-                <p><strong>Type:</strong> {{ product.productusecase }}</p>
-                <p><strong>Tags:</strong> {{ product.productusecase.join(', ') }}</p>
+                <div class="review-holder" *ngIf="reviews.length > 0; else noReviews">
+                    <app-review-card *ngFor="let review of reviews" [review]="review"></app-review-card>
+                </div>
             </div>
-            <div class="modal-actions">
+            <ng-template #noReviews>
+                <div class="no-reviews">
+                    <div class="no-reviews-icon">📝</div>
+                    <h4>No reviews yet</h4>
+                    <p>Be the first to review this product!</p>
+                </div>
+            </ng-template>
+
+
+            <div class="load-more-container" *ngIf="hasMoreReviews">
+                <button class="loadmorebtn" (click)="loadMoreReviews()" [disabled]="isLoadingMoreReviews">
+                    <span *ngIf="!isLoadingMoreReviews">Load More Reviews</span>
+                    <span *ngIf="isLoadingMoreReviews">Loading...</span>
+                    <svg *ngIf="!isLoadingMoreReviews" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                    <div *ngIf="isLoadingMoreReviews" class="loading-spinner"></div>
+                </button>
+                <p class="reviews-counter">Showing {{ reviews.length }} of {{ totalReviews }} reviews</p>
             </div>
+
+            <!-- Show when all reviews are loaded -->
+            <div class="all-reviews-loaded" *ngIf="!hasMoreReviews && reviews.length > 0">
+                <p>All reviews loaded</p>
+            </div>
+
         </div>
+
+
+
+
+
     </div>
 
 

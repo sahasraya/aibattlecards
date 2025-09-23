@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { AuthService } from '../../services/getuserid.service';
 import { LoadingComponent } from '../../widgets/loading/loading.component';
+import { ReviewCardComponent } from '../../widgets/review-card/review-card.component';
 
 interface ProductDetails {
   productimage: string;
@@ -57,7 +58,7 @@ interface RatingData {
 @Component({
   selector: 'app-product-item',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, LoadingComponent],
+  imports: [ReactiveFormsModule, CommonModule, LoadingComponent,ReviewCardComponent],
   templateUrl: './product-item.component.html',
   styleUrl: './product-item.component.css'
 })
@@ -89,7 +90,9 @@ export class ProductItemComponent {
   // Rating properties
   isCalculatingRating: boolean = false;
   ratingData: RatingData | null = null;
-  isuserloggedin:boolean=false;
+  isuserloggedin: boolean = false;
+  isEditingReview: boolean = false;
+currentReviewId: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -120,7 +123,8 @@ export class ProductItemComponent {
         this.calculateProductRating(this.productid);
 
          if (this.userid) { 
-      this.isuserloggedin = true;
+           this.isuserloggedin = true;
+            this.checkExistingReview();
     }else{
        this.isuserloggedin = false ;
     }
@@ -130,72 +134,215 @@ export class ProductItemComponent {
     });
   }
 
+
+  async checkExistingReview(): Promise<void> {
+  if (!this.userid || !this.productid) return;
+
+  const payload = {
+    productid: this.productid,
+    userid: this.userid
+  };
+
+  this.http.post<any>(this.APIURL + 'check_existing_review', payload).subscribe({
+    next: (response) => {
+      if (response.message === "found") {
+        // User has an existing review - populate form and set edit mode
+        this.isEditingReview = true;
+        this.currentReviewId = response.review.reviewid;
+        this.populateFormWithReview(response.review);
+      } else {
+        // No existing review - user can add new review
+        this.isEditingReview = false;
+        this.currentReviewId = '';
+      }
+    },
+    error: (error) => {
+      console.error('❌ Error checking existing review:', error);
+      this.isEditingReview = false;
+    }
+  });
+}
+
+// Add method to populate form with existing review data
+populateFormWithReview(review: any): void {
+  this.reviewForm.patchValue({
+    ispaidtogglecommercialorpersonal: review.ispaidtogglecommercialorpersonal,
+    usageDuration: review.usageDuration,
+    experienceRating: review.experienceRating,
+    efficiencyRating: review.efficiencyRating,
+    documentationRating: review.documentationRating,
+    isPaid: review.isPaid,
+    paidVersionRating: review.paidVersionRating,
+    additionalComments: review.additionalComments
+  });
+
+  // Set the paid rating visibility based on existing data
+  this.showPaidRating = review.isPaid === 'yes';
+}
+
+  
+  
+  
   async submitReview(): Promise<void> {
-    if (this.reviewForm.invalid) {
-      this.markFormGroupTouched(this.reviewForm);
-      this.showMessage("Please fill in all required fields", "error");
-      return;
+  if (this.reviewForm.invalid) {
+    this.markFormGroupTouched(this.reviewForm);
+    this.showMessage("Please fill in all required fields", "error");
+    return;
+  }
+
+  this.isSubmittingReview = true;
+  
+  const formValues = this.reviewForm.value;
+  const payload = {
+    productid: this.productid,
+    userid: this.userid,
+    ispaidtogglecommercialorpersonal: formValues.ispaidtogglecommercialorpersonal,
+    usageDuration: formValues.usageDuration,
+    experienceRating: formValues.experienceRating,
+    efficiencyRating: formValues.efficiencyRating,
+    documentationRating: formValues.documentationRating,
+    isPaid: formValues.isPaid,
+    paidVersionRating: this.showPaidRating ? formValues.paidVersionRating : null,
+    additionalComments: formValues.additionalComments
+  };
+
+  // Add reviewid if editing existing review
+  if (this.isEditingReview && this.currentReviewId) {
+    (payload as any).reviewid = this.currentReviewId;
+  }
+
+  const endpoint = this.isEditingReview ? 'update_review' : 'add_review';
+  const successMessage = this.isEditingReview ? 'Review updated successfully!' : 'Review added successfully!';
+
+  this.http.post(this.APIURL + endpoint, payload).subscribe({
+    next: (response: any) => {
+      if (response.message === "added" || response.message === "updated") {
+        // Update the product rating immediately with the new rating from response
+        if (this.productDetails && response.new_rating !== undefined) {
+          this.productDetails.rating = response.new_rating;
+        }
+
+        // Reset form and hide review form
+        this.reviewForm.reset();
+        this.reviewForm.patchValue({
+          experienceRating: 1,
+          efficiencyRating: 1,
+          documentationRating: 1,
+          paidVersionRating: 1
+        });
+        this.showReviewForm = false;
+        this.showPaidRating = false;
+        
+        // Reset and refresh reviews from the beginning
+        this.currentOffset = 0;
+        this.getReviews(this.productid, 0, true);
+        
+        // Recalculate product rating to get detailed breakdown
+        this.calculateProductRating(this.productid);
+        
+        // If it was a new review, now it becomes an edit
+        if (!this.isEditingReview) {
+          this.isEditingReview = true;
+          this.currentReviewId = response.reviewid;
+        }
+        
+        this.showMessage(successMessage, "success");
+      } else if (response.message === "review_exists") {
+        // Handle case where review already exists (from add_review endpoint)
+        this.isEditingReview = true;
+        this.currentReviewId = response.existing_review.reviewid;
+        this.populateFormWithReview(response.existing_review);
+        this.showMessage("You already have a review for this product. Form populated with existing data for editing.", "error");
+      } else {
+        this.showMessage(`Failed to ${this.isEditingReview ? 'update' : 'add'} review. Please try again.`, "error");
+      }
+      this.isSubmittingReview = false;
+    },
+    error: (error) => {
+      this.isSubmittingReview = false;
+      console.error(`❌ Error ${this.isEditingReview ? 'updating' : 'submitting'} review:`, error);
+      let errorMessage = `Error ${this.isEditingReview ? 'updating' : 'submitting'} review. Please try again.`;
+      if (error.error && error.error.detail) {
+        errorMessage = error.error.detail;
+      }
+      this.showMessage(errorMessage, "error");
+    }
+  });
+}
+
+// Update the toggleReviewForm method to show appropriate text
+toggleReviewForm() {
+  this.showReviewForm = !this.showReviewForm;
+  
+  // If opening the form and user is editing, populate with existing data
+  if (this.showReviewForm && this.isEditingReview && this.currentReviewId) {
+    // Form should already be populated from checkExistingReview
+    // But we can refresh it if needed
+    this.checkExistingReview();
+  }
+}
+
+
+    async getReviews(productid: string, offset: number = 0, reset: boolean = false): Promise<void> {
+    if (reset) {
+      this.isLoading = true;
+    } else {
+      this.isLoadingMoreReviews = true;
     }
 
-    this.isSubmittingReview = true;
-    
-    const formValues = this.reviewForm.value;
-    const payload = {
-      productid: this.productid,
-      userid: this.userid,
-      ispaidtogglecommercialorpersonal: formValues.ispaidtogglecommercialorpersonal,
-      usageDuration: formValues.usageDuration,
-      experienceRating: formValues.experienceRating,
-      efficiencyRating: formValues.efficiencyRating,
-      documentationRating: formValues.documentationRating,
-      isPaid: formValues.isPaid,
-      paidVersionRating: this.showPaidRating ? formValues.paidVersionRating : null,
-      additionalComments: formValues.additionalComments
+    const payload = { 
+      productid,
+      offset,
+      limit: this.reviewsLimit
     };
 
-    this.http.post(this.APIURL + 'add_review', payload).subscribe({
-      next: (response: any) => {
-        if (response.message === "added") {
-          // Update the product rating immediately with the new rating from response
-          if (this.productDetails && response.new_rating !== undefined) {
-            this.productDetails.rating = response.new_rating;
+    this.http.post<any>(this.APIURL + 'get_reviews', payload).subscribe({
+      next: (response) => {
+        if (response.message === "found") {
+          if (reset) {
+            this.reviews = response.reviews || [];
+            this.currentOffset = response.limit || this.reviewsLimit;
+          } else {
+            this.reviews = [...this.reviews, ...(response.reviews || [])];
+            this.currentOffset += (response.reviews || []).length;
           }
-
-          // Reset form and hide review form
-          this.reviewForm.reset();
-          this.reviewForm.patchValue({
-            experienceRating: 1,
-            efficiencyRating: 1,
-            documentationRating: 1,
-            paidVersionRating: 1
-          });
-          this.showReviewForm = false;
-          this.showPaidRating = false;
           
-          // Reset and refresh reviews from the beginning
-          this.currentOffset = 0;
-          this.getReviews(this.productid, 0, true);
-          
-          // Recalculate product rating to get detailed breakdown
-          this.calculateProductRating(this.productid);
-          
-          this.showMessage("Review added successfully!", "success");
+          this.totalReviews = response.total_reviews || 0;
+          this.hasMoreReviews = response.has_more || false;
         } else {
-          this.showMessage("Failed to add review. Please try again.", "error");
+          // Handle case when no reviews found
+          if (reset) {
+            this.reviews = [];
+            this.totalReviews = 0;
+            this.hasMoreReviews = false;
+            this.currentOffset = 0;
+          }
         }
-        this.isSubmittingReview = false;
+        
+        if (reset) {
+          this.isLoading = false;
+        } else {
+          this.isLoadingMoreReviews = false;
+        }
       },
       error: (error) => {
-        this.isSubmittingReview = false;
-        console.error('❌ Error submitting review:', error);
-        let errorMessage = "Error submitting review. Please try again.";
-        if (error.error && error.error.detail) {
-          errorMessage = error.error.detail;
+        console.error('❌ Error fetching reviews:', error);
+        if (reset) {
+          this.isLoading = false;
+          this.reviews = [];
+          this.totalReviews = 0;
+          this.hasMoreReviews = false;
+        } else {
+          this.isLoadingMoreReviews = false;
         }
-        this.showMessage(errorMessage, "error");
       }
     });
   }
+
+
+
+
+
 
   async calculateProductRating(productid: string): Promise<void> {
     this.isCalculatingRating = true;
@@ -264,61 +411,7 @@ export class ProductItemComponent {
     }, 3000);
   }
 
-  async getReviews(productid: string, offset: number = 0, reset: boolean = false): Promise<void> {
-    if (reset) {
-      this.isLoading = true;
-    } else {
-      this.isLoadingMoreReviews = true;
-    }
 
-    const payload = { 
-      productid,
-      offset,
-      limit: this.reviewsLimit
-    };
-
-    this.http.post<any>(this.APIURL + 'get_reviews', payload).subscribe({
-      next: (response) => {
-        if (response.message === "found") {
-          if (reset) {
-            this.reviews = response.reviews || [];
-            this.currentOffset = response.limit || this.reviewsLimit;
-          } else {
-            this.reviews = [...this.reviews, ...(response.reviews || [])];
-            this.currentOffset += (response.reviews || []).length;
-          }
-          
-          this.totalReviews = response.total_reviews || 0;
-          this.hasMoreReviews = response.has_more || false;
-        } else {
-          // Handle case when no reviews found
-          if (reset) {
-            this.reviews = [];
-            this.totalReviews = 0;
-            this.hasMoreReviews = false;
-            this.currentOffset = 0;
-          }
-        }
-        
-        if (reset) {
-          this.isLoading = false;
-        } else {
-          this.isLoadingMoreReviews = false;
-        }
-      },
-      error: (error) => {
-        console.error('❌ Error fetching reviews:', error);
-        if (reset) {
-          this.isLoading = false;
-          this.reviews = [];
-          this.totalReviews = 0;
-          this.hasMoreReviews = false;
-        } else {
-          this.isLoadingMoreReviews = false;
-        }
-      }
-    });
-  }
 
   loadMoreReviews(): void {
     if (this.hasMoreReviews && !this.isLoadingMoreReviews) {
@@ -390,10 +483,7 @@ export class ProductItemComponent {
     this.reviewForm.get(controlName)?.setValue(value);
   }
 
-  toggleReviewForm() {
-    this.showReviewForm = !this.showReviewForm;
-  }
-
+ 
   // Helper methods for template
   getStars(rating: string | number): string {
     const numRating = typeof rating === 'string' ? parseInt(rating) || 0 : rating || 0;

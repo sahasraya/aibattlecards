@@ -3,10 +3,10 @@
 <div class="product-card">
 
     <div class="add-review-section" *ngIf="isuserloggedin">
-    <button class="add-review-btn" (click)="toggleReviewForm()">
-      {{ showReviewForm ? 'Hide Review' : 'Add Review' }}
-    </button>
-  </div>
+        <button class="add-review-btn" (click)="toggleReviewForm()">
+            {{ showReviewForm ? 'Hide Review' : 'Add Review' }}
+        </button>
+    </div>
 
     <!-- Slide-down Review Form -->
     <div class="review-form-container" [class.active]="showReviewForm">
@@ -106,7 +106,8 @@
             </div>
 
             <button type="submit" [disabled]="reviewForm.invalid || isSubmittingReview" class="submit-btn">
-                {{ isSubmittingReview ? 'Submitting...' : 'Submit Review' }}
+                {{ isSubmittingReview ? (isEditingReview ? 'Updating...' : 'Submitting...') : (isEditingReview ? 'Update
+                Review' : 'Submit Review') }}
             </button>
         </form>
     </div>
@@ -131,16 +132,17 @@
                     </span>
                 </span>
             </h2>
-            
+
             <!-- Rating Breakdown -->
             <div class="rating-breakdown" *ngIf="ratingData && ratingData.num_reviews > 0">
                 <div class="rating-summary">
                     <span class="rating-stars-display" [style.color]="getRatingColor(productDetails.rating)">
                         {{ getProductRatingStars(productDetails.rating) }}
                     </span>
-                    <span class="review-count">({{ ratingData.num_reviews }} {{ ratingData.num_reviews === 1 ? 'review' : 'reviews' }})</span>
+                    <span class="review-count">({{ ratingData.num_reviews }} {{ ratingData.num_reviews === 1 ? 'review'
+                        : 'reviews' }})</span>
                 </div>
-                
+
                 <!-- Detailed breakdown - shown on hover or click -->
                 <div class="rating-details" *ngIf="ratingData">
                     <div class="rating-item-detail">
@@ -153,7 +155,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <p class="description">
                 {{ productDetails.productdescription }}
             </p>
@@ -229,57 +231,9 @@
     <div class="reviews">
         <h3>User Reviews ({{ totalReviews }})</h3>
         <div class="review-holder" *ngIf="reviews.length > 0; else noReviews">
-            <div class="review" *ngFor="let review of reviews" [style.border-left]="'4px solid ' + review.colorcode">
-                <div class="user-avatar" [style.background-color]="review.colorcode">
-                    {{ getUserInitials(review.username) }}
-                </div>
-                <div class="review-content">
-                    <div class="review-header">
-                        <div class="user-info">
-                            <h4 class="username">{{ review.username }}</h4>
-                            <span class="review-date">{{ formatDate(review.createddate) }}</span>
-                        </div>
-                        <div class="review-badges">
-                            <span class="badge" [style.background-color]="review.colorcode">
-                                {{ getCommercialPersonalText(review.commercialorpersonal) }}
-                            </span>
-                            <span class="badge" [style.background-color]="review.colorcode">
-                                {{ getPaidVersionText(review.paidornot) }}
-                            </span>
-                            <span class="badge" [style.background-color]="review.colorcode">
-                                {{ getUsageDurationText(review.howlong) }}
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div class="review-ratings">
-                        <div class="rating-row">
-                            <div class="rating-item">
-                                <span class="rating-label">Experience</span>
-                                <span class="rating-stars">{{ getStars(review.experiencerate) }}</span>
-                            </div>
-                            <div class="rating-item">
-                                <span class="rating-label">Efficiency</span>
-                                <span class="rating-stars">{{ getStars(review.efficiencyrate) }}</span>
-                            </div>
-                        </div>
-                        <div class="rating-row">
-                            <div class="rating-item">
-                                <span class="rating-label">Documentation</span>
-                                <span class="rating-stars">{{ getStars(review.documentationrate) }}</span>
-                            </div>
-                            <div class="rating-item" *ngIf="review.paidrate && review.paidornot === 'yes'">
-                                <span class="rating-label">Paid Version</span>
-                                <span class="rating-stars">{{ getStars(review.paidrate) }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <p *ngIf="review.comment" class="review-comment">{{ review.comment }}</p>
-                </div>
-            </div>
+            <app-review-card *ngFor="let review of reviews" [review]="review"></app-review-card>
         </div>
-        
+
         <ng-template #noReviews>
             <div class="no-reviews">
                 <div class="no-reviews-icon">📝</div>
@@ -290,14 +244,12 @@
 
         <!-- Load More Button with Loading State -->
         <div class="load-more-container" *ngIf="hasMoreReviews">
-            <button 
-                class="loadmorebtn" 
-                (click)="loadMoreReviews()" 
-                [disabled]="isLoadingMoreReviews">
+            <button class="loadmorebtn" (click)="loadMoreReviews()" [disabled]="isLoadingMoreReviews">
                 <span *ngIf="!isLoadingMoreReviews">Load More Reviews</span>
                 <span *ngIf="isLoadingMoreReviews">Loading...</span>
-                <svg *ngIf="!isLoadingMoreReviews" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                <svg *ngIf="!isLoadingMoreReviews" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                 </svg>
                 <div *ngIf="isLoadingMoreReviews" class="loading-spinner"></div>
             </button>
