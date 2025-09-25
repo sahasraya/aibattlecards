@@ -4,6 +4,8 @@ import { CommonProductListComponent } from '../../widgets/common-product-list/co
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { NewProductStateService } from '../../services/newproduct.service';
+import { MostViewedProductStateService } from '../../services/most-viewed-product-state.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,6 +35,7 @@ featuredArrayDetails = [
   pageSize: number = 10;
   NewArrayDetails: any[] = [];
   MostViewedArrayDetails: any[] = [];
+  
 
 
 
@@ -41,13 +44,31 @@ featuredArrayDetails = [
 
     constructor(
       private http: HttpClient,
-      private router:Router
+      private router: Router,
+      private newProductState: NewProductStateService,
+      private mostViewedState: MostViewedProductStateService
     ) { }
     
   
-  ngOnInit(): void {
-  this.getAllProductDetailsNewProducts();
-  this.getAllProductDetailsMostViewedProducts();
+ ngOnInit(): void {
+    // Check if cache exists first
+    const cachedNew = this.newProductState.getState();
+    const cachedMostViewed = this.mostViewedState.getState();
+
+   if (cachedNew) {
+    
+      this.NewArrayDetails = cachedNew;
+   } else {
+     
+      this.getAllProductDetailsNewProducts();
+    }
+
+    if (cachedMostViewed) {
+     
+      this.MostViewedArrayDetails = cachedMostViewed;
+    } else {
+      this.getAllProductDetailsMostViewedProducts();
+    }
   }
   
 
@@ -79,9 +100,8 @@ featuredArrayDetails = [
           showDropdown: false
         }));
 
-        // Append to existing array
         this.MostViewedArrayDetails = [...this.MostViewedArrayDetails, ...newProducts];
- 
+          this.mostViewedState.saveState(this.MostViewedArrayDetails);
 
       } else {
         console.warn("⚠️ No product found");
@@ -125,7 +145,8 @@ featuredArrayDetails = [
         }));
 
         // Append to existing array
-        this.NewArrayDetails = [...this.NewArrayDetails, ...newProducts];
+         this.NewArrayDetails = [...this.NewArrayDetails, ...newProducts];
+          this.newProductState.saveState(this.NewArrayDetails);
  
 
       } else {

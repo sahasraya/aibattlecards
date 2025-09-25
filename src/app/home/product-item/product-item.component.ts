@@ -146,24 +146,20 @@ currentReviewId: string = '';
   this.http.post<any>(this.APIURL + 'check_existing_review', payload).subscribe({
     next: (response) => {
       if (response.message === "found") {
-        // User has an existing review - populate form and set edit mode
         this.isEditingReview = true;
         this.currentReviewId = response.review.reviewid;
         this.populateFormWithReview(response.review);
       } else {
-        // No existing review - user can add new review
         this.isEditingReview = false;
         this.currentReviewId = '';
       }
     },
     error: (error) => {
-      console.error('❌ Error checking existing review:', error);
       this.isEditingReview = false;
     }
   });
 }
 
-// Add method to populate form with existing review data
 populateFormWithReview(review: any): void {
   this.reviewForm.patchValue({
     ispaidtogglecommercialorpersonal: review.ispaidtogglecommercialorpersonal,
@@ -176,7 +172,6 @@ populateFormWithReview(review: any): void {
     additionalComments: review.additionalComments
   });
 
-  // Set the paid rating visibility based on existing data
   this.showPaidRating = review.isPaid === 'yes';
 }
 
@@ -206,7 +201,6 @@ populateFormWithReview(review: any): void {
     additionalComments: formValues.additionalComments
   };
 
-  // Add reviewid if editing existing review
   if (this.isEditingReview && this.currentReviewId) {
     (payload as any).reviewid = this.currentReviewId;
   }
@@ -217,7 +211,6 @@ populateFormWithReview(review: any): void {
   this.http.post(this.APIURL + endpoint, payload).subscribe({
     next: (response: any) => {
       if (response.message === "added" || response.message === "updated") {
-        // Update the product rating immediately with the new rating from response
         if (this.productDetails && response.new_rating !== undefined) {
           this.productDetails.rating = response.new_rating;
         }
@@ -233,14 +226,11 @@ populateFormWithReview(review: any): void {
         this.showReviewForm = false;
         this.showPaidRating = false;
         
-        // Reset and refresh reviews from the beginning
         this.currentOffset = 0;
         this.getReviews(this.productid, 0, true);
         
-        // Recalculate product rating to get detailed breakdown
         this.calculateProductRating(this.productid);
         
-        // If it was a new review, now it becomes an edit
         if (!this.isEditingReview) {
           this.isEditingReview = true;
           this.currentReviewId = response.reviewid;
@@ -248,7 +238,6 @@ populateFormWithReview(review: any): void {
         
         this.showMessage(successMessage, "success");
       } else if (response.message === "review_exists") {
-        // Handle case where review already exists (from add_review endpoint)
         this.isEditingReview = true;
         this.currentReviewId = response.existing_review.reviewid;
         this.populateFormWithReview(response.existing_review);
@@ -260,7 +249,6 @@ populateFormWithReview(review: any): void {
     },
     error: (error) => {
       this.isSubmittingReview = false;
-      console.error(`❌ Error ${this.isEditingReview ? 'updating' : 'submitting'} review:`, error);
       let errorMessage = `Error ${this.isEditingReview ? 'updating' : 'submitting'} review. Please try again.`;
       if (error.error && error.error.detail) {
         errorMessage = error.error.detail;
@@ -270,22 +258,20 @@ populateFormWithReview(review: any): void {
   });
 }
 
-// Update the toggleReviewForm method to show appropriate text
 toggleReviewForm() {
   this.showReviewForm = !this.showReviewForm;
   
-  // If opening the form and user is editing, populate with existing data
   if (this.showReviewForm && this.isEditingReview && this.currentReviewId) {
-    // Form should already be populated from checkExistingReview
-    // But we can refresh it if needed
+   
     this.checkExistingReview();
   }
 }
 
 
-    async getReviews(productid: string, offset: number = 0, reset: boolean = false): Promise<void> {
-    if (reset) {
+  async getReviews(productid: string, offset: number = 0, reset: boolean = false): Promise<void> {
       this.isLoading = true;
+
+    if (reset) {
     } else {
       this.isLoadingMoreReviews = true;
     }
@@ -298,6 +284,7 @@ toggleReviewForm() {
 
     this.http.post<any>(this.APIURL + 'get_reviews', payload).subscribe({
       next: (response) => {
+        this.isLoading = true;
         if (response.message === "found") {
           if (reset) {
             this.reviews = response.reviews || [];
@@ -320,7 +307,7 @@ toggleReviewForm() {
         }
         
         if (reset) {
-          this.isLoading = false;
+          
         } else {
           this.isLoadingMoreReviews = false;
         }
@@ -328,7 +315,7 @@ toggleReviewForm() {
       error: (error) => {
         console.error('❌ Error fetching reviews:', error);
         if (reset) {
-          this.isLoading = false;
+          
           this.reviews = [];
           this.totalReviews = 0;
           this.hasMoreReviews = false;
@@ -546,7 +533,6 @@ toggleReviewForm() {
     return (firstInitial + lastInitial).toUpperCase();
   }
 
-  // Helper method to get rating color based on rating value
   getRatingColor(rating: number): string {
     const safeRating = rating || 0;
     if (safeRating >= 4.5) return '#4CAF50'; // Green
@@ -555,12 +541,10 @@ toggleReviewForm() {
     return '#F44336'; // Red
   }
 
-  // Helper method to check if rating data exists and is valid
   hasValidRatingData(): boolean {
     return this.ratingData !== null && this.ratingData.num_reviews > 0;
   }
 
-  // Helper method to safely get rating value
   getSafeRating(): number {
     return this.productDetails?.rating || 0;
   }

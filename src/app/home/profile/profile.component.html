@@ -64,6 +64,16 @@
                 </app-smaller-product-card>
 
             </div>
+            <span class="loadmorebtn" *ngIf="hasMoreUserProducts && !isLoadingUserProducts && !isaddingnewproduct"
+                (click)="loadMoreUserProducts()">
+                Load more
+            </span>
+
+            <!-- No More Products Message -->
+            <div *ngIf="!hasMoreUserProducts && !isLoadingUserProducts && toolsArray.length > 0 && !isaddingnewproduct"
+                class="no-more-data">
+                <span>No more products to load</span>
+            </div>
 
 
 
@@ -73,7 +83,6 @@
 
 
 
-            <span class="loadmorebtn" *ngIf="!isaddingnewproduct">Load more</span>
             <div class="addingnewproduct-holder" *ngIf="isaddingnewproduct">
                 <div class="titale-holder" (click)="closeAddProduct()">
                     <img src="../../../assets/images/leftarrow.png" alt="close" class="close-productbtn">

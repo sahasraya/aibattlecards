@@ -87,6 +87,10 @@ userReviewsLimit: number = 5;
 hasMoreUserReviews: boolean = false;
   isLoadingUserReviews: boolean = false;
   selectedReview: any;
+  userProductsCurrentPage: number = 1;
+userProductsPageSize: number = 10;
+hasMoreUserProducts: boolean = true;
+isLoadingUserProducts: boolean = false;
 
 
 
@@ -713,13 +717,32 @@ showMessage(msg: string, type: 'success' | 'error') {
   }, 3000);
 }
   
-async getProductDetails(userid: string): Promise<void> {
-  const payload = { userid };
+async getProductDetails(userid: string, reset: boolean = true): Promise<void> {
+  if (this.isLoadingUserProducts) {
+    return; // Prevent multiple simultaneous calls
+  }
+
+  // Reset pagination if this is a fresh load
+  if (reset) {
+    this.userProductsCurrentPage = 1;
+    this.hasMoreUserProducts = true;
+    this.toolsArray = [];
+  }
+
+  this.isLoadingUserProducts = true;
+
+  const payload = { 
+    userid,
+    page: this.userProductsCurrentPage,
+    limit: this.userProductsPageSize
+  };
 
   this.http.post(this.APIURL + 'get_all_product_details', payload).subscribe({
     next: (response: any) => {
+      this.isLoadingUserProducts = false;
+
       if (response.message === "yes" && response.products?.length) {
-        this.toolsArray = response.products.map((prod: any) => ({
+        const newProducts = response.products.map((prod: any) => ({
           productimage: prod.productimage 
             ? `data:image/jpeg;base64,${prod.productimage}`
             : '../../../assets/images/12.png',
@@ -731,17 +754,41 @@ async getProductDetails(userid: string): Promise<void> {
           showDropdown: false
         }));
 
+        // Append new products to existing array
+        this.toolsArray = [...this.toolsArray, ...newProducts];
+
+        // Check if we have more data
+        if (newProducts.length < this.userProductsPageSize) {
+          this.hasMoreUserProducts = false; // No more data available
+        }
+
+        // Increment page for next request
+        this.userProductsCurrentPage++;
+
       } else {
-        console.warn("No product found");
-        this.toolsArray = [];
+        if (reset) {
+          console.warn("No product found");
+          this.toolsArray = [];
+        }
+        this.hasMoreUserProducts = false; // No more data available
       }
     },
     error: (error) => {
       console.error('❌ Error fetching product details:', error);
+      this.isLoadingUserProducts = false;
+      if (reset) {
+        this.toolsArray = [];
+      }
     }
   });
 }
 
+// Method to load more products
+loadMoreUserProducts(): void {
+  if (!this.isLoadingUserProducts && this.hasMoreUserProducts) {
+    this.getProductDetails(this.userid, false); // false = don't reset, append to existing
+  }
+}
 
 
 
