@@ -1,6 +1,5 @@
 .profile-container {
   display: flex;
-  font-family: Arial, sans-serif;
   gap: 2rem;
   padding: 2rem;
 }
@@ -343,7 +342,6 @@ button[type="submit"]:hover:not(:disabled) {
   padding: 25px 30px;
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  font-family: "Segoe UI", sans-serif;
 }
 
 .sub-title {

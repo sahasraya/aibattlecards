@@ -1,3 +1,6 @@
+<app-loading *ngIf="isLoading"></app-loading>
+
+
 <div class="battle-card-wrapper">
 
     <select class="select-category" [(ngModel)]="selectedCategory" (change)="onCategoryChange()">
@@ -18,50 +21,68 @@
             class="search-bar-products">
     </div>
 
+    <!-- Loading indicator for initial load -->
+    <div class="loading-container" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Loading tools...</p>
+    </div>
+
     <!-- Tools list -->
-    <div class="filtered-cards-container" *ngIf="displayedTypeTools.length > 0; else noItems">
-        <div class="filtered-card" *ngFor="let tool of displayedTypeTools" (click)="toggleSelect(tool)">
+    <div class="filtered-cards-container" *ngIf="displayedTypeTools.length > 0 && !isLoading; else noItems">
+        <div class="filtered-card" *ngFor="let tool of displayedTypeTools" (click)="toggleSelect(tool)"
+            [class.selected]="tool.selected">
             <img [src]="tool.productimage" alt="tool" class="tool-img" />
             <span class="tool-name">{{ tool.productname }}</span>
+            <div class="select-circle" *ngIf="tool.selected">{{ tool.selected }}</div>
+        </div>
+
+        <!-- Load More Button -->
+        <div class="load-more-container" *ngIf="hasMoreTools">
+            <button class="loadmorebtn" (click)="loadMoreTools()" [disabled]="isLoadingMoreTools">
+                <span *ngIf="!isLoadingMoreTools">Load More</span>
+                <span *ngIf="isLoadingMoreTools">
+                    <div class="loading-spinner"></div>
+                    Loading...
+                </span>
+            </button>
+        </div>
+
+        <!-- End of results indicator -->
+        <div class="end-of-results" *ngIf="!hasMoreTools && displayedTypeTools.length > 0">
+            <p>You've reached the end of results</p>
         </div>
     </div>
 
-    <!-- No items message -->
+    <!-- No items template -->
     <ng-template #noItems>
-        <div class="no-items-message">
-            No items found for "{{ selectedCategory === '' ? 'Yet' : selectedCategory }}"
+        <div class="no-items-container" *ngIf="!isLoading && iscategoryselected">
+            <div class="no-items-message" *ngIf="noData">
+                <p>No tools found for the selected category.</p>
+            </div>
+            <div class="no-items-message" *ngIf="!noData && displayedTypeTools.length === 0 && filterTerm">
+                <p>No tools match your search criteria.</p>
+                <button class="loadmorebtn" (click)="filterTerm = ''; onFilterChange()">
+                    Clear Filter
+                </button>
+            </div>
+            <div class="no-items-message" *ngIf="!iscategoryselected">
+                <p>No items found for "{{ selectedCategory === '' ? 'Yet' : selectedCategory }}"</p>
+            </div>
         </div>
     </ng-template>
 </div>
 
-<!-- Selected tools -->
+
+<!-- Selected tools detailed view -->
 <div *ngIf="selectedTools.length > 0" class="filtered-cards-wrapper">
     <h3>Selected Tools</h3>
-    <div class="filtered-cards-container">
-        <div class="filtered-card" *ngFor="let tool of selectedTools">
-            <img [src]="tool.productimage" alt="" class="tool-img">
-            <span class="tool-name">{{ tool.productname }}</span>
-            <div class="select-circle" *ngIf="tool.selected">{{ tool.selected }}</div>
-        </div>
-    </div>
 
 
-
-
-
-
-
-
-
-
-
-
-    <!-- ✅ Selected Models Section -->
-    <div *ngIf="selectedTools.length > 0" class="selected-models-wrapper">
+    <!-- Selected Models Section -->
+    <div class="selected-models-wrapper">
         <span class="separater"></span>
-
         <div class="filtered-cards-container">
-            <div class="filtered-card" *ngFor="let tool of displayedSelectedTools" (click)="toggleSelect(tool)">
+            <div class="filtered-card selected" *ngFor="let tool of selectedTools" (click)="toggleSelect(tool)">
                 <img [src]="tool.productimage" alt="" class="tool-img">
                 <span class="tool-name">{{tool.productname}}</span>
                 <div class="select-circle">{{tool.selected}}</div>
@@ -69,19 +90,16 @@
         </div>
     </div>
 
-
-
-
-    <!-- Make Battle Button -->
-
-    <!-- Selected Tools Table -->
-    <table *ngIf="selectedTools.length > 0" class="battle-table">
+    <!-- Battle Comparison Table -->
+    <table class="battle-table">
         <thead>
             <tr>
                 <th class="property-col">Property</th>
                 <th *ngFor="let tool of selectedTools" class="tool-col">
                     <div class="tool-header">
-                        <img [src]="tool.productimage" alt="{{tool.productname}}" class="header-tool-img">
+                        <img [src]="tool.productimage" [alt]="tool.productname" class="header-tool-img clickable-image"
+                            (click)="openImagePreview(tool.productimage, tool.productname)"
+                            title="Click to enlarge image">
                     </div>
                 </th>
             </tr>
@@ -103,17 +121,15 @@
                 <td *ngFor="let tool of selectedTools">{{ tool.producttechnology }}</td>
             </tr>
 
-
-
-            <!-- Type -->
+            <!-- Category -->
             <tr>
                 <td class="property">Category</td>
                 <td *ngFor="let tool of selectedTools">{{ tool.productcategory }}</td>
             </tr>
 
-            <!-- Tags -->
+            <!-- Use Cases -->
             <tr>
-                <td class="property">Tags</td>
+                <td class="property">Use Cases</td>
                 <td *ngFor="let tool of selectedTools">{{ tool.productusecase.join(', ') }}</td>
             </tr>
 
@@ -127,23 +143,22 @@
                 <td *ngFor="let tool of selectedTools">{{ tool.productlicense }}</td>
             </tr>
 
-
             <tr>
                 <td class="property">Description</td>
                 <td *ngFor="let tool of selectedTools">{{ tool.productdescription }}</td>
             </tr>
 
             <tr>
-                <td class="property">Web Site</td>
+                <td class="property">Website</td>
                 <td *ngFor="let tool of selectedTools">
                     <a [href]="tool.productwebsite" target="_blank" class="website-link">
-                        Visite
+                        Visit Site
                     </a>
                 </td>
             </tr>
 
             <tr>
-                <td class="property">Social</td>
+                <td class="property">Social Links</td>
                 <td *ngFor="let tool of selectedTools">
                     <div class="social-links">
                         <a *ngIf="tool.productfacebook" [href]="tool.productfacebook" target="_blank">
@@ -156,63 +171,84 @@
                 </td>
             </tr>
 
-
-            <!-- See Review Button -->
+            <!-- Reviews Button -->
             <tr>
-                <td class="property"></td>
+                <td class="property">Reviews</td>
                 <td *ngFor="let tool of selectedTools">
-                    <button class="review-btn" (click)="openReview(tool)">See Reviews</button>
+                    <button class="loadmorebtn" (click)="openReview(tool)">See Reviews</button>
                 </td>
             </tr>
         </tbody>
     </table>
 
-    <!-- Modal -->
-    <div *ngIf="popupSelected.length > 0" class="modal-backdrop">
-        <div class="modal">
-            <span class="close-btn" (click)="closePopup()"> <img src="../../../assets/images/close.png" alt=""></span>
-            <div class="modal-content" *ngFor="let product of popupSelected">
-                <div class="review-holder" *ngIf="reviews.length > 0; else noReviews">
-                    <app-review-card *ngFor="let review of reviews" [review]="review"></app-review-card>
+
+    <div *ngIf="imagePreviewModal" class="image-preview-backdrop" (click)="closeImagePreview()">
+        <div class="image-preview-modal" (click)="$event.stopPropagation()">
+            <button class="image-close-btn" (click)="closeImagePreview()" aria-label="Close image preview">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <div class="image-container">
+                <img [src]="previewImageSrc" [alt]="previewImageAlt" class="preview-image">
+                <div class="image-caption">
+                    <h4>{{ previewImageAlt }}</h4>
                 </div>
             </div>
-            <ng-template #noReviews>
-                <div class="no-reviews">
+        </div>
+    </div>
+
+
+    <!-- Reviews Modal -->
+    <div *ngIf="popupSelected.length > 0" class="modal-backdrop">
+        <div class="modal">
+            <span class="close-btn" (click)="closePopup()">
+                <img src="../../../assets/images/close.png" alt="Close">
+            </span>
+
+            <div class="modal-content" *ngFor="let product of popupSelected">
+                <div class="modal-header">
+                    <h3>Reviews for {{ product.productname }}</h3>
+                </div>
+
+                <!-- Loading indicator for reviews -->
+                <div class="loading-container" *ngIf="isLoading">
+                    <div class="spinner"></div>
+                    <p>Loading reviews...</p>
+                </div>
+
+                <!-- Reviews list -->
+                <div class="review-holder" *ngIf="reviews.length > 0 && !isLoading">
+                    <app-review-card *ngFor="let review of reviews" [review]="review"></app-review-card>
+                </div>
+
+                <!-- No reviews message -->
+                <div class="no-reviews" *ngIf="reviews.length === 0 && !isLoading">
                     <div class="no-reviews-icon">📝</div>
                     <h4>No reviews yet</h4>
                     <p>Be the first to review this product!</p>
                 </div>
-            </ng-template>
 
+                <!-- Load more reviews button -->
+                <div class="load-more-container" *ngIf="hasMoreReviews && !isLoading">
+                    <button class="loadmorebtn" (click)="loadMoreReviews()" [disabled]="isLoadingMoreReviews">
+                        <span *ngIf="!isLoadingMoreReviews">Load More Reviews</span>
+                        <span *ngIf="isLoadingMoreReviews">Loading...</span>
+                        <svg *ngIf="!isLoadingMoreReviews" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                        </svg>
+                        <div *ngIf="isLoadingMoreReviews" class="loading-spinner"></div>
+                    </button>
+                    <p class="reviews-counter">Showing {{ reviews.length }} of {{ totalReviews }} reviews</p>
+                </div>
 
-            <div class="load-more-container" *ngIf="hasMoreReviews">
-                <button class="loadmorebtn" (click)="loadMoreReviews()" [disabled]="isLoadingMoreReviews">
-                    <span *ngIf="!isLoadingMoreReviews">Load More Reviews</span>
-                    <span *ngIf="isLoadingMoreReviews">Loading...</span>
-                    <svg *ngIf="!isLoadingMoreReviews" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2">
-                        <path d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                    </svg>
-                    <div *ngIf="isLoadingMoreReviews" class="loading-spinner"></div>
-                </button>
-                <p class="reviews-counter">Showing {{ reviews.length }} of {{ totalReviews }} reviews</p>
+                <!-- All reviews loaded message -->
+                <div class="all-reviews-loaded" *ngIf="!hasMoreReviews && reviews.length > 0 && !isLoading">
+                    <p>All reviews loaded ({{ totalReviews }} total)</p>
+                </div>
             </div>
-
-            <!-- Show when all reviews are loaded -->
-            <div class="all-reviews-loaded" *ngIf="!hasMoreReviews && reviews.length > 0">
-                <p>All reviews loaded</p>
-            </div>
-
         </div>
-
-
-
-
-
     </div>
-
-
-
-
-
 </div>

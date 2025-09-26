@@ -340,7 +340,6 @@
   border-radius: 12px;
   font-size: 1rem;
   transition: all 0.3s ease;
-  font-family: var(--font-family);
 }
 
 .form-group select:focus,

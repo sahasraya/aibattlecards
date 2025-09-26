@@ -112,6 +112,9 @@
         </form>
     </div>
 
+
+
+
     <div class="product-header" *ngIf="productDetails">
         <img [src]="productDetails.productimage || '../../../assets/images/12.png'" alt="User" class="product-image-sm"
             (click)="openPopup()" />
@@ -227,6 +230,10 @@
             </a>
         </div>
     </div>
+
+
+
+
 
     <div class="reviews">
         <h3>User Reviews ({{ totalReviews }})</h3>
