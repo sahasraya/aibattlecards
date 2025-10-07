@@ -1,27 +1,17 @@
-# Aimarketplaceuserend
+AI Marketplace & Catalog – Vendor and Model Independent
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.2.
+Our platform is a unified, vendor-agnostic AI marketplace and catalog that brings together AI models, APIs, and intelligent agents from across the ecosystem. It enables users to discover, evaluate, and select AI capabilities for their needs — faster and smarter.
 
-## Development server
+Discover the right tools for the right job, faster.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Key features include:
 
-## Code scaffolding
+*Vendor-agnostic discovery: Access AI models and services from multiple providers in a single platform.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+*User reviews and ratings: Share experiences and rate AI tools to guide others toward the best choices.
 
-## Build
+*Standardized metadata: Compare models based on capabilities, tasks, performance, cost, and licensing.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+*Community-driven insights: Leverage collective intelligence to highlight top-performing AI tools and emerging solutions.
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+By combining a comprehensive catalog with user reviews and ratings, the platform empowers businesses, developers, and researchers to find the right AI tools, assess quality, and accelerate adoption with confidence.
