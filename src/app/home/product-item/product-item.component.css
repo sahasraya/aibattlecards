@@ -488,7 +488,14 @@
   align-items: center;
   justify-content: center;
 }
-
+.mediapreviewtext{
+  font-size: 15px;
+  margin-top: 10px;
+  background-color: #ddd;
+  border-radius: 25px;
+  width: fit-content;
+  padding: 10px 15px;
+}
 /* Animation */
 @keyframes zoomIn {
   from {

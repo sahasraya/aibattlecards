@@ -221,7 +221,7 @@
     </div>
 
     <div class="media-holder" *ngIf="productDetails?.mediaPreviews?.length">
-        <h3>Media Previews</h3>
+        <h3 class="mediapreviewtext">Media Previews</h3>
         <div class="media-icons">
             <a *ngFor="let m of productDetails?.mediaPreviews" [href]="m.includes('youtube') ? m : null" target="_blank"
                 [style.pointerEvents]="m.includes('youtube') ? 'auto' : 'none'">
