@@ -112,10 +112,12 @@
   transform: scale(1.05);
   box-shadow: 0 6px 18px rgba(74, 144, 226, 0.4);
 }
-
+/* Battle Table Container */
 .battle-table {
   width: 100%;
-  border-collapse: collapse;
+  table-layout: fixed; /* This ensures equal column widths */
+  border-collapse: separate;
+  border-spacing: 0;
   background: #fff;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   border-radius: 16px;
@@ -127,6 +129,14 @@
   position: relative;
 }
 
+@keyframes tablePopIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Top Border Animation */
 .battle-table::before {
   content: "";
   position: absolute;
@@ -138,29 +148,50 @@
   animation: progressBar 1s ease-out 0.3s forwards;
   transform: scaleX(0);
   transform-origin: left;
+  z-index: 1;
 }
 
-/* Table Headers with Staggered Animation */
+@keyframes progressBar {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Table Headers */
 .battle-table thead {
   background: linear-gradient(135deg, #f8fafc, #e2e8f0);
   position: relative;
 }
 
 .battle-table th {
-  padding: 20px 18px;
+  padding: 20px 16px;
   text-align: center;
   font-weight: 700;
   color: #2d3748;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 3px solid #cbd5e0;
+  border-right: 2px solid #e2e8f0;
   position: relative;
   opacity: 0;
   transform: translateY(-20px);
   animation: slideInFromTop 0.5s ease-out forwards;
   animation-delay: calc(var(--col-index, 0) * 0.1s + 0.2s);
+  vertical-align: middle;
 }
 
+.battle-table th:last-child {
+  border-right: none;
+}
+
+@keyframes slideInFromTop {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Property Column - Fixed Width */
 .battle-table .property-col {
-  width: 200px;
+  width: 180px;
   text-align: left;
   background: linear-gradient(135deg, #4a90e2, #357abd);
   color: white;
@@ -168,13 +199,118 @@
   letter-spacing: 0.5px;
   text-transform: uppercase;
   font-size: 13px;
+  border-right: 3px solid #357abd;
 }
 
+/* Tool Columns - Equal Width Distribution */
 .battle-table th.tool-col {
   background: white;
-  min-width: 180px;
-  border-left: 1px solid #f0f0f0;
+  width: auto; /* Will be divided equally among all tool columns */
+  border-left: 2px solid #e2e8f0;
 }
+
+/* Tool Header Container */
+.tool-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+}
+
+.header-tool-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.header-tool-img.clickable-image {
+  cursor: pointer;
+}
+
+.header-tool-img:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(74, 144, 226, 0.3);
+  border-color: #4a90e2;
+}
+
+/* Table Body */
+.battle-table tbody tr {
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: slideInFromLeft 0.5s ease-out forwards;
+  animation-delay: calc(var(--row-index, 0) * 0.05s + 0.4s);
+}
+
+@keyframes slideInFromLeft {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.battle-table tbody tr:hover {
+  background: linear-gradient(90deg, #f7fafc, #edf2f7);
+  transform: translateX(4px);
+}
+
+/* Table Cells */
+.battle-table td {
+  padding: 18px 16px;
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+  border-right: 2px solid #f0f4f8;
+  color: #4a5568;
+  font-size: 14px;
+  line-height: 1.6;
+  vertical-align: middle;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.battle-table td:last-child {
+  border-right: none;
+}
+
+/* Property Cell - First Column */
+.battle-table .property {
+  width: 180px;
+  text-align: left;
+  font-weight: 700;
+  color: #2d3748;
+  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  border-right: 3px solid #cbd5e0;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  position: relative;
+}
+
+.battle-table .property::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #4a90e2, #357abd);
+}
+
+/* Alternate Row Colors */
+.battle-table tbody tr:nth-child(even) {
+  background: #fafbfc;
+}
+
+.battle-table tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+ 
+
 
 /* Enhanced Tool Header */
 .tool-header {
