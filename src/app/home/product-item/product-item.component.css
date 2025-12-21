@@ -534,6 +534,7 @@
 .modal-close-btn {
   position: absolute;
   top: 16px;
+  font-size: 30px;
   right: 16px;
   background: rgba(0, 0, 0, 0.5);
   color: white;
@@ -1382,23 +1383,201 @@
     width: 95%;
     max-height: 95vh;
   }
+ 
+  .modal-overlay {
+    align-items: flex-end !important;
+    padding: 0 !important;
+    background: rgba(0, 0, 0, 0.75) !important;
+    backdrop-filter: blur(8px) !important;
+  }
 
+  /* Modal Container - Full width bottom sheet */
+  .modal-container {
+    width: 100% !important;
+    max-width: none !important;
+    height: 100% !important;
+    max-height: 100vh !important;
+    border-radius: 20px 20px 0 0 !important;
+    margin: 0 !important;
+    transform: none !important;
+    animation: slideUpMobile 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  /* Bottom sheet handle */
+  .modal-container::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    z-index: 1001;
+  }
+
+  /* Close button - Larger and better positioned */
+  .modal-close-btn {
+    top: 16px !important;
+    right: 16px !important;
+    width: 44px !important;
+    height: 44px !important;
+    color: black;
+    font-size: 24px !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  }
+
+  /* Review Form Wrapper - Full height with perfect spacing */
   .review-form-wrapper {
-    padding: 2rem 1.5rem;
+    padding: 1.25rem !important;
+    height: calc(100vh - 80px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow-y: auto !important;
+    padding-bottom: 2.5rem !important;
   }
 
+  /* Scrollbar styling for modal */
+  .review-form-wrapper::-webkit-scrollbar {
+    width: 4px !important;
+  }
+
+  .review-form-wrapper::-webkit-scrollbar-track {
+    background: transparent !important;
+  }
+
+  .review-form-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border-radius: 2px !important;
+  }
+
+  /* Form Title - Optimized for mobile */
   .review-form-wrapper .form-title {
-    font-size: 1.5rem;
+    font-size: 1.4rem !important;
+    margin-bottom: 1.5rem !important;
+    padding-bottom: 1rem !important;
+    border-bottom: 2px solid rgba(74, 144, 226, 0.2) !important;
+    text-align: center !important;
   }
 
+  /* Form Groups - Perfect mobile spacing */
+  .review-form-wrapper .form-group {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .review-form-wrapper .form-group label {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    margin-bottom: 0.875rem !important;
+    color: #2c3e50 !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Radio Groups - Stacked for mobile */
   .review-form-wrapper .radio-group {
-    flex-direction: column;
-    gap: 1rem;
+    flex-direction: column !important;
+    gap: 1rem !important;
+    margin-top: 0.75rem !important;
+  }
+
+  .review-form-wrapper .radio-group label {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    padding: 0.875rem 1rem !important;
+    background: #f8f9fa !important;
+    border-radius: 12px !important;
+    border: 2px solid transparent !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+    font-size: 16px !important;
+  }
+
+  .review-form-wrapper .radio-group label:hover,
+  .review-form-wrapper .radio-group input:checked + label {
+    background: #e3f2fd !important;
+    border-color: var(--primary-color) !important;
+  }
+
+  /* Inputs and Selects - Mobile optimized */
+  .review-form-wrapper .form-group select,
+  .review-form-wrapper .form-group textarea {
+    width: 100% !important;
+    padding: 1rem 1.125rem !important;
+    border: 2px solid #e1e5e9 !important;
+    border-radius: 12px !important;
+    font-size: 16px !important; /* Prevents iOS zoom */
+    background: white !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .review-form-wrapper .form-group select:focus,
+  .review-form-wrapper .form-group textarea:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15) !important;
+    outline: none !important;
+  }
+
+  .review-form-wrapper .form-group textarea {
+    min-height: 120px !important;
+    resize: vertical !important;
+    font-family: inherit !important;
+  }
+
+  /* Star Ratings - Larger touch targets */
+  .review-form-wrapper .star-rating {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    margin-top: 0.875rem !important;
+    padding: 0.75rem !important;
+    background: #f8f9fa !important;
+    border-radius: 12px !important;
   }
 
   .review-form-wrapper .star {
-    font-size: 1.5rem;
+    font-size: 32px !important;
+    cursor: pointer !important;
+    color: #ddd !important;
+    transition: all 0.2s ease !important;
+    padding: 0.25rem !important;
   }
+
+  .review-form-wrapper .star.filled,
+  .review-form-wrapper .star:hover {
+    color: var(--yellow-color) !important;
+    transform: scale(1.1) !important;
+  }
+
+  .review-form-wrapper .rating-text {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    min-width: 50px !important;
+    text-align: center !important;
+  }
+
+  /* Submit Button - Prominent mobile CTA */
+  .review-form-wrapper .submit-btn {
+    width: 100% !important;
+    padding: 1.25rem 2rem !important;
+    font-size: 18px !important;
+    border-radius: 16px !important;
+    font-weight: 700 !important;
+    margin-top: auto !important;
+    box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4) !important;
+  }
+
+  .review-form-wrapper .submit-btn:hover:not(:disabled) {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 12px 35px rgba(74, 144, 226, 0.5) !important;
+  }
+ 
+
 
   .media-modal-content {
     max-width: 95%;
@@ -1577,45 +1756,8 @@
     border-radius: 0;
   }
 
-  .review-form-wrapper {
-    padding: 1.5rem 1rem;
-  }
-
-  .review-form-wrapper .form-title {
-    font-size: 1.25rem;
-  }
-
-  .review-form-wrapper .form-group label {
-    font-size: 0.9rem;
-  }
-
-  .review-form-wrapper .form-group select,
-  .review-form-wrapper .form-group textarea {
-    padding: 0.75rem 0.875rem;
-    font-size: 0.95rem;
-  }
-
-  .review-form-wrapper .star {
-    font-size: 1.4rem;
-  }
-
-  .review-form-wrapper .rating-text {
-    font-size: 0.95rem;
-  }
-
-  .review-form-wrapper .submit-btn {
-    padding: 0.875rem 1.5rem;
-    font-size: 1rem;
-  }
-
-  .modal-close-btn {
-    width: 36px;
-    height: 36px;
-    font-size: 24px;
-    top: 12px;
-    right: 12px;
-  }
-
+ 
+ 
   .image-popup img {
     max-width: 250px;
   }
@@ -1768,18 +1910,7 @@
     font-size: 0.8rem;
   }
 
-  .review-form-wrapper {
-    padding: 1.25rem 0.875rem;
-  }
-
-  .review-form-wrapper .form-title {
-    font-size: 1.1rem;
-  }
-
-  .review-form-wrapper .star {
-    font-size: 1.3rem;
-  }
-
+ 
   .loadmorebtn {
     padding: 0.65rem 1.25rem;
     font-size: 0.85rem;

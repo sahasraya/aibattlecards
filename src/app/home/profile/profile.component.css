@@ -1335,13 +1335,16 @@ label {
 }
 /* Responsive */
 @media (max-width: 768px) {
+  .tab-content{
+    padding: 0px;
+  }
   .product-card {
   min-width: 230px;
   min-height: 230px;
   }
   .profile-container {
     flex-direction: column;
-    padding: 1rem;
+    padding: 0rem;
   }
 
   .tabs {
@@ -1354,12 +1357,9 @@ label {
     white-space: nowrap;
   }
 
-  .tab-content {
-    padding: 1.5rem;
-  }
-
+ 
   .addingnewproduct-holder {
-    padding: 1.5rem;
+    padding: 1.1rem;
   }
   
 }
@@ -1369,6 +1369,13 @@ label {
   .access-form {
   padding: 0rem;
   border: none
+}
+
+.cards-container {
+   justify-content: center;
+}
+.profile-header {
+  justify-content: center;
 }
 
 }

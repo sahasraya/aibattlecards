@@ -164,7 +164,6 @@
   animation: fadeInOverlay 0.2s ease;
 }
 
-/* Filter Dropdown */
 .filter-dropdown {
   position: absolute;
   top: calc(100% + 10px);
@@ -174,11 +173,11 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   z-index: 99;
   min-width: 650px;
+  width: 650px; /* Added fixed width to prevent expansion */
   max-height: 500px;
   overflow: hidden;
   animation: slideDownFilter 0.3s ease;
 }
-
 @keyframes slideDownFilter {
   from {
     opacity: 0;
@@ -601,9 +600,7 @@
 
 /* Tablets and below (1024px) */
 @media (max-width: 1024px) {
-  .filter-dropdown {
-    min-width: 550px;
-  }
+  
 
   .filter-menu {
     grid-template-columns: 180px 1fr;
@@ -656,17 +653,23 @@
     top: 45px;
   }
 
-  /* Filter Dropdown - CENTERED FOR MOBILE */
-  .filter-dropdown {
-    position: fixed;
-    top: 60px;
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
-    min-width: 95vw;
-    max-width: 95vw;
-    max-height: 80vh;
-    border-radius: 12px;
+.filter-dropdown {
+    position: fixed !important;
+    top: 60px !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    min-width: 95vw !important;
+    width: 95vw !important; /* Fixed width prevents jumping */
+    max-width: 95vw !important;
+    max-height: 80vh !important;
+    /* Remove animation on mobile to prevent layout shift */
+    animation: none !important;
+  }
+  
+  /* Add mobile-specific entrance animation */
+  .filter-dropdown.show {
+    animation: slideDownMobile 0.25s ease forwards !important;
   }
 
   .filter-menu {
@@ -774,12 +777,7 @@
   .auth-function-holder {
     gap: 4px;
   }
-
-  /* Hide Sign Up text on very small screens, keep Log in */
-  .auth-function-holder a:first-child {
-    display: none; /* Hide Sign Up on mobile */
-  }
-
+ 
   
 
   .vs-btn {
@@ -795,15 +793,8 @@
     font-size: 12px;
   }
 
-  .profile-dropdown {
-    width: 150px;
-    top: 40px;
-  }
-
-  .profile-dropdown a {
-    padding: 0.5rem 0.8rem;
-    font-size: 13px;
-  }
+ 
+ 
 
   /* Filter Button */
   .filter-btn {
@@ -817,21 +808,7 @@
     height: 14px;
   }
 
-  /* Filter Dropdown - CENTERED AND FULL VISIBILITY */
-  .filter-dropdown {
-    position: fixed;
-    top: 55px;
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
-    min-width: 96vw;
-    max-width: 96vw;
-    width: 96vw;
-    max-height: calc(100vh - 70px);
-    border-radius: 12px;
-    margin: 0;
-  }
-
+ 
   .filter-menu {
     grid-template-columns: 1fr;
     min-height: auto;
@@ -980,19 +957,7 @@
     height: 12px;
   }
 
-  /* Filter Dropdown - OPTIMIZED FOR SMALLEST SCREENS */
-  .filter-dropdown {
-    position: fixed;
-    top: 50px;
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
-    min-width: 98vw;
-    max-width: 98vw;
-    width: 98vw;
-    max-height: calc(100vh - 60px);
-    border-radius: 10px;
-  }
+   
 
   .filter-main-menu {
     max-height: 120px;
