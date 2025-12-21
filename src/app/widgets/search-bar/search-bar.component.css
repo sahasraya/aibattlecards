@@ -1,3 +1,7 @@
+/* ========================================
+   SEARCH BAR - DESKTOP FIRST
+   ======================================== */
+
 .search-container {
   position: relative;
   width: 100%;
@@ -7,30 +11,40 @@
 
 .search-bar {
   width: 100%;
-  padding: 12px 16px;
+  padding: 12px 40px 12px 16px;
   font-size: 16px;
   border: 2px solid #e1e5e9;
   border-radius: 8px;
   outline: none;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
   box-sizing: border-box;
   min-width: 500px;
+  background: white;
 }
 
- 
+.search-bar:focus {
+  border-color: #5a67d8;
+  box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.1);
+}
 
+.search-bar::placeholder {
+  color: #9ca3af;
+}
+
+/* Loading Indicator */
 .loading-indicator {
   position: absolute;
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
+  pointer-events: none;
 }
 
 .spinner {
   width: 20px;
   height: 20px;
   border: 2px solid #f3f3f3;
-  border-top: 2px solid #007bff;
+  border-top: 2px solid #5a67d8;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -44,35 +58,69 @@
   }
 }
 
+/* Search Dropdown */
 .search-dropdown {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 4px);
   left: 0;
   right: 0;
   background: white;
   border: 1px solid #e1e5e9;
-  border-top: none;
-  border-radius: 0 0 8px 8px;
+  border-radius: 8px;
   max-height: 400px;
   overflow-y: auto;
   z-index: 1000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  animation: slideDownSearch 0.2s ease;
 }
 
+@keyframes slideDownSearch {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom Scrollbar */
+.search-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-dropdown::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.search-dropdown::-webkit-scrollbar-thumb {
+  background: #5a67d8;
+  border-radius: 10px;
+}
+
+.search-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #4958dd;
+}
+
+/* No Results */
 .no-results {
-  padding: 16px;
+  padding: 20px 16px;
   text-align: center;
   color: #6c757d;
   font-style: italic;
+  font-size: 14px;
 }
 
+/* Search Result Item */
 .search-result-item {
   display: flex;
   align-items: center;
   padding: 12px 16px;
   border-bottom: 1px solid #f8f9fa;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .search-result-item:hover {
@@ -88,13 +136,14 @@
   height: 50px;
   margin-right: 12px;
   flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
 .product-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 4px;
   border: 1px solid #e1e5e9;
 }
 
@@ -108,44 +157,93 @@
   color: #2c3e50;
   margin-bottom: 4px;
   font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .product-category {
   color: #6c757d;
   font-size: 12px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .product-usecases {
   font-size: 11px;
   color: #495057;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
 }
 
 .usecase-label {
   font-weight: 500;
-  margin-right: 4px;
+  color: #374151;
 }
 
 .usecase-tag {
-  background-color: #e9ecef;
-  padding: 2px 6px;
+  background-color: #e8f0fe;
+  color: #5a67d8;
+  padding: 2px 8px;
   border-radius: 12px;
   font-size: 10px;
-  color: #495057;
+  font-weight: 500;
+  display: inline-block;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
+/* ========================================
+   MOBILE RESPONSIVE STYLES
+   ======================================== */
+
+/* Tablets and below (1024px) */
+@media (max-width: 1024px) {
   .search-container {
-    max-width: 100%;
+    max-width: 500px;
+    margin-right: 15px;
   }
 
   .search-bar {
-    font-size: 16px; /* Prevent zoom on iOS */
+    min-width: 400px;
+  }
+}
+
+/* Tablets (768px) */
+@media (max-width: 768px) {
+  .search-container {
+    max-width: 100%;
+    margin-right: 10px;
+    flex: 1;
+  }
+
+  .search-bar {
+    min-width: auto;
+    width: 100%;
+    padding: 10px 36px 10px 12px;
+    font-size: 15px;
+    border-radius: 6px;
+  }
+
+  .loading-indicator {
+    right: 10px;
+  }
+
+  .spinner {
+    width: 18px;
+    height: 18px;
   }
 
   .search-dropdown {
-    max-height: 300px;
+    max-height: 350px;
+    border-radius: 6px;
+  }
+
+  .no-results {
+    padding: 16px 12px;
+    font-size: 13px;
   }
 
   .search-result-item {
@@ -153,8 +251,220 @@
   }
 
   .product-image {
+    width: 45px;
+    height: 45px;
+    margin-right: 10px;
+  }
+
+  .product-name {
+    font-size: 13px;
+  }
+
+  .product-category {
+    font-size: 11px;
+  }
+
+  .product-usecases {
+    font-size: 10px;
+  }
+
+  .usecase-tag {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+}
+
+/* Mobile phones (480px) */
+@media (max-width: 480px) {
+  .search-container {
+    margin-right: 6px;
+  }
+
+  .search-bar {
+    padding: 9px 34px 9px 10px;
+    font-size: 14px;
+    border-width: 1.5px;
+    border-radius: 6px;
+  }
+
+  .search-bar::placeholder {
+    font-size: 13px;
+  }
+
+  .loading-indicator {
+    right: 8px;
+  }
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border-width: 1.5px;
+  }
+
+  .search-dropdown {
+    max-height: 300px;
+    top: calc(100% + 2px);
+    border-radius: 6px;
+    /* Full width on mobile */
+    left: -8px;
+    right: -8px;
+    width: calc(100% + 16px);
+  }
+
+  .no-results {
+    padding: 14px 10px;
+    font-size: 12px;
+  }
+
+  .search-result-item {
+    padding: 9px 10px;
+  }
+
+  .product-image {
     width: 40px;
     height: 40px;
-    margin-right: 10px;
+    margin-right: 9px;
+    border-radius: 5px;
+  }
+
+  .product-info {
+    overflow: hidden;
+  }
+
+  .product-name {
+    font-size: 13px;
+    margin-bottom: 3px;
+  }
+
+  .product-category {
+    font-size: 11px;
+    margin-bottom: 5px;
+  }
+
+  .product-usecases {
+    font-size: 10px;
+    gap: 3px;
+  }
+
+  .usecase-label {
+    font-size: 10px;
+  }
+
+  .usecase-tag {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+}
+
+/* Small mobile phones (360px) */
+@media (max-width: 360px) {
+  .search-container {
+    margin-right: 4px;
+  }
+
+  .search-bar {
+    padding: 8px 32px 8px 8px;
+    font-size: 13px;
+    border-radius: 5px;
+  }
+
+  .search-bar::placeholder {
+    font-size: 12px;
+  }
+
+  .loading-indicator {
+    right: 7px;
+  }
+
+  .spinner {
+    width: 14px;
+    height: 14px;
+  }
+
+  .search-dropdown {
+    max-height: 280px;
+    left: -6px;
+    right: -6px;
+    width: calc(100% + 12px);
+  }
+
+  .no-results {
+    padding: 12px 8px;
+    font-size: 11px;
+  }
+
+  .search-result-item {
+    padding: 8px 8px;
+  }
+
+  .product-image {
+    width: 36px;
+    height: 36px;
+    margin-right: 8px;
+    border-radius: 4px;
+  }
+
+  .product-name {
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
+
+  .product-category {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .product-usecases {
+    font-size: 9px;
+    gap: 2px;
+  }
+
+  .usecase-label {
+    font-size: 9px;
+  }
+
+  .usecase-tag {
+    font-size: 8px;
+    padding: 1px 5px;
+  }
+}
+
+/* Extra small phones (320px) */
+@media (max-width: 320px) {
+  .search-bar {
+    padding: 7px 30px 7px 7px;
+    font-size: 12px;
+  }
+
+  .search-bar::placeholder {
+    font-size: 11px;
+  }
+
+  .spinner {
+    width: 13px;
+    height: 13px;
+  }
+
+  .search-dropdown {
+    max-height: 250px;
+  }
+
+  .product-image {
+    width: 32px;
+    height: 32px;
+    margin-right: 7px;
+  }
+
+  .product-name {
+    font-size: 11px;
+  }
+
+  .product-category {
+    font-size: 10px;
+  }
+
+  .usecase-tag {
+    font-size: 8px;
+    padding: 1px 4px;
   }
 }

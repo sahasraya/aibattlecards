@@ -4,3 +4,8 @@
   gap: 15px;
   margin-bottom: 1.5rem;
 }
+@media (max-width: 768px) {
+  .cards-container {
+   justify-content: center;
+  }
+}

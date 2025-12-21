@@ -47,6 +47,7 @@
   animation: gradientBG 15s ease infinite;
   background-size: 400% 400%;
 }
+
 @keyframes gradientBG {
   0% {
     background-position: 0% 50%;
@@ -89,9 +90,9 @@
 }
 
 .signin-btn:hover {
-  color: #000; /* font color after hover */
-  background-color: #fff; /* background color after hover */
-  border-color: #fff; /* keeps the border same or can change if needed */
+  color: #000;
+  background-color: #fff;
+  border-color: #fff;
 }
 
 /* Right Panel */
@@ -181,4 +182,151 @@
 
 .login-text a:hover {
   text-decoration: underline;
+}
+
+/* ========================================
+   MOBILE RESPONSIVE STYLES
+   ======================================== */
+
+/* Tablets and below (768px) */
+@media (max-width: 768px) {
+  .signup-container {
+    flex-direction: column;
+    box-shadow: none;
+  }
+
+  .signup-left {
+    border-radius: 0;
+    padding: 40px 20px;
+    min-height: auto;
+  }
+
+  .signup-left .signup-logo {
+    width: 60px;
+    margin-bottom: 15px;
+  }
+
+  .signup-left h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+
+  .signup-left p {
+    font-size: 14px;
+    margin-bottom: 20px;
+    padding: 0 10px;
+  }
+
+  .signin-btn {
+    padding: 10px 25px;
+    font-size: 14px;
+  }
+
+  .signup-right {
+    padding: 30px 20px;
+  }
+
+  .signup-title {
+    font-size: 24px;
+    text-align: center;
+  }
+
+  .signup-subtitle {
+    text-align: center;
+  }
+
+  .form-group {
+    margin-bottom: 25px;
+  }
+}
+
+/* Mobile phones (480px) */
+@media (max-width: 480px) {
+  .message-div {
+    padding: 10px 16px;
+    font-size: 14px;
+    margin: 0 10px;
+  }
+
+  .signup-left {
+    padding: 30px 15px;
+  }
+
+  .signup-left .signup-logo {
+    width: 50px;
+    margin-bottom: 12px;
+  }
+
+  .signup-left h1 {
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+
+  .signup-left p {
+    font-size: 13px;
+    margin-bottom: 15px;
+    padding: 0 5px;
+  }
+
+  .signin-btn {
+    padding: 8px 20px;
+    font-size: 13px;
+  }
+
+  .signup-right {
+    padding: 25px 15px;
+  }
+
+  .signup-title {
+    font-size: 22px;
+  }
+
+  .form-group input {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .form-group small {
+    font-size: 11px;
+    bottom: -16px;
+    left: 12px;
+  }
+
+  .signup-btn {
+    padding: 10px 0;
+    font-size: 14px;
+  }
+
+  .login-text {
+    margin-top: 15px;
+    font-size: 13px;
+  }
+}
+
+/* Small mobile phones (360px) */
+@media (max-width: 360px) {
+  .signup-left h1 {
+    font-size: 20px;
+  }
+
+  .signup-left p {
+    font-size: 12px;
+  }
+
+  .signup-title {
+    font-size: 20px;
+  }
+
+  .signup-right {
+    padding: 20px 12px;
+  }
+
+  .form-group input {
+    padding: 9px 10px;
+    font-size: 12px;
+  }
+
+  .login-text {
+    font-size: 12px;
+  }
 }

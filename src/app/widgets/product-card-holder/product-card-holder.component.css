@@ -222,23 +222,41 @@
     transform: translateY(-50%) translateX(0);
   }
 }
-
 @media (max-width: 480px) {
+  .featured-container {
+    padding: 0 1rem;
+  }
+
+  .scroll-wrapper {
+    gap: 0;
+  }
+
   .cards-container {
-    gap: 1rem;
+    gap: 0;
+    padding: 10px 0;
+    scroll-snap-type: x mandatory;
   }
 
   .product-card {
-    min-width: 240px;
-    max-width: 240px;
+    flex: 0 0 100%;
+    max-width: 100%;
+    min-width: 100%;
+    margin-right: 0;
+    scroll-snap-align: center;
     padding: 1rem;
   }
 
   .product-icon {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
+  }
+
+  /* Hide arrows on mobile (swipe instead) */
+  .scroll-btn {
+    display: none;
   }
 }
+
 
 /* Focus states for accessibility */
 .scroll-btn:focus {
