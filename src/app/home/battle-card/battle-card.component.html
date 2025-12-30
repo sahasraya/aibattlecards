@@ -1,61 +1,58 @@
 <!-- <app-loading *ngIf="isLoading"></app-loading> -->
 
-
 <div class="battle-card-wrapper">
 
     <div class="selecttag-holder">
-  <h1 class="tag-heading">Choose the Category you want to compare</h1>
-  
-  <div class="category-search-wrapper">
-    <div class="search-input-container">
-      <input 
-        type="text" 
-        class="category-search-input"
-        [(ngModel)]="categorySearchTerm"
-        (input)="onCategorySearch()"
-        (focus)="onCategoryInputFocus()"
-        placeholder="Search categories..."
-        autocomplete="off"
-      />
-      
-      
+        <h1 class="tag-heading">Choose the Category you want to compare</h1>
+        
+        <div class="category-search-wrapper">
+            <div class="search-input-container">
+                <input 
+                    type="text" 
+                    class="category-search-input"
+                    [(ngModel)]="categorySearchTerm"
+                    (input)="onCategorySearch()"
+                    (focus)="onCategoryInputFocus()"
+                    placeholder="Search categories..."
+                    autocomplete="off"
+                />
+            </div>
+            
+            <div class="category-dropdown" *ngIf="showCategoryDropdown && filteredCategories.length > 0">
+                <div 
+                    class="category-item" 
+                    *ngFor="let category of filteredCategories"
+                    (click)="selectCategory(category)"
+                    [class.selected]="selectedCategory === category.categoryName"
+                >
+                    <span class="category-name">{{ category.categoryName }}</span>
+                    <svg 
+                        *ngIf="selectedCategory === category.categoryName" 
+                        class="check-icon" 
+                        width="16" 
+                        height="16" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        stroke-width="3"
+                    >
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="category-dropdown no-results" *ngIf="showCategoryDropdown && filteredCategories.length === 0">
+                <div class="no-results-message">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <p>No categories found</p>
+                </div>
+            </div>
+        </div>
     </div>
-    
-    <div class="category-dropdown" *ngIf="showCategoryDropdown && filteredCategories.length > 0">
-      <div 
-        class="category-item" 
-        *ngFor="let category of filteredCategories"
-        (click)="selectCategory(category)"
-        [class.selected]="selectedCategory === category.categoryName"
-      >
-        <span class="category-name">{{ category.categoryName }}</span>
-        <svg 
-          *ngIf="selectedCategory === category.categoryName" 
-          class="check-icon" 
-          width="16" 
-          height="16" 
-          viewBox="0 0 24 24" 
-          fill="none" 
-          stroke="currentColor" 
-          stroke-width="3"
-        >
-          <polyline points="20 6 9 17 4 12"></polyline>
-        </svg>
-      </div>
-    </div>
-    
-    <div class="category-dropdown no-results" *ngIf="showCategoryDropdown && filteredCategories.length === 0">
-      <div class="no-results-message">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="8" x2="12" y2="12"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
-        <p>No categories found</p>
-      </div>
-    </div>
-  </div>
-</div>
 
     <!-- Search Input (only show after category selected) -->
     <div class="searchinputwrapper" *ngIf="iscategoryselected">
@@ -78,14 +75,6 @@
             <span class="tool-name">{{ tool.productname }}</span>
             <div class="select-circle" *ngIf="tool.selected">{{ tool.selected }}</div>
         </div>
-
-        <!-- Load More Button -->
-
-
-        <!-- End of results indicator -->
-        <!-- <div class="end-of-results" *ngIf="!hasMoreTools && displayedTypeTools.length > 0">
-            <p>You've reached the end of results</p>
-        </div> -->
     </div>
 
     <div class="load-more-container" *ngIf="hasMoreTools">
@@ -97,7 +86,6 @@
             </span>
         </button>
     </div>
-
 
     <!-- No items template -->
     <ng-template #noItems>
@@ -118,11 +106,8 @@
     </ng-template>
 </div>
 
-
 <!-- Selected tools detailed view -->
 <div *ngIf="selectedTools.length > 0" class="filtered-cards-wrapper">
-
-
 
     <!-- Selected Models Section -->
     <div class="selected-models-wrapper">
@@ -136,8 +121,8 @@
         </div>
     </div>
 
-    <!-- Battle Comparison Table -->
-    <table class="battle-table">
+    <!-- Desktop: Battle Comparison Table -->
+    <table class="battle-table desktop-table">
         <thead>
             <tr>
                 <th class="property-col">Property</th>
@@ -179,10 +164,9 @@
             </tr>
 
             <tr>
-                <td class="property">Repositries</td>
+                <td class="property">Repositories</td>
                 <td *ngFor="let tool of selectedTools">{{ tool.repositories.join(', ') }}</td>
             </tr>
-
 
             <tr>
                 <td class="property">Funding Stage</td>
@@ -217,7 +201,6 @@
                 </td>
             </tr>
 
-
             <tr>
                 <td class="property">Social Links</td>
                 <td *ngFor="let tool of selectedTools">
@@ -237,7 +220,7 @@
                 <td class="property">Reviews</td>
                 <td *ngFor="let tool of selectedTools">
                     <button class="website-link" (click)="openReview(tool)">
-                        See Reviews
+                        See Reviews web
                         <span *ngIf="tool.reviewCount !== undefined">({{ tool.reviewCount }})</span>
                         <span *ngIf="tool.reviewCount === undefined">(...)</span>
                     </button>
@@ -246,20 +229,96 @@
         </tbody>
     </table>
 
+    <!-- Mobile: Card-Based Comparison -->
+    <div class="mobile-comparison-wrapper">
+        <!-- Individual Tool Cards -->
+        <div class="mobile-tool-card" *ngFor="let tool of selectedTools; let i = index">
+            <div class="mobile-tool-header">
+                <img [src]="tool.productimage" [alt]="tool.productname" 
+                     (click)="navigatetoProductScreen(tool.productid)"
+                     class="clickable-image">
+                <div class="mobile-tool-title">
+                    <h3>{{ tool.productname }}</h3>
+                    <div class="mobile-tool-rating">⭐ {{ tool.rating }} / 5</div>
+                </div>
+                <div class="mobile-tool-number">{{ i + 1 }}</div>
+            </div>
 
+            <div class="mobile-property-row">
+                <span class="mobile-property-label">Technology</span>
+                <span class="mobile-property-value">{{ tool.producttechnology }}</span>
+            </div>
 
+            <div class="mobile-property-row">
+                <span class="mobile-property-label">Category</span>
+                <span class="mobile-property-value">{{ tool.productcategory }}</span>
+            </div>
 
+            <div class="mobile-property-row">
+                <span class="mobile-property-label">Use Cases</span>
+                <span class="mobile-property-value">{{ tool.productusecase.join(', ') }}</span>
+            </div>
 
+            <div class="mobile-property-row">
+                <span class="mobile-property-label">Repositories</span>
+                <span class="mobile-property-value">{{ tool.repositories.join(', ') }}</span>
+            </div>
 
+            <div class="mobile-property-row">
+                <span class="mobile-property-label">Funding Stage</span>
+                <span class="mobile-property-value">{{ tool.productfundingstage }}</span>
+            </div>
 
+            <div class="mobile-property-row">
+                <span class="mobile-property-label">License</span>
+                <span class="mobile-property-value">{{ tool.productlicense }}</span>
+            </div>
 
+            <div class="mobile-property-row">
+                <span class="mobile-property-label">Description</span>
+                <span class="mobile-property-value">{{ tool.productdescription }}</span>
+            </div>
 
+            <div class="mobile-property-row">
+                <span class="mobile-property-label">Website</span>
+                <span class="mobile-property-value">
+                    <a [href]="tool.productwebsite" target="_blank" class="mobile-link">Visit Site</a>
+                </span>
+            </div>
 
+            <div class="mobile-property-row">
+                <span class="mobile-property-label">Documentation</span>
+                <span class="mobile-property-value">
+                    <a [href]="tool.productdocumentation" target="_blank" class="mobile-link">View Docs</a>
+                </span>
+            </div>
 
+            <div class="mobile-property-row">
+                <span class="mobile-property-label">Social Links</span>
+                <span class="mobile-property-value">
+                    <div class="social-links">
+                        <a *ngIf="tool.productfacebook" [href]="tool.productfacebook" target="_blank">
+                            <img src="../../../assets/images/facebook.png" alt="Facebook" class="social-icon">
+                        </a>
+                        <a *ngIf="tool.productlinkedin" [href]="tool.productlinkedin" target="_blank">
+                            <img src="../../../assets/images/linkedin.png" alt="LinkedIn" class="social-icon">
+                        </a>
+                    </div>
+                </span>
+            </div>
 
-
-
-
+            <div class="mobile-property-row">
+                <span class="mobile-property-label">Reviews</span>
+                <span class="mobile-property-value">
+                    <button class="website-link" (click)="openReview(tool)">
+                        See Reviews
+                        <span *ngIf="tool.reviewCount !== undefined">({{ tool.reviewCount }})</span>
+                        <span *ngIf="tool.reviewCount === undefined">(...)</span>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
 
     <!-- Reviews Modal -->
     <div *ngIf="popupSelected.length > 0" class="modal-backdrop">

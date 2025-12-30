@@ -195,9 +195,7 @@
 
 /* Tablet */
 @media (max-width: 1024px) {
-  .footer-container {
-    padding: 50px 30px 25px;
-  }
+ 
 
   .footer-content {
     gap: 40px;
@@ -210,10 +208,7 @@
 
 /* Mobile */
 @media (max-width: 768px) {
-  .footer-container {
-    padding: 40px 20px 20px;
-  }
-
+  
   .footer-content {
     grid-template-columns: 1fr;
     gap: 40px;
@@ -286,9 +281,7 @@
 
 /* Small Mobile */
 @media (max-width: 480px) {
-  .footer-container {
-    padding: 35px 15px 18px;
-  }
+  
 
   .footer-content {
     gap: 35px;

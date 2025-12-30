@@ -1,10 +1,8 @@
 <!-- Featured Section -->
 <div *ngIf="featuredArrayDetails.length > 0">
   <div class="getmoreresult">
-  <h2 class="section-title">Featured</h2>
-  <div class="arrow-wrapper" (click)="getmoreresult('featured')">
-    see all
-  </div>
+  <h2 class="section-title" (click)="getmoreresult('featured')">Featured</h2>
+ 
 </div>
 
 <app-post-slider-shimmer *ngIf="isLoadingFeatured" [cardCount]="5"></app-post-slider-shimmer>
@@ -19,11 +17,8 @@
 <div *ngIf="NewArrayDetails.length > 0">
   <!-- New Products Section -->
 <div class="getmoreresult">
-  <h2 class="section-title">New</h2>
-  <div class="arrow-wrapper" (click)="getmoreresult('new')">
-      see all
-
-  </div>
+  <h2 class="section-title" (click)="getmoreresult('new')">New</h2>
+   
 </div>
 
 <app-post-slider-shimmer *ngIf="isLoadingNew" [cardCount]="5"></app-post-slider-shimmer>
@@ -37,11 +32,8 @@
   
 <!-- Most Viewed Section -->
 <div class="getmoreresult">
-  <h2 class="section-title">Most Viewed</h2>
-  <div class="arrow-wrapper" (click)="getmoreresult('mostviewed')">
-       see all
-
-  </div>
+  <h2 class="section-title" (click)="getmoreresult('mostviewed')">Most Viewed</h2>
+  
 </div>
 
 <app-post-slider-shimmer *ngIf="isLoadingMostViewed" [cardCount]="5"></app-post-slider-shimmer>

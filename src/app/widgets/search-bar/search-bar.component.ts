@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import { Router } from '@angular/router';
 
 interface Product {
@@ -29,11 +29,12 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   searchResults: Product[] = [];
   showDropdown: boolean = false;
   isLoading: boolean = false;
+  isSearchFocused: boolean = false;
   
   private searchSubject = new Subject<string>();
   private searchSubscription: any;
 
-  constructor(private http: HttpClient,private router:Router) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit() {
     // Setup debounced search
@@ -44,41 +45,49 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         switchMap(searchTerm => {
           if (searchTerm.trim().length >= 2) { // Only search if 2+ characters
             this.isLoading = true;
+            this.showDropdown = true; // Show dropdown immediately when loading
             return this.searchProducts(searchTerm);
           } else {
             this.searchResults = [];
             this.showDropdown = false;
             this.isLoading = false;
-            return [];
+            return of([]);
           }
         })
       )
       .subscribe({
         next: (results: Product[]) => {
           this.searchResults = results;
-          this.showDropdown = results.length > 0;
           this.isLoading = false;
+          
+          // Keep dropdown open even if no results (to show "no results" message)
+          if (this.searchText.trim().length >= 2) {
+            this.showDropdown = true;
+          }
         },
         error: (error) => {
           console.error('Search error:', error);
           this.isLoading = false;
-          this.showDropdown = false;
+          this.showDropdown = true; // Keep dropdown open to show error/no results
         }
       });
   }
 
-   onEnterPress() {
-     if (this.searchText.trim().length >= 2) {
+  onEnterPress() {
+    if (this.searchText.trim().length >= 2) {
       // Navigate to search results page with search text as route parameter
       this.router.navigate(['/home/search-result', this.searchText.trim()]);
-      this.showDropdown = false; // Hide dropdown when navigating
+      this.closeSearch();
     }
   }
-
 
   ngOnDestroy() {
     if (this.searchSubscription) {
       this.searchSubscription.unsubscribe();
+    }
+    // Clean up body scroll state if needed
+    if (this.isMobileView()) {
+      this.restoreBodyScroll();
     }
   }
 
@@ -89,27 +98,52 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   }
 
   onSearchFocus() {
+    // Only apply focus state on mobile
+    if (this.isMobileView()) {
+      this.isSearchFocused = true;
+      this.preventBodyScroll();
+    }
+    
+    // Show dropdown if there's existing search text (results or no results message)
     if (this.searchText.length >= 2) {
       this.showDropdown = true;
     }
   }
 
   onSearchBlur() {
-    // Delay hiding dropdown to allow clicks on results
+    // Delay to allow click events on results and backdrop
     setTimeout(() => {
-      this.showDropdown = false;
+      // Only close if not clicking on results
+      if (!this.showDropdown) {
+        if (this.isMobileView()) {
+          this.isSearchFocused = false;
+          this.restoreBodyScroll();
+        }
+      }
     }, 200);
   }
 
   onProductSelect(product: Product) {
     this.searchText = product.productname;
-    this.showDropdown = false;
+    this.closeSearch();
 
-    // ✅ Navigate to product details
+    // Navigate to product details
     this.router.navigate(
       ['/home/product-item'],
       { queryParams: { productid: product.productid } }
     );
+  }
+
+  closeSearch() {
+    // Only apply mobile-specific behavior on mobile
+    if (this.isMobileView()) {
+      this.isSearchFocused = false;
+      this.restoreBodyScroll();
+    }
+    
+    this.showDropdown = false;
+    this.searchResults = [];
+    this.isLoading = false;
   }
 
   private searchProducts(searchTerm: string): Promise<Product[]> {
@@ -131,6 +165,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
             }));
             resolve(products);
           } else {
+            // Return empty array for "no results" case
             resolve([]);
           }
         },
@@ -140,6 +175,33 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         }
       });
     });
+  }
+
+  // Helper method to check if mobile view (768px and below)
+  private isMobileView(): boolean {
+    return window.innerWidth <= 768;
+  }
+
+  // Prevent body scroll on mobile only
+  private preventBodyScroll(): void {
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    document.body.style.top = `-${window.scrollY}px`;
+  }
+
+  // Restore body scroll on mobile only
+  private restoreBodyScroll(): void {
+    const scrollY = document.body.style.top;
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.width = '';
+    document.body.style.top = '';
+    
+    // Restore scroll position
+    if (scrollY) {
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    }
   }
 
   // Keep your existing method for getting all products
