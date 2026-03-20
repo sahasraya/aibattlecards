@@ -10,21 +10,28 @@
             <div class="product-card" *ngFor="let product of featuredArrayDetails" [routerLink]="['/home/product-item']"
                 [queryParams]="{ productid: product.productid }" [class.featured-product]="product.isFeatured === 1">
 
-                <div class="product-icon-wrapper">
-                    <div class="product-icon">
-                        <img [src]="product.icon" alt="icon" />
-                    </div>
-
-                    <div class="featured-ribbon" *ngIf="product.isFeatured === 1">
-                        <span class="featured-text">Featured</span>
-                    </div>
+                <!-- Icon -->
+                <div class="product-icon">
+                    <img [src]="product.icon" alt="icon" />
                 </div>
 
-                <h3 class="product-name">{{ product.name }}</h3>
-                 
-                <div class="chip-wrapper">
-                    <span class="chip" *ngFor="let tag of product.tags | slice:0:3">
-                        {{ tag }}
+                <!-- Info -->
+                <div class="product-info">
+                    <h3 class="product-name">{{ product.name }}</h3>
+                    <span class="card-badge" *ngIf="product.isFeatured === 1">Featured</span>
+                    <span class="card-badge" *ngIf="product.isFeatured !== 1">{{ (product.tags?.[0] || 'Tool') | uppercase }}</span>
+                    <p class="product-desc" *ngIf="product.description">
+                        {{ product.description | slice:0:55 }}{{ (product.description?.length ?? 0) > 55 ? '...' : '' }}
+                    </p>
+                </div>
+
+                <!-- Stats -->
+                <div class="card-stats" *ngIf="product.downloads || product.rating">
+                    <span class="stat-item" *ngIf="product.downloads">
+                        <span class="stat-dl">↓</span> {{ product.downloads }}
+                    </span>
+                    <span class="stat-item" *ngIf="product.rating">
+                        <span class="stat-star">★</span> {{ product.rating }}
                     </span>
                 </div>
             </div>

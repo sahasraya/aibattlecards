@@ -253,6 +253,42 @@ export class HeaderComponent implements OnInit {
     this.expandedFilters[filterKey] = !this.expandedFilters[filterKey];
   }
 
+  /**
+   * Return a Material Icon name for a tab key
+   */
+  getTabIcon(key: string): string {
+    const icons: { [k: string]: string } = {
+      categories: 'label',
+      usecases: 'cases',
+      technology: 'developer_board'
+    };
+    return icons[key] ?? 'label';
+  }
+
+  /**
+   * Return a Material Icon name based on a category/usecase/technology name
+   */
+  getCategoryIcon(name: string): string {
+    const n = (name ?? '').toLowerCase();
+    if (n.includes('language') || n.includes('llm') || n.includes('gpt')) return 'psychology';
+    if (n.includes('vision') || n.includes('multimodal') || n.includes('image')) return 'visibility';
+    if (n.includes('audio') || n.includes('speech') || n.includes('voice')) return 'headphones';
+    if (n.includes('art') || n.includes('creative') || n.includes('generative')) return 'brush';
+    if (n.includes('reinforcement') || n.includes('robot')) return 'smart_toy';
+    if (n.includes('predictive') || n.includes('analytics') || n.includes('forecast')) return 'trending_up';
+    if (n.includes('edge')) return 'memory';
+    if (n.includes('conversational') || n.includes('chat') || n.includes('nlp')) return 'chat';
+    if (n.includes('data') || n.includes('mining') || n.includes('pipeline')) return 'storage';
+    if (n.includes('security') || n.includes('cyber')) return 'security';
+    if (n.includes('health') || n.includes('medical')) return 'health_and_safety';
+    if (n.includes('finance') || n.includes('trading') || n.includes('fintech')) return 'account_balance';
+    if (n.includes('autonomous') || n.includes('self-driving') || n.includes('vehicle')) return 'drive_eta';
+    if (n.includes('code') || n.includes('developer') || n.includes('software')) return 'code';
+    if (n.includes('search') || n.includes('retrieval')) return 'search';
+    if (n.includes('agent') || n.includes('assistant')) return 'support_agent';
+    return 'auto_awesome';
+  }
+
   // ========================================
   //  EXISTING TAB DROPDOWN METHODS
   // ========================================

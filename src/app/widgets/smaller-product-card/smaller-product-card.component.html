@@ -1,35 +1,49 @@
 <div class="product-card" [routerLink]="['/home/product-item']" [queryParams]="{ productid: product.productid }"
     routerLinkActive="active-card">
+
+    <!-- Dot menu (owner only) -->
     <img src="../../../assets/images/dotmenu.svg" alt="Menu" class="dotmenu" (click)="toggleDropdown($event)"
         *ngIf="product.userid == userid">
-    <!-- *ngIf="product.productid == userid" -->
     <div class="dotmenudropdown" *ngIf="product.showDropdown">
         <ul>
-            <li (click)="UpdateProduct(product, $event)">Edit </li>
-            <li (click)="confirmDelete(product, $event)">Delete </li>
-
-
+            <li (click)="UpdateProduct(product, $event)">Edit</li>
+            <li (click)="confirmDelete(product, $event)">Delete</li>
         </ul>
     </div>
+
+    <!-- Product icon -->
     <div class="product-icon">
         <img [src]="product.productimage" alt="tool icon" />
     </div>
-    <h3 class="product-name">{{ product.productname }}</h3>
-    
 
-    <div class="chip-wrapper">
-        <span class="chip" *ngFor="let tag of product.productusecase | slice:0:3">{{ tag }}</span>
+    <!-- Product info -->
+    <div class="product-info">
+        <h3 class="product-name">{{ product.productname }}</h3>
+        <span class="card-badge">{{ (product.productusecase?.[0] || 'Tool') | uppercase }}</span>
+        <p class="product-desc" *ngIf="product.productdescription">
+            {{ product.productdescription | slice:0:60 }}{{ (product.productdescription?.length ?? 0) > 60 ? '...' : '' }}
+        </p>
     </div>
+
+    <!-- Stats row -->
+    <div class="card-stats" *ngIf="product.productdownloads || product.productrating">
+        <span class="stat-item" *ngIf="product.productdownloads">
+            <span class="stat-dl">↓</span> {{ product.productdownloads }}
+        </span>
+        <span class="stat-item" *ngIf="product.productrating">
+            <span class="stat-star">★</span> {{ product.productrating }}
+        </span>
+    </div>
+
 </div>
 
 
-
-
+<!-- Delete Confirm Modal -->
 <div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="cancelDelete()">
     <div class="modal" (click)="$event.stopPropagation()">
         <div class="modal-content">
             <h3 class="modal-title">
-                Are you sure you want to delete the product "{{ productToDelete?.productname }}"?
+                Are you sure you want to delete "{{ productToDelete?.productname }}"?
             </h3>
             <div class="modal-actions">
                 <button class="cancel-btn" (click)="cancelDelete()">Cancel</button>

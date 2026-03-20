@@ -1,19 +1,29 @@
 <div class="search-container" [class.search-focused]="isSearchFocused">
-    <input 
-        type="text" 
-        class="search-bar" 
-        placeholder="Search for products, services, or categories..."
-        [(ngModel)]="searchText" 
-        (input)="onSearchInput($event)" 
-        (focus)="onSearchFocus()" 
-        (blur)="onSearchBlur()"
-        (keydown.enter)="onEnterPress()" 
-        autocomplete="off" 
-    />
+    <div class="search-input-wrapper">
 
-    <!-- Loading indicator - Circle Progress -->
-    <div *ngIf="isLoading" class="loading-indicator">
-        <div class="spinner"></div>
+        <!-- Gradient search icon -->
+        <span class="material-icons search-icon">search</span>
+
+        <input
+            type="text"
+            class="search-bar"
+            placeholder="Search AI tools..."
+            [(ngModel)]="searchText"
+            (input)="onSearchInput($event)"
+            (focus)="onSearchFocus()"
+            (blur)="onSearchBlur()"
+            (keydown.enter)="onEnterPress()"
+            autocomplete="off"
+        />
+
+        <!-- Loading spinner -->
+        <div *ngIf="isLoading" class="loading-indicator">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Gradient submit button -->
+        <button class="search-submit-btn" *ngIf="!isLoading" (click)="onEnterPress()" type="button"></button>
+
     </div>
 
     <!-- Search dropdown -->

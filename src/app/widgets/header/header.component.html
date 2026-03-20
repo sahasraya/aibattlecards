@@ -1,93 +1,107 @@
 <!-- Header Section -->
 <div class="header-holder">
-    <a routerLink="/"><img src="../../../assets/images/logo.png" alt="logo" class="logo"></a>
 
-    <!-- Tabs inside header -->
+    <!-- Left: Logo + Battle -->
+    <div class="header-left">
+        <a routerLink="/"><img src="../../../assets/images/logo.png" alt="logo" class="logo"></a>
+        <a routerLink="/home/battle-card" class="battle-btn">
+            <span class="material-icons battle-btn-icon">bolt</span>
+            <span>Battle</span>
+        </a>
+    </div>
+
+    <!-- Center: Search -->
+    <div class="header-center">
         <app-search-bar></app-search-bar>
+    </div>
 
     <div class="right-content-holder">
-
 
         <!-- Filter Dropdown Button -->
         <div class="filter-wrapper">
             <button class="filter-btn" (click)="toggleFilterDropdown()" [class.active]="filterDropdownOpen">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                <svg class="filter-btn-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="url(#filterGrad)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <defs>
+                        <linearGradient id="filterGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#764ba2"/>
+                            <stop offset="100%" style="stop-color:#f64f59"/>
+                        </linearGradient>
+                    </defs>
+                    <line x1="4" y1="6" x2="20" y2="6"></line>
+                    <line x1="4" y1="12" x2="20" y2="12"></line>
+                    <line x1="4" y1="18" x2="20" y2="18"></line>
+                    <circle cx="8" cy="6" r="2" fill="url(#filterGrad)" stroke="none"></circle>
+                    <circle cx="16" cy="12" r="2" fill="url(#filterGrad)" stroke="none"></circle>
+                    <circle cx="10" cy="18" r="2" fill="url(#filterGrad)" stroke="none"></circle>
                 </svg>
+                <span class="filter-btn-text">Filter</span>
             </button>
 
             <!-- Filter Dropdown Menu -->
             <div class="filter-dropdown" *ngIf="filterDropdownOpen" [@slideDown]>
-                <div class="filter-menu">
-                    <!-- Left Side: Main Categories -->
-                    <div class="filter-main-menu">
-                        <div class="filter-menu-item" 
-                             *ngFor="let filter of filterOptions"
-                             (mouseenter)="selectFilter(filter.key)"
-                             (click)="selectFilter(filter.key)"
-                             [class.active]="selectedFilter === filter.key">
-                            <span class="filter-label">{{ filter.label }}</span>
-                            <span class="filter-count">({{ getFilterCount(filter.key) }})</span>
-                            <span class="filter-arrow">›</span>
-                        </div>
-                    </div>
 
-                    <!-- Right Side: Sub Items -->
-                    <div class="filter-sub-menu" *ngIf="selectedFilter">
-                        <!-- Categories -->
-                        <div class="filter-sub-content" *ngIf="selectedFilter === 'categories'">
-                            <h4 class="sub-menu-title">Categories</h4>
-                            <div class="sub-menu-grid">
-                                <a *ngFor="let category of getFilteredItems('categories')"
-                                   [routerLink]="['/home/category', category.categoryName, 'category']"
-                                   class="sub-menu-item"
-                                   (click)="closeFilterDropdown()">
-                                    <span>{{ category.categoryName }}</span>
-                                </a>
-                            </div>
-                            <button *ngIf="categories.length > 8" 
-                                    class="view-all-btn" 
-                                    (click)="expandFilter('categories')">
-                                {{ expandedFilters['categories'] ? 'Show Less' : 'View All (' + categories.length + ')' }}
-                            </button>
-                        </div>
+                <!-- Tab Navigation -->
+                <div class="fd-tabs">
+                    <button class="fd-tab"
+                            *ngFor="let filter of filterOptions"
+                            [class.active]="selectedFilter === filter.key"
+                            (click)="selectFilter(filter.key)">
+                        <span class="material-icons fd-tab-icon">{{ getTabIcon(filter.key) }}</span>
+                        {{ filter.label }}
+                    </button>
+                </div>
 
-                        <!-- Use Cases -->
-                        <div class="filter-sub-content" *ngIf="selectedFilter === 'usecases'">
-                            <h4 class="sub-menu-title">Use Cases</h4>
-                            <div class="sub-menu-grid">
-                                <a *ngFor="let usecase of getFilteredItems('usecases')"
-                                   [routerLink]="['/home/category', usecase.usecaseName, 'usecase']"
-                                   class="sub-menu-item"
-                                   (click)="closeFilterDropdown()">
-                                    <span>{{ usecase.usecaseName }}</span>
-                                </a>
-                            </div>
-                            <button *ngIf="useCases.length > 8" 
-                                    class="view-all-btn" 
-                                    (click)="expandFilter('usecases')">
-                                {{ expandedFilters['usecases'] ? 'Show Less' : 'View All (' + useCases.length + ')' }}
-                            </button>
-                        </div>
+                <!-- Items Panel -->
+                <div class="fd-items">
 
-                        <!-- Technology -->
-                        <div class="filter-sub-content" *ngIf="selectedFilter === 'technology'">
-                            <h4 class="sub-menu-title">Technologies</h4>
-                            <div class="sub-menu-grid">
-                                <a *ngFor="let tech of getFilteredItems('technology')"
-                                   [routerLink]="['/home/category', tech.technologyName, 'technology']"
-                                   class="sub-menu-item"
-                                   (click)="closeFilterDropdown()">
-                                    <span>{{ tech.technologyName }}</span>
-                                </a>
-                            </div>
-                            <button *ngIf="technologies.length > 8" 
-                                    class="view-all-btn" 
-                                    (click)="expandFilter('technology')">
-                                {{ expandedFilters['technology'] ? 'Show Less' : 'View All (' + technologies.length + ')' }}
-                            </button>
+                    <!-- Categories -->
+                    <ng-container *ngIf="selectedFilter === 'categories'">
+                        <div class="fd-chips-grid">
+                            <a *ngFor="let category of getFilteredItems('categories')"
+                               [routerLink]="['/home/category', category.categoryName, 'category']"
+                               class="fd-chip"
+                               (click)="closeFilterDropdown()">
+                                <span class="material-icons fd-chip-icon">{{ getCategoryIcon(category.categoryName) }}</span>
+                                <span>{{ category.categoryName }}</span>
+                            </a>
                         </div>
-                    </div>
+                        <button *ngIf="categories.length > 8" class="fd-view-all" (click)="expandFilter('categories')">
+                            {{ expandedFilters['categories'] ? 'Show Less' : 'View All (' + categories.length + ')' }}
+                        </button>
+                    </ng-container>
+
+                    <!-- Use Cases -->
+                    <ng-container *ngIf="selectedFilter === 'usecases'">
+                        <div class="fd-chips-grid">
+                            <a *ngFor="let usecase of getFilteredItems('usecases')"
+                               [routerLink]="['/home/category', usecase.usecaseName, 'usecase']"
+                               class="fd-chip"
+                               (click)="closeFilterDropdown()">
+                                <span class="material-icons fd-chip-icon">{{ getCategoryIcon(usecase.usecaseName) }}</span>
+                                <span>{{ usecase.usecaseName }}</span>
+                            </a>
+                        </div>
+                        <button *ngIf="useCases.length > 8" class="fd-view-all" (click)="expandFilter('usecases')">
+                            {{ expandedFilters['usecases'] ? 'Show Less' : 'View All (' + useCases.length + ')' }}
+                        </button>
+                    </ng-container>
+
+                    <!-- Technology -->
+                    <ng-container *ngIf="selectedFilter === 'technology'">
+                        <div class="fd-chips-grid">
+                            <a *ngFor="let tech of getFilteredItems('technology')"
+                               [routerLink]="['/home/category', tech.technologyName, 'technology']"
+                               class="fd-chip"
+                               (click)="closeFilterDropdown()">
+                                <span class="material-icons fd-chip-icon">{{ getCategoryIcon(tech.technologyName) }}</span>
+                                <span>{{ tech.technologyName }}</span>
+                            </a>
+                        </div>
+                        <button *ngIf="technologies.length > 8" class="fd-view-all" (click)="expandFilter('technology')">
+                            {{ expandedFilters['technology'] ? 'Show Less' : 'View All (' + technologies.length + ')' }}
+                        </button>
+                    </ng-container>
+
                 </div>
             </div>
         </div>
@@ -95,9 +109,8 @@
         
 
         <div class="auth-function-holder">
-            <a routerLink="/home/battle-card" class="vs-btn">Vs</a>
-            <a routerLink="/auth/sign-up" *ngIf="!isuserloggedin">Sign Up</a>
-            <a routerLink="/auth/log-in" *ngIf="!isuserloggedin">Log in</a>
+            <a routerLink="/auth/sign-up" *ngIf="!isuserloggedin" class="signup-btn">Sign Up</a>
+            <a routerLink="/auth/log-in" *ngIf="!isuserloggedin" class="login-btn">Log in</a>
 
             <div class="profile-wrapper" *ngIf="isuserloggedin" (click)="toggleDropdown()">
                 <div class="profile-avatar">{{ userInitials }}</div>
