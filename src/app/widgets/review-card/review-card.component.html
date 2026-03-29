@@ -1,81 +1,81 @@
 <!-- review-card.component.html -->
-<div class="review">
-    <div class="user-avatar" [style.background-color]="review.colorcode">
-        {{ getUserInitials(review.username) }}
-    </div>
-    <div class="review-content">
-        <div class="review-header">
-            <div class="user-info">
-                <h4 class="username">{{ review.username }}</h4>
-                <span class="review-date">{{ formatDate(review.createddate) }}</span>
+<div class="review-card">
+
+    <!-- ── Header: avatar + name + stars ── -->
+    <div class="rc-header">
+        <div class="rc-avatar">
+            {{ getUserInitials(review.username) }}
+        </div>
+
+        <div class="rc-meta">
+            <div class="rc-name-row">
+                <span class="rc-name">{{ review.username }}</span>
+                <span class="rc-role" *ngIf="review.commercialorpersonal">
+                    &nbsp;·&nbsp;{{ getCommercialPersonalText(review.commercialorpersonal) }} User
+                </span>
             </div>
-            <div class="header-right">
-                <div class="review-badges">
-                    <span class="badge" [style.background-color]="review.colorcode">
-                        {{ getCommercialPersonalText(review.commercialorpersonal) }}
-                    </span>
-                    <span class="badge" [style.background-color]="review.colorcode">
-                        {{ getPaidVersionText(review.paidornot) }}
-                    </span>
-                    <span class="badge" [style.background-color]="review.colorcode">
-                        {{ getUsageDurationText(review.howlong) }}
-                    </span>
-                </div>
+            <span class="rc-date">{{ formatDate(review.createddate) }}</span>
+        </div>
 
-
-                <div class="menu-wrapper" *ngIf="showMenu" (click)="$event.stopPropagation()">
-                    <button class="menu-btn" (click)="toggleMenu()">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <circle cx="12" cy="5" r="2" fill="currentColor" />
-                            <circle cx="12" cy="12" r="2" fill="currentColor" />
-                            <circle cx="12" cy="19" r="2" fill="currentColor" />
+        <div class="rc-right">
+            <span class="rc-stars">{{ getFilledStars(review.experiencerate) }}</span>
+            <div class="menu-wrapper" *ngIf="showMenu" (click)="$event.stopPropagation()">
+                <button class="menu-btn" (click)="toggleMenu()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="5" r="2" fill="currentColor" />
+                        <circle cx="12" cy="12" r="2" fill="currentColor" />
+                        <circle cx="12" cy="19" r="2" fill="currentColor" />
+                    </svg>
+                </button>
+                <div class="dropdown-menu" *ngIf="menuOpen" [@fadeInOut]>
+                    <button class="menu-item delete-item" (click)="onDelete()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <line x1="10" y1="11" x2="10" y2="17" />
+                            <line x1="14" y1="11" x2="14" y2="17" />
                         </svg>
+                        <span>Delete</span>
                     </button>
-
-                    <div class="dropdown-menu" *ngIf="menuOpen" [@fadeInOut]>
-
-                        <button class="menu-item delete-item" (click)="onDelete()">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <polyline points="3 6 5 6 21 6" />
-                                <path
-                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                <line x1="10" y1="11" x2="10" y2="17" />
-                                <line x1="14" y1="11" x2="14" y2="17" />
-                            </svg>
-                            <span>Delete</span>
-                        </button>
-
-
-                    </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="review-ratings">
-            <div class="rating-row">
-                <div class="rating-item">
-                    <span class="rating-label">Experience</span>
-                    <span class="rating-stars">{{ getStars(review.experiencerate) }}</span>
-                </div>
-                <div class="rating-item">
-                    <span class="rating-label">Efficiency</span>
-                    <span class="rating-stars">{{ getStars(review.efficiencyrate) }}</span>
-                </div>
-            </div>
-            <div class="rating-row">
-                <div class="rating-item">
-                    <span class="rating-label">Documentation</span>
-                    <span class="rating-stars">{{ getStars(review.documentationrate) }}</span>
-                </div>
-                <div class="rating-item" *ngIf="review.paidrate && review.paidornot === 'yes'">
-                    <span class="rating-label">Paid Version</span>
-                    <span class="rating-stars">{{ getStars(review.paidrate) }}</span>
-                </div>
-            </div>
-        </div>
+    <!-- ── Ratings row ── -->
+    <div class="rc-ratings" *ngIf="review.experiencerate || review.efficiencyrate || review.documentationrate">
+        <span class="rc-rating-item" *ngIf="review.experiencerate">
+            <span class="rc-rating-label">Experience</span>
+            <span class="rc-rating-stars">{{ getFilledStars(review.experiencerate) }}</span>
+        </span>
+        <span class="rc-rating-item" *ngIf="review.efficiencyrate">
+            <span class="rc-rating-label">Efficiency</span>
+            <span class="rc-rating-stars">{{ getFilledStars(review.efficiencyrate) }}</span>
+        </span>
+        <span class="rc-rating-item" *ngIf="review.documentationrate">
+            <span class="rc-rating-label">Docs</span>
+            <span class="rc-rating-stars">{{ getFilledStars(review.documentationrate) }}</span>
+        </span>
+        <span class="rc-rating-item" *ngIf="review.paidrate && review.paidornot === 'yes'">
+            <span class="rc-rating-label">Paid</span>
+            <span class="rc-rating-stars">{{ getFilledStars(review.paidrate) }}</span>
+        </span>
+    </div>
 
-        <p *ngIf="review.comment" class="review-comment">{{ review.comment }}</p>
+    <!-- ── Comment ── -->
+    <p class="rc-comment" *ngIf="review.comment">{{ review.comment }}</p>
+
+    <!-- ── Tags ── -->
+    <div class="rc-tags">
+        <span class="rc-tag rc-tag-green" *ngIf="review.paidornot === 'yes'">
+            <span class="rc-dot"></span> Paid Version
+        </span>
+        <span class="rc-tag rc-tag-neutral" *ngIf="review.paidornot === 'no'">
+            <span class="rc-dot rc-dot-gray"></span> Free Version
+        </span>
+        <span class="rc-tag rc-tag-red" *ngIf="review.howlong">
+            <span class="rc-dot rc-dot-red"></span> {{ getUsageDurationText(review.howlong) }}
+        </span>
     </div>
 </div>
 
@@ -83,8 +83,7 @@
 <div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="showDeleteConfirm = false">
     <div class="modal-dialog" (click)="$event.stopPropagation()" [@fadeInOut]>
         <div class="modal-header">
-            <svg class="warning-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#e74c3c"
-                stroke-width="2">
+            <svg class="warning-icon" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="8" x2="12" y2="12" />
                 <line x1="12" y1="16" x2="12.01" y2="16" />
@@ -95,9 +94,7 @@
             <p>Are you sure you want to delete this review? This action cannot be undone.</p>
         </div>
         <div class="modal-footer">
-            <button class="btn-cancel" (click)="showDeleteConfirm = false" [disabled]="isDeleting">
-                Cancel
-            </button>
+            <button class="btn-cancel" (click)="showDeleteConfirm = false" [disabled]="isDeleting">Cancel</button>
             <button class="btn-delete" (click)="confirmDelete()" [disabled]="isDeleting">
                 <span *ngIf="!isDeleting">Yes, Delete</span>
                 <span *ngIf="isDeleting">Deleting...</span>

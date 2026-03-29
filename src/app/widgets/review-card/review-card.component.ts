@@ -160,6 +160,12 @@ export class ReviewCardComponent {
     return fullStars + emptyStars;
   }
 
+  getFilledStars(rating: string | number): string {
+    const numRating = typeof rating === 'string' ? parseInt(rating) || 0 : rating || 0;
+    const clamped = Math.max(0, Math.min(5, numRating));
+    return '★'.repeat(clamped) + '☆'.repeat(5 - clamped);
+  }
+
   formatDate(dateString: string): string {
     if (!dateString) return 'Unknown date';
     try {
