@@ -364,6 +364,9 @@
 
     <!-- ── Action Buttons ── -->
     <div class="action-bar">
+        <button class="btn-battlecard" (click)="navigateToBattleCard()">
+            <span class="material-icons">compare_arrows</span> Add to Battlecard
+        </button>
         <button class="btn-primary" *ngIf="isuserloggedin" (click)="toggleReviewForm()">
             {{ showReviewForm ? 'Hide Review' : (isEditingReview ? 'Edit Review' : 'Add Review') }}
         </button>

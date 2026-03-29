@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { AuthService } from '../../services/getuserid.service';
 import { LoadingComponent } from '../../widgets/loading/loading.component';
@@ -106,6 +106,7 @@ export class ProductItemComponent {
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
+    private router: Router,
     private http: HttpClient,
     private authService: AuthService,
     private sanitizer: DomSanitizer
@@ -652,5 +653,12 @@ getTechnologies(): string[] {
   closeMediaModal(): void {
     this.showMediaModal = false;
     this.selectedMediaUrl = null;
+  }
+
+  navigateToBattleCard(): void {
+    const category = this.productDetails?.productcategory || '';
+    this.router.navigate(['/home/battle-card'], {
+      queryParams: { category, productid: this.productid }
+    });
   }
 }

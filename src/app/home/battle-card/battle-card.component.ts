@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { ReviewCardComponent } from '../../widgets/review-card/review-card.component'; 
-import { Router } from '@angular/router';
+import { ReviewCardComponent } from '../../widgets/review-card/review-card.component';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReviewShimmerComponent } from '../../shimmer/review-shimmer/review-shimmer.component';
 
 interface Tool {
@@ -58,11 +58,30 @@ interface Review {
 
 export class BattleCardComponent implements OnInit{
 
-  constructor(private http: HttpClient, private router:Router) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private route: ActivatedRoute
+  ) { }
+
   ngOnInit(): void {
-window.scrollTo({ top: 0, behavior: 'smooth' });
-this.loadCategories();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.loadCategories().then(() => {
+      const category = this.route.snapshot.queryParamMap.get('category');
+      const productid = this.route.snapshot.queryParamMap.get('productid');
+      if (productid) {
+        this.preselectProductId = productid;
+      }
+      if (category) {
+        this.categorySearchTerm = category;
+        this.selectedCategory = category;
+        this.selectedCategoryName = category;
+        this.onCategoryChange();
+      }
+    });
   }
+
+  preselectProductId: string = '';
 
   toolsArray: Tool[] = [];
   searchTerm: string = '';
@@ -123,28 +142,31 @@ selectedCategoryName: string = '';
 
 
   // Update the loadCategories method (already in your code)
-async loadCategories(): Promise<void> {
-  this.http.get(this.APIURL + `get_categories`).subscribe({
-    next: (response: any) => {
-      if (response.message === "Categories retrieved successfully") {
-        this.categories = response.categories.map((c: any) => ({
-          id: c.id,
-          categoryid: c.categoryid,
-          categoryName: c.categoryName,
-          createdDate: new Date(c.createdDate)
-        }));
-        this.filteredCategories = [...this.categories];
-      } else {
+loadCategories(): Promise<void> {
+  return new Promise((resolve) => {
+    this.http.get(this.APIURL + `get_categories`).subscribe({
+      next: (response: any) => {
+        if (response.message === "Categories retrieved successfully") {
+          this.categories = response.categories.map((c: any) => ({
+            id: c.id,
+            categoryid: c.categoryid,
+            categoryName: c.categoryName,
+            createdDate: new Date(c.createdDate)
+          }));
+          this.filteredCategories = [...this.categories];
+        } else {
+          this.categories = [];
+          this.filteredCategories = [];
+        }
+        resolve();
+      },
+      error: (error) => {
+        console.error('Error loading categories:', error);
         this.categories = [];
         this.filteredCategories = [];
+        resolve();
       }
-    },
-    error: (error) => {
-      console.error('Error loading categories:', error);
-      alert("Failed to load categories. Please try again.");
-      this.categories = [];
-      this.filteredCategories = [];
-    }
+    });
   });
 }
 
@@ -309,10 +331,19 @@ async getReviews(productid: string, offset: number = 0, reset: boolean = false):
           );
 
           this.selectedTypeTools = [...this.filteredTools];
-          
+
           // Load first 12 items
           this.loadInitialTools();
           this.noData = false;
+
+          // Auto-select the product that was passed via query param
+          if (this.preselectProductId) {
+            const preselect = this.toolsArray.find(t => t.productid === this.preselectProductId);
+            if (preselect) {
+              this.toggleSelect(preselect);
+            }
+            this.preselectProductId = '';
+          }
 
         } else {
           this.toolsArray = [];

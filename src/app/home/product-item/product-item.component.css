@@ -485,6 +485,33 @@
   transform: translateY(-1px);
 }
 
+.btn-battlecard {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.4rem;
+  background: var(--filter-tab-gradient);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  font-family: var(--font-family);
+  letter-spacing: 0.2px;
+  transition: opacity 0.2s, transform 0.15s;
+  box-shadow: 0 4px 14px rgba(118, 75, 162, 0.3);
+}
+
+.btn-battlecard:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-battlecard .material-icons {
+  font-size: 1rem;
+}
+
 .btn-outline {
   display: inline-flex;
   align-items: center;
