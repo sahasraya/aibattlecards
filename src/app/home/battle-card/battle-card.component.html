@@ -1,14 +1,12 @@
-<!-- <app-loading *ngIf="isLoading"></app-loading> -->
-
 <div class="battle-card-wrapper">
 
     <div class="selecttag-holder">
         <h1 class="tag-heading">Choose the Category you want to compare</h1>
-        
+
         <div class="category-search-wrapper">
             <div class="search-input-container">
-                <input 
-                    type="text" 
+                <input
+                    type="text"
                     class="category-search-input"
                     [(ngModel)]="categorySearchTerm"
                     (input)="onCategorySearch()"
@@ -17,30 +15,30 @@
                     autocomplete="off"
                 />
             </div>
-            
+
             <div class="category-dropdown" *ngIf="showCategoryDropdown && filteredCategories.length > 0">
-                <div 
-                    class="category-item" 
+                <div
+                    class="category-item"
                     *ngFor="let category of filteredCategories"
                     (click)="selectCategory(category)"
                     [class.selected]="selectedCategory === category.categoryName"
                 >
                     <span class="category-name">{{ category.categoryName }}</span>
-                    <svg 
-                        *ngIf="selectedCategory === category.categoryName" 
-                        class="check-icon" 
-                        width="16" 
-                        height="16" 
-                        viewBox="0 0 24 24" 
-                        fill="none" 
-                        stroke="currentColor" 
+                    <svg
+                        *ngIf="selectedCategory === category.categoryName"
+                        class="check-icon"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
                         stroke-width="3"
                     >
                         <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
                 </div>
             </div>
-            
+
             <div class="category-dropdown no-results" *ngIf="showCategoryDropdown && filteredCategories.length === 0">
                 <div class="no-results-message">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -56,7 +54,7 @@
 
     <!-- Search Input (only show after category selected) -->
     <div class="searchinputwrapper" *ngIf="iscategoryselected">
-        <h3 class="selectmax3items">Select Tools for Battle (max 3)</h3>
+        <h3 class="selectmax3items">Select Tools for Battle (max 4)</h3>
         <input type="text" placeholder="Filter by name..." [(ngModel)]="filterTerm" (input)="onFilterChange()"
             class="search-bar-products">
     </div>
@@ -106,218 +104,144 @@
     </ng-template>
 </div>
 
-<!-- Selected tools detailed view -->
-<div *ngIf="selectedTools.length > 0" class="filtered-cards-wrapper">
+<!-- Battlecard Arena -->
+<div *ngIf="selectedTools.length > 0" class="battlecard-arena">
 
-    <!-- Selected Models Section -->
-    <div class="selected-models-wrapper">
-        <span class="separater"></span>
-        <div class="filtered-cards-container">
-            <div class="filtered-card selected" *ngFor="let tool of selectedTools" (click)="toggleSelect(tool)">
-                <img [src]="tool.productimage" alt="" class="tool-img">
-                <span class="tool-name">{{tool.productname}}</span>
-                <div class="select-circle">{{tool.selected}}</div>
+    <!-- Battle Cards Grid -->
+    <div class="battle-cards-grid">
+        <div class="battle-card-item" *ngFor="let tool of selectedTools">
+            <!-- Remove Button -->
+            <button class="card-remove-btn" (click)="removeFromBattle(tool)" title="Remove from battle">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+
+            <!-- Tool Icon -->
+            <div class="card-icon-wrapper">
+                <img [src]="tool.productimage" [alt]="tool.productname"
+                     class="card-icon-img"
+                     (click)="navigatetoProductScreen(tool.productid)">
             </div>
-        </div>
-    </div>
 
-    <!-- Desktop: Battle Comparison Table -->
-    <table class="battle-table desktop-table">
-        <thead>
-            <tr>
-                <th class="property-col">Property</th>
-                <th *ngFor="let tool of selectedTools" class="tool-col">
-                    <div class="tool-header">
-                        <img [src]="tool.productimage" [alt]="tool.productname" class="header-tool-img clickable-image"
-                            (click)="navigatetoProductScreen(tool.productid)" title="Click to enlarge image">
-                    </div>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Product Names -->
-            <tr>
-                <td class="property">Name</td>
-                <td *ngFor="let tool of selectedTools">{{ tool.productname }}</td>
-            </tr>
+            <!-- Tool Name -->
+            <h2 class="card-tool-name">{{ tool.productname | uppercase }}</h2>
 
-            <tr>
-                <td class="property">Rating</td>
-                <td *ngFor="let tool of selectedTools">{{ tool.rating }} / 5</td>
-            </tr>
+            <!-- Category Badge -->
+            <span class="card-category-badge">{{ tool.productcategory }}</span>
 
-            <tr>
-                <td class="property">Technology</td>
-                <td *ngFor="let tool of selectedTools">{{ tool.producttechnology }}</td>
-            </tr>
+            <!-- Provider / Technology -->
+            <div class="card-section">
+                <div class="card-section-label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                        <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                    </svg>
+                    PROVIDER
+                </div>
+                <div class="card-section-value">{{ tool.producttechnology || 'N/A' }}</div>
+            </div>
 
-            <!-- Category -->
-            <tr>
-                <td class="property">Category</td>
-                <td *ngFor="let tool of selectedTools">{{ tool.productcategory }}</td>
-            </tr>
+            <!-- Pricing / License -->
+            <div class="card-section">
+                <div class="card-section-label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                    PRICING
+                </div>
+                <div class="card-section-value">
+                    <span class="pricing-badge">{{ tool.productlicense || 'N/A' }}</span>
+                </div>
+            </div>
+
+            <!-- Rating -->
+            <div class="card-section">
+                <div class="card-section-label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    RATING
+                </div>
+                <div class="card-section-value card-rating">
+                    <span class="stars">{{ getStarRating(tool.rating) }}</span>
+                    <span class="rating-text">{{ tool.rating }} ({{ tool.reviewCount !== undefined ? tool.reviewCount : '...' }} reviews)</span>
+                </div>
+            </div>
+
+            <!-- Key Features (Repositories) -->
+            <div class="card-section">
+                <div class="card-section-label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    KEY FEATURES
+                </div>
+                <div class="card-tags">
+                    <span class="card-tag" *ngFor="let repo of tool.repositories">{{ repo }}</span>
+                    <span class="card-tag empty" *ngIf="tool.repositories.length === 0">N/A</span>
+                </div>
+            </div>
 
             <!-- Use Cases -->
-            <tr>
-                <td class="property">Use Cases</td>
-                <td *ngFor="let tool of selectedTools">{{ tool.productusecase.join(', ') }}</td>
-            </tr>
-
-            <tr>
-                <td class="property">Repositories</td>
-                <td *ngFor="let tool of selectedTools">{{ tool.repositories.join(', ') }}</td>
-            </tr>
-
-            <tr>
-                <td class="property">Funding Stage</td>
-                <td *ngFor="let tool of selectedTools">{{ tool.productfundingstage }}</td>
-            </tr>
-
-            <tr>
-                <td class="property">License</td>
-                <td *ngFor="let tool of selectedTools">{{ tool.productlicense }}</td>
-            </tr>
-
-            <tr>
-                <td class="property">Description</td>
-                <td *ngFor="let tool of selectedTools">{{ tool.productdescription }}</td>
-            </tr>
-
-            <tr>
-                <td class="property">Website</td>
-                <td *ngFor="let tool of selectedTools">
-                    <a [href]="tool.productwebsite" target="_blank" class="website-link">
-                        Visit Site
-                    </a>
-                </td>
-            </tr>
-
-            <tr>
-                <td class="property">Documentation</td>
-                <td *ngFor="let tool of selectedTools">
-                    <a [href]="tool.productdocumentation" target="_blank" class="website-link">
-                        View Docs
-                    </a>
-                </td>
-            </tr>
-
-            <tr>
-                <td class="property">Social Links</td>
-                <td *ngFor="let tool of selectedTools">
-                    <div class="social-links">
-                        <a *ngIf="tool.productfacebook" [href]="tool.productfacebook" target="_blank">
-                            <img src="../../../assets/images/facebook.png" alt="Facebook" class="social-icon">
-                        </a>
-                        <a *ngIf="tool.productlinkedin" [href]="tool.productlinkedin" target="_blank">
-                            <img src="../../../assets/images/linkedin.png" alt="LinkedIn" class="social-icon">
-                        </a>
-                    </div>
-                </td>
-            </tr>
-
-            <!-- Reviews Button -->
-            <tr>
-                <td class="property">Reviews</td>
-                <td *ngFor="let tool of selectedTools">
-                    <button class="website-link" (click)="openReview(tool)">
-                        See Reviews web
-                        <span *ngIf="tool.reviewCount !== undefined">({{ tool.reviewCount }})</span>
-                        <span *ngIf="tool.reviewCount === undefined">(...)</span>
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-
-    <!-- Mobile: Card-Based Comparison -->
-    <div class="mobile-comparison-wrapper">
-        <!-- Individual Tool Cards -->
-        <div class="mobile-tool-card" *ngFor="let tool of selectedTools; let i = index">
-            <div class="mobile-tool-header">
-                <img [src]="tool.productimage" [alt]="tool.productname" 
-                     (click)="navigatetoProductScreen(tool.productid)"
-                     class="clickable-image">
-                <div class="mobile-tool-title">
-                    <h3>{{ tool.productname }}</h3>
-                    <div class="mobile-tool-rating">⭐ {{ tool.rating }} / 5</div>
+            <div class="card-section">
+                <div class="card-section-label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                    </svg>
+                    USE CASES
                 </div>
-                <div class="mobile-tool-number">{{ i + 1 }}</div>
+                <div class="card-tags">
+                    <span class="card-tag" *ngFor="let uc of tool.productusecase">{{ uc }}</span>
+                    <span class="card-tag empty" *ngIf="tool.productusecase.length === 0">N/A</span>
+                </div>
             </div>
 
-            <div class="mobile-property-row">
-                <span class="mobile-property-label">Technology</span>
-                <span class="mobile-property-value">{{ tool.producttechnology }}</span>
+            <!-- Description -->
+            <div class="card-section">
+                <div class="card-section-label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                    </svg>
+                    DESCRIPTION
+                </div>
+                <div class="card-section-value description-text">{{ tool.productdescription }}</div>
             </div>
 
-            <div class="mobile-property-row">
-                <span class="mobile-property-label">Category</span>
-                <span class="mobile-property-value">{{ tool.productcategory }}</span>
-            </div>
-
-            <div class="mobile-property-row">
-                <span class="mobile-property-label">Use Cases</span>
-                <span class="mobile-property-value">{{ tool.productusecase.join(', ') }}</span>
-            </div>
-
-            <div class="mobile-property-row">
-                <span class="mobile-property-label">Repositories</span>
-                <span class="mobile-property-value">{{ tool.repositories.join(', ') }}</span>
-            </div>
-
-            <div class="mobile-property-row">
-                <span class="mobile-property-label">Funding Stage</span>
-                <span class="mobile-property-value">{{ tool.productfundingstage }}</span>
-            </div>
-
-            <div class="mobile-property-row">
-                <span class="mobile-property-label">License</span>
-                <span class="mobile-property-value">{{ tool.productlicense }}</span>
-            </div>
-
-            <div class="mobile-property-row">
-                <span class="mobile-property-label">Description</span>
-                <span class="mobile-property-value">{{ tool.productdescription }}</span>
-            </div>
-
-            <div class="mobile-property-row">
-                <span class="mobile-property-label">Website</span>
-                <span class="mobile-property-value">
-                    <a [href]="tool.productwebsite" target="_blank" class="mobile-link">Visit Site</a>
-                </span>
-            </div>
-
-            <div class="mobile-property-row">
-                <span class="mobile-property-label">Documentation</span>
-                <span class="mobile-property-value">
-                    <a [href]="tool.productdocumentation" target="_blank" class="mobile-link">View Docs</a>
-                </span>
-            </div>
-
-            <div class="mobile-property-row">
-                <span class="mobile-property-label">Social Links</span>
-                <span class="mobile-property-value">
-                    <div class="social-links">
-                        <a *ngIf="tool.productfacebook" [href]="tool.productfacebook" target="_blank">
-                            <img src="../../../assets/images/facebook.png" alt="Facebook" class="social-icon">
-                        </a>
-                        <a *ngIf="tool.productlinkedin" [href]="tool.productlinkedin" target="_blank">
-                            <img src="../../../assets/images/linkedin.png" alt="LinkedIn" class="social-icon">
-                        </a>
-                    </div>
-                </span>
-            </div>
-
-            <div class="mobile-property-row">
-                <span class="mobile-property-label">Reviews</span>
-                <span class="mobile-property-value">
-                    <button class="website-link" (click)="openReview(tool)">
-                        See Reviews
-                        <span *ngIf="tool.reviewCount !== undefined">({{ tool.reviewCount }})</span>
-                        <span *ngIf="tool.reviewCount === undefined">(...)</span>
-                    </button>
-                </span>
+            <!-- Action Links -->
+            <div class="card-actions">
+                <a [href]="tool.productwebsite" target="_blank" class="card-action-link" *ngIf="tool.productwebsite">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    Website
+                </a>
+                <a [href]="tool.productdocumentation" target="_blank" class="card-action-link" *ngIf="tool.productdocumentation">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                    </svg>
+                    Docs
+                </a>
+                <button class="card-action-link" (click)="openReview(tool)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Reviews
+                    <span *ngIf="tool.reviewCount !== undefined">({{ tool.reviewCount }})</span>
+                </button>
             </div>
         </div>
+
     </div>
 
     <!-- Reviews Modal -->

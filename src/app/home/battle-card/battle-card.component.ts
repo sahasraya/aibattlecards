@@ -82,6 +82,7 @@ export class BattleCardComponent implements OnInit{
   }
 
   preselectProductId: string = '';
+  quickAddToolId: string = '';
 
   toolsArray: Tool[] = [];
   searchTerm: string = '';
@@ -291,6 +292,11 @@ async getReviews(productid: string, offset: number = 0, reset: boolean = false):
     const newCategory = this.selectedCategory;
     this.iscategoryselected = true;
     this.isLoading = true;
+
+    // Clear previous battle selections
+    this.selectedTools.forEach(t => t.selected = undefined);
+    this.selectedTools = [];
+    this.displayedSelectedTools = [];
 
     // Reset pagination
     this.currentToolsOffset = 0;
@@ -528,11 +534,36 @@ async getReviewCountsForSelected(): Promise<void> {
 onDocumentClick(event: MouseEvent): void {
   const target = event.target as HTMLElement;
   const clickedInside = target.closest('.category-search-wrapper');
-  
+
   if (!clickedInside) {
     this.showCategoryDropdown = false;
   }
 }
 
- 
+  getAvailableTools(): Tool[] {
+    return this.selectedTypeTools.filter(
+      t => !this.selectedTools.some(s => s.productid === t.productid)
+    );
+  }
+
+  quickAddTool(): void {
+    if (!this.quickAddToolId) return;
+    const tool = this.selectedTypeTools.find(t => t.productid === this.quickAddToolId);
+    if (tool && this.selectedTools.length < 4 && !this.selectedTools.some(s => s.productid === tool.productid)) {
+      this.toggleSelect(tool);
+    }
+    this.quickAddToolId = '';
+  }
+
+  removeFromBattle(tool: Tool): void {
+    this.toggleSelect(tool);
+  }
+
+  getStarRating(rating: string): string {
+    const r = parseFloat(rating) || 0;
+    const full = Math.floor(r);
+    const half = r - full >= 0.3 ? 1 : 0;
+    const empty = 5 - full - half;
+    return '\u2605'.repeat(full) + (half ? '\u00BD' : '') + '\u2606'.repeat(empty);
+  }
 }
