@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductCardHolderComponent } from '../../widgets/product-card-holder/product-card-holder.component';
+import { SmallerProductCardComponent } from '../../widgets/smaller-product-card/smaller-product-card.component';
 import { CommonProductListComponent } from '../../widgets/common-product-list/common-product-list.component';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -14,7 +14,7 @@ import { FeafuredProductStateService } from '../../services/featured-product.ser
   selector: 'app-dashboard',
   standalone: true,
   imports: [
-    ProductCardHolderComponent,
+    SmallerProductCardComponent,
     CommonProductListComponent,
     PostSliderShimmerComponent,
     CommonModule
@@ -104,12 +104,12 @@ export class DashboardComponent implements OnInit {
       next: (response: any) => {
         if (response.message === "yes" && response.products?.length) {
           const newProducts = response.products.map((prod: any) => ({
-            name: prod.productname,
-            type: prod.productcategory,
-            icon: prod.productimage
+            productname: prod.productname,
+            productcategory: prod.productcategory,
+            productimage: prod.productimage
               ? `data:image/jpeg;base64,${prod.productimage}`
               : '../../../assets/images/12.png',
-            tags: prod.usecasenames && prod.usecasenames.length ? prod.usecasenames : [],
+            productusecase: prod.usecasenames && prod.usecasenames.length ? prod.usecasenames : [],
             productid: prod.productid,
             productusecaseid: prod.productusecaseid,
             isFeatured: prod.isFeatured,
@@ -148,12 +148,12 @@ export class DashboardComponent implements OnInit {
       next: (response: any) => {
         if (response.message === "yes" && response.products?.length) {
           const newProducts = response.products.map((prod: any) => ({
-            name: prod.productname,
-            type: prod.productcategory,
-            icon: prod.productimage
+            productname: prod.productname,
+            productcategory: prod.productcategory,
+            productimage: prod.productimage
               ? `data:image/jpeg;base64,${prod.productimage}`
               : '../../../assets/images/12.png',
-            tags: prod.usecasenames && prod.usecasenames.length ? prod.usecasenames : [],
+            productusecase: prod.usecasenames && prod.usecasenames.length ? prod.usecasenames : [],
             productid: prod.productid,
             productusecaseid: prod.productusecaseid,
             isFeatured: prod.isFeatured,
@@ -185,12 +185,12 @@ export class DashboardComponent implements OnInit {
       next: (response: any) => {
         if (response.message === "yes" && response.products?.length) {
           const newProducts = response.products.map((prod: any) => ({
-            name: prod.productname,
-            type: prod.productcategory,
-            icon: prod.productimage
+            productname: prod.productname,
+            productcategory: prod.productcategory,
+            productimage: prod.productimage
               ? `data:image/jpeg;base64,${prod.productimage}`
               : '../../../assets/images/12.png',
-            tags: prod.usecasenames && prod.usecasenames.length ? prod.usecasenames : [],
+            productusecase: prod.usecasenames && prod.usecasenames.length ? prod.usecasenames : [],
             productid: prod.productid,
             productusecaseid: prod.productusecaseid,
             isFeatured: prod.isFeatured,

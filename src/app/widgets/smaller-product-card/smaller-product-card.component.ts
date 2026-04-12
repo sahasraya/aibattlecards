@@ -22,18 +22,20 @@ export class SmallerProductCardComponent implements OnInit{
   productToUpdate: any = null;
   APIURL = environment.APIURL;
   userid: string = '';
+  isLoggedIn: boolean = false;
 
 
-   constructor( 
+   constructor(
       private http: HttpClient,
      private router: Router,
       private authService:AuthService
   ) { }
 
-  
+
   ngOnInit(): void {
-    this.userid = this.authService.getUserid()!;
-  
+    const id = this.authService.getUserid();
+    this.userid = id ?? '';
+    this.isLoggedIn = !!id;
   }
   
 

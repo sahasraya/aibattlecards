@@ -1,10 +1,10 @@
 <div class="product-card" [routerLink]="['/home/product-item']" [queryParams]="{ productid: product.productid }"
     routerLinkActive="active-card">
 
-    <!-- Dot menu (owner only) -->
+    <!-- Dot menu (owner only, logged in) -->
     <img src="../../../assets/images/dotmenu.svg" alt="Menu" class="dotmenu" (click)="toggleDropdown($event)"
-        *ngIf="product.userid == userid">
-    <div class="dotmenudropdown" *ngIf="product.showDropdown">
+        *ngIf="isLoggedIn && product.userid == userid">
+    <div class="dotmenudropdown" *ngIf="isLoggedIn && product.showDropdown">
         <ul>
             <li (click)="UpdateProduct(product, $event)">Edit</li>
             <li (click)="confirmDelete(product, $event)">Delete</li>

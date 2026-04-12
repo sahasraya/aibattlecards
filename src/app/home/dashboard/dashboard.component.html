@@ -6,7 +6,9 @@
 </div>
 
 <app-post-slider-shimmer *ngIf="isLoadingFeatured" [cardCount]="5"></app-post-slider-shimmer>
-<app-product-card-holder *ngIf="!isLoadingFeatured" [featuredArrayDetails]="featuredArrayDetails"></app-product-card-holder>
+<div *ngIf="!isLoadingFeatured" class="cards-grid">
+  <app-smaller-product-card *ngFor="let product of featuredArrayDetails" [product]="product"></app-smaller-product-card>
+</div>
 
 </div>
 
@@ -22,7 +24,9 @@
 </div>
 
 <app-post-slider-shimmer *ngIf="isLoadingNew" [cardCount]="5"></app-post-slider-shimmer>
-<app-product-card-holder *ngIf="!isLoadingNew" [featuredArrayDetails]="NewArrayDetails"></app-product-card-holder>
+<div *ngIf="!isLoadingNew" class="cards-grid">
+  <app-smaller-product-card *ngFor="let product of NewArrayDetails" [product]="product"></app-smaller-product-card>
+</div>
 
 </div>
 
@@ -37,8 +41,9 @@
 </div>
 
 <app-post-slider-shimmer *ngIf="isLoadingMostViewed" [cardCount]="5"></app-post-slider-shimmer>
-<app-product-card-holder *ngIf="!isLoadingMostViewed" 
-[featuredArrayDetails]="MostViewedArrayDetails"></app-product-card-holder>
+<div *ngIf="!isLoadingMostViewed" class="cards-grid">
+  <app-smaller-product-card *ngFor="let product of MostViewedArrayDetails" [product]="product"></app-smaller-product-card>
+</div>
 
 </div>
 
