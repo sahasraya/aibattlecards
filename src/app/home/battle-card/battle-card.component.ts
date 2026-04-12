@@ -111,6 +111,7 @@ export class BattleCardComponent implements OnInit{
   APIURL = environment.APIURL;
   noData: boolean = false;
 
+  showToolsDropdown: boolean = false;
   isLoading: boolean = false;
   isSubmittingReview: boolean = false;
   messageClass: string = '';
@@ -533,11 +534,18 @@ async getReviewCountsForSelected(): Promise<void> {
   @HostListener('document:click', ['$event'])
 onDocumentClick(event: MouseEvent): void {
   const target = event.target as HTMLElement;
-  const clickedInside = target.closest('.category-search-wrapper');
 
-  if (!clickedInside) {
+  if (!target.closest('.category-search-wrapper')) {
     this.showCategoryDropdown = false;
   }
+
+  if (!target.closest('.tools-search-wrapper')) {
+    this.showToolsDropdown = false;
+  }
+}
+
+onToolsInputFocus(): void {
+  this.showToolsDropdown = true;
 }
 
   getAvailableTools(): Tool[] {

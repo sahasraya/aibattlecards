@@ -39,6 +39,42 @@
   --chip-border-color: #e2e6f0;
   --chip-text-color: #4a4a6a;
   --dropdown-shadow: 0 8px 32px rgba(118, 75, 162, 0.15);
+
+
+
+
+
+
+
+   --pi-purple:        #764ba2;
+  --pi-purple-light:  rgba(118, 75, 162, 0.08);
+  --pi-purple-border: rgba(118, 75, 162, 0.18);
+  --pi-red:           #f64f59;
+  --pi-gradient:      linear-gradient(100deg, #764ba2 0%, #f64f59 100%);
+  --pi-blue:          #4f6ef7;
+  --pi-blue-light:    rgba(79, 110, 247, 0.09);
+  --pi-blue-border:   rgba(79, 110, 247, 0.2);
+  --pi-gold:          #f59e0b;
+  --pi-green:         #22c55e;
+  --pi-green-light:   #dcfce7;
+  --pi-green-border:  #bbf7d0;
+  --pi-green-text:    #166534;
+  --pi-red-light:     #fee2e2;
+  --pi-red-border:    #fecaca;
+  --pi-red-text:      #991b1b;
+  --pi-text:          #111827;
+  --pi-text-soft:     #374151;
+  --pi-muted:         #6b7280;
+  --pi-border:        #e5e7eb;
+  --pi-bg:            #ffffff;
+  --pi-bg-subtle:     #f9fafb;
+  --pi-radius-card:   18px;
+  --pi-radius-pill:   24px;
+  --pi-radius-chip:   8px;
+  --pi-shadow-card:   0 2px 16px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+  --pi-shadow-hover:  0 8px 32px rgba(118,75,162,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  --pi-font:          "Manrope", sans-serif;
+  --product-detail-gradient: linear-gradient(135deg, #1e1b53, #820b0b);
 }
 
 body {

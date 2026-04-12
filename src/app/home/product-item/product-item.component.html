@@ -1,5 +1,4 @@
 <app-product-item-shimmer *ngIf="isLoading"></app-product-item-shimmer>
-
 <!-- Review Form Modal -->
 <div class="modal-overlay" *ngIf="showReviewForm" (click)="closeReviewFormModal()">
     <div class="modal-container" (click)="$event.stopPropagation()">
@@ -377,9 +376,40 @@
 
     <!-- ── Reviews ── -->
     <div class="reviews-section">
-        <h3 class="reviews-heading">Community & Expert Reviews ({{ totalReviews }})</h3>
 
-        <div *ngIf="reviews.length > 0; else noReviews">
+        <!-- Section heading -->
+        <div class="reviews-heading-row">
+            <span class="reviews-heading-icon">✳</span>
+            <h3 class="reviews-heading">Community &amp; Expert Reviews</h3>
+        </div>
+
+        <!-- Rating summary bar -->
+        <div class="rating-summary-bar" *ngIf="ratingData && ratingData.num_reviews > 0">
+            <div class="rating-summary-left">
+                <span class="summary-big-number" [style.color]="getRatingColor(productDetails!.rating)">
+                    {{ productDetails.rating | number:'1.2-2' }}
+                </span>
+                <div class="summary-stars-wrap">
+                    <span class="summary-stars" [style.color]="getRatingColor(productDetails!.rating)">
+                        {{ getProductRatingStars(productDetails!.rating) }}
+                    </span>
+                    <span class="summary-count">based on {{ ratingData.num_reviews }} reviews</span>
+                </div>
+            </div>
+            <div class="rating-summary-right">
+                <span class="recommend-badge">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/></svg>
+                    {{ ratingData.num_reviews }} verified reviews
+                </span>
+                <span class="top-rated-badge">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                    Top rated in {{ productDetails.productcategory }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Review cards -->
+        <div class="review-list" *ngIf="reviews.length > 0; else noReviews">
             <app-review-card *ngFor="let review of reviews" [review]="review" [currentUserId]="userid"
                 [showMenu]="review.userid === userid" (reviewDeleted)="handleReviewDeleted($event)">
             </app-review-card>
@@ -407,7 +437,7 @@
         </div>
 
         <div class="all-reviews-loaded" *ngIf="!hasMoreReviews && reviews.length > 0">
-            <p>All reviews loaded</p>
+            <p>All {{ totalReviews }} reviews loaded</p>
         </div>
     </div>
 </div>

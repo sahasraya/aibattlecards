@@ -52,56 +52,99 @@
         </div>
     </div>
 
-    <!-- Search Input (only show after category selected) -->
-    <div class="searchinputwrapper" *ngIf="iscategoryselected">
-        <h3 class="selectmax3items">Select Tools for Battle (max 4)</h3>
-        <input type="text" placeholder="Filter by name..." [(ngModel)]="filterTerm" (input)="onFilterChange()"
-            class="search-bar-products">
-    </div>
+    <!-- Search Input + Tools Dropdown (only show after category selected) -->
+    <div class="tools-search-wrapper" *ngIf="iscategoryselected">
+        <h3 class="selectmax3items">Select Tools for Battle <span class="battle-count-badge">{{ selectedTools.length }}/4 selected</span></h3>
 
-    <!-- Loading indicator for initial load -->
-    <div class="loading-container" *ngIf="isLoading">
-        <div class="spinner"></div>
-        <p>Loading tools...</p>
-    </div>
+        <div class="tools-input-container">
+            <svg class="tools-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" placeholder="Search tools to add to battle..." [(ngModel)]="filterTerm"
+                (input)="onFilterChange()" (focus)="onToolsInputFocus()" class="search-bar-products"
+                autocomplete="off" />
+            <button class="clear-filter-x" *ngIf="filterTerm" (click)="filterTerm = ''; onFilterChange()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
 
-    <!-- Tools list -->
-    <div class="filtered-cards-container" *ngIf="displayedTypeTools.length > 0 && !isLoading; else noItems">
-        <div class="filtered-card" *ngFor="let tool of displayedTypeTools" (click)="toggleSelect(tool)"
-            [class.selected]="tool.selected">
-            <img [src]="tool.productimage" alt="tool" class="tool-img" />
-            <span class="tool-name">{{ tool.productname }}</span>
-            <div class="select-circle" *ngIf="tool.selected">{{ tool.selected }}</div>
+        <!-- Tools Dropdown Panel -->
+        <div class="tools-dropdown" *ngIf="showToolsDropdown">
+
+            <!-- Loading indicator -->
+            <div class="tools-loading" *ngIf="isLoading">
+                <div class="spinner"></div>
+                <p>Loading tools...</p>
+            </div>
+
+            <!-- Tool rows -->
+            <ng-container *ngIf="!isLoading && displayedTypeTools.length > 0">
+                <div class="tool-row" *ngFor="let tool of displayedTypeTools"
+                    [class.tool-row--added]="tool.selected">
+                    <div class="tool-row-left">
+                        <div class="tool-row-avatar">
+                            <img [src]="tool.productimage" [alt]="tool.productname" class="tool-row-img" />
+                        </div>
+                        <div class="tool-row-info">
+                            <span class="tool-row-name">{{ tool.productname }}</span>
+                            <span class="tool-row-cat">{{ tool.productcategory }}</span>
+                        </div>
+                    </div>
+                    <button class="add-to-battle-btn"
+                        [class.add-to-battle-btn--added]="tool.selected"
+                        (click)="toggleSelect(tool)"
+                        [disabled]="!tool.selected && selectedTools.length >= 4">
+                        <ng-container *ngIf="!tool.selected">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add to Battle
+                        </ng-container>
+                        <ng-container *ngIf="tool.selected">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Added
+                        </ng-container>
+                    </button>
+                </div>
+
+                <!-- Load more inside dropdown -->
+                <div class="tools-load-more" *ngIf="hasMoreTools">
+                    <button class="load-more-inline-btn" (click)="loadMoreTools()" [disabled]="isLoadingMoreTools">
+                        <span *ngIf="!isLoadingMoreTools">Load more tools</span>
+                        <span *ngIf="isLoadingMoreTools" style="display:inline-flex;align-items:center;gap:6px;">
+                            <div class="loading-spinner"></div> Loading...
+                        </span>
+                    </button>
+                </div>
+            </ng-container>
+
+            <!-- No results -->
+            <div class="tools-no-results" *ngIf="!isLoading && displayedTypeTools.length === 0 && !noData">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#c1c1c1" stroke-width="1.5">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <p>No tools match <strong>"{{ filterTerm }}"</strong></p>
+                <button class="load-more-inline-btn" (click)="filterTerm = ''; onFilterChange()">Clear search</button>
+            </div>
+
+            <!-- No data for category -->
+            <div class="tools-no-results" *ngIf="!isLoading && noData">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#c1c1c1" stroke-width="1.5">
+                    <rect x="2" y="7" width="20" height="14" rx="2"></rect>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+                <p>No tools found for this category.</p>
+            </div>
         </div>
     </div>
-
-    <div class="load-more-container" *ngIf="hasMoreTools">
-        <button class="loadmorebtn" (click)="loadMoreTools()" [disabled]="isLoadingMoreTools">
-            <span *ngIf="!isLoadingMoreTools">Load More</span>
-            <span *ngIf="isLoadingMoreTools">
-                <div class="loading-spinner"></div>
-                Loading...
-            </span>
-        </button>
-    </div>
-
-    <!-- No items template -->
-    <ng-template #noItems>
-        <div class="no-items-container" *ngIf="!isLoading && iscategoryselected">
-            <div class="no-items-message" *ngIf="noData">
-                <p>No tools found for the selected category.</p>
-            </div>
-            <div class="no-items-message" *ngIf="!noData && displayedTypeTools.length === 0 && filterTerm">
-                <p>No tools match your search criteria.</p>
-                <button class="loadmorebtn" (click)="filterTerm = ''; onFilterChange()">
-                    Clear Filter
-                </button>
-            </div>
-            <div class="no-items-message" *ngIf="!iscategoryselected">
-                <p>No items found for "{{ selectedCategory === '' ? 'Yet' : selectedCategory }}"</p>
-            </div>
-        </div>
-    </ng-template>
 </div>
 
 <!-- Battlecard Arena -->
