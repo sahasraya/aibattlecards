@@ -129,11 +129,13 @@
 <!-- Main Product Card -->
 <div class="product-card" *ngIf="productDetails && !isLoading">
 
-    <!-- ── Header ── -->
+    <!-- ══ HERO ══ -->
     <div class="product-header">
         <div class="header-left">
-            <img [src]="productDetails.productimage || '../../../assets/images/12.png'" alt="Product Logo"
-                class="product-logo" (click)="openPopup()" />
+            <div class="logo-card" (click)="openPopup()">
+                <img [src]="productDetails.productimage || '../../../assets/images/12.png'" alt="Product Logo"
+                    class="product-logo" />
+            </div>
             <div class="header-meta">
                 <h1 class="product-title">{{ productDetails.productname }}</h1>
                 <span class="category-pill">
@@ -144,13 +146,11 @@
         </div>
         <div class="header-right">
             <div class="rating-block">
-                <span class="rating-number" [style.color]="getRatingColor(productDetails.rating)">
+                <span class="rating-number">
                     <ng-container *ngIf="!isCalculatingRating">{{ productDetails.rating | number:'1.2-2' }}</ng-container>
                     <span *ngIf="isCalculatingRating" class="calculating-text">···</span>
                 </span>
-                <div class="rating-stars" [style.color]="getRatingColor(productDetails.rating)">
-                    {{ getProductRatingStars(productDetails.rating) }}
-                </div>
+                <div class="rating-stars">{{ getProductRatingStars(productDetails.rating) }}</div>
                 <span class="review-count" *ngIf="ratingData && ratingData.num_reviews > 0">
                     ({{ ratingData.num_reviews }} {{ ratingData.num_reviews === 1 ? 'review' : 'reviews' }})
                 </span>
@@ -158,188 +158,185 @@
         </div>
     </div>
 
-    <!-- ── Info Bar ── -->
+    <!-- ══ OVERVIEW SECTION ══ -->
     <ng-container *ngIf="productDetails.founders.length || productDetails.productfundingstage || productDetails.productlicense || productDetails.deployments.length">
-        <div class="divider"></div>
-        <div class="info-bar">
-            <div class="info-col" *ngIf="productDetails.founders.length">
-                <span class="info-col-label">PROVIDER</span>
-                <div class="info-col-value">
-                    <span class="material-icons info-icon">business</span>
-                    {{ productDetails.founders[0] }}
+        <div class="section-block">
+            <div class="section-block-title">
+                <span class="material-icons section-block-icon">info_outline</span>
+                Overview
+            </div>
+            <div class="info-bar">
+                <div class="info-col" *ngIf="productDetails.founders.length">
+                    <span class="info-col-label">PROVIDER</span>
+                    <div class="info-col-value">
+                        <span class="material-icons info-icon">business</span>
+                        {{ productDetails.founders[0] }}
+                    </div>
                 </div>
-            </div>
-            <div class="info-col" *ngIf="productDetails.productfundingstage">
-                <span class="info-col-label">FUNDING</span>
-                <div class="info-col-value">
-                    <span class="funding-badge">{{ productDetails.productfundingstage }}</span>
+                <div class="info-col" *ngIf="productDetails.productfundingstage">
+                    <span class="info-col-label">FUNDING</span>
+                    <div class="info-col-value">
+                        <span class="funding-badge">{{ productDetails.productfundingstage }}</span>
+                    </div>
                 </div>
-            </div>
-            <div class="info-col" *ngIf="productDetails.productlicense">
-                <span class="info-col-label">LICENSE</span>
-                <div class="info-col-value">
-                    <span class="material-icons success-icon">check_circle</span>
-                    {{ productDetails.productlicense }}
+                <div class="info-col" *ngIf="productDetails.productlicense">
+                    <span class="info-col-label">LICENSE</span>
+                    <div class="info-col-value">
+                        <span class="material-icons success-icon">check_circle</span>
+                        {{ productDetails.productlicense }}
+                    </div>
                 </div>
-            </div>
-            <div class="info-col" *ngIf="productDetails.deployments.length">
-                <span class="info-col-label">DEPLOYMENT</span>
-                <div class="info-col-value">
-                    <span class="material-icons info-icon">cloud_upload</span>
-                    {{ productDetails.deployments[0] }}
-                </div>
-            </div>
-        </div>
-    </ng-container>
-
-    <!-- ── Description ── -->
-    <ng-container *ngIf="productDetails.productdescription">
-        <div class="divider"></div>
-        <div class="section-row">
-            <div class="section-icon-wrap">
-                <span class="material-icons section-icon">format_align_left</span>
-            </div>
-            <div class="section-body">
-                <span class="section-label">Description</span>
-                <p class="description-text">{{ productDetails.productdescription }}</p>
-            </div>
-        </div>
-    </ng-container>
-
-    <!-- ── Category ── -->
-    <ng-container *ngIf="productDetails.productcategory || productDetails.baseModels.length">
-        <div class="divider"></div>
-        <div class="section-row">
-            <div class="section-icon-wrap">
-                <span class="material-icons section-icon">label</span>
-            </div>
-            <div class="section-body">
-                <span class="section-label">Category</span>
-                <div class="chip-wrapper">
-                    <span class="chip category-chip" *ngIf="productDetails.productcategory">
-                        <span class="material-icons chip-icon">auto_awesome</span>
-                        {{ productDetails.productcategory }}
-                    </span>
-                    <span class="chip category-chip" *ngFor="let b of productDetails.baseModels">
-                        <span class="material-icons chip-icon">hub</span>
-                        {{ b }}
-                    </span>
+                <div class="info-col" *ngIf="productDetails.deployments.length">
+                    <span class="info-col-label">DEPLOYMENT</span>
+                    <div class="info-col-value">
+                        <span class="material-icons info-icon">cloud_upload</span>
+                        {{ productDetails.deployments[0] }}
+                    </div>
                 </div>
             </div>
         </div>
     </ng-container>
 
-    <!-- ── Technology ── -->
-    <ng-container *ngIf="getTechnologies().length">
-        <div class="divider"></div>
-        <div class="section-row">
-            <div class="section-icon-wrap">
-                <span class="material-icons section-icon">memory</span>
+    <!-- ══ DETAILS SECTION ══ -->
+    <ng-container *ngIf="productDetails.productdescription || productDetails.productcategory || productDetails.baseModels.length || getTechnologies().length || productDetails.useCases.length || hasValidRepositories()">
+        <div class="section-block">
+            <div class="section-block-title">
+                <span class="material-icons section-block-icon">article</span>
+                Product Details
             </div>
-            <div class="section-body">
-                <span class="section-label">Technology</span>
-                <div class="chip-wrapper">
-                    <span class="chip tech-chip" *ngFor="let tech of getTechnologies()">
-                        <span class="material-icons chip-icon">code</span>
-                        {{ tech }}
-                    </span>
-                </div>
-            </div>
-        </div>
-    </ng-container>
 
-    <!-- ── Use Cases ── -->
-    <ng-container *ngIf="productDetails.useCases.length">
-        <div class="divider"></div>
-        <div class="section-row">
-            <div class="section-icon-wrap">
-                <span class="material-icons section-icon">work_outline</span>
-            </div>
-            <div class="section-body">
-                <span class="section-label">Use Cases</span>
-                <div class="chip-wrapper">
-                    <span class="chip use-chip" *ngFor="let uc of productDetails.useCases">
-                        <span class="material-icons chip-icon">task_alt</span>
-                        {{ uc }}
-                    </span>
+            <!-- Description -->
+            <ng-container *ngIf="productDetails.productdescription">
+                <div class="section-row">
+                    <div class="section-icon-wrap">
+                        <span class="material-icons section-icon">format_align_left</span>
+                    </div>
+                    <div class="section-body">
+                        <span class="section-label">Description</span>
+                        <p class="description-text">{{ productDetails.productdescription }}</p>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </ng-container>
+                <div class="inner-divider"></div>
+            </ng-container>
 
-    <!-- ── Repositories ── -->
-    <ng-container *ngIf="hasValidRepositories()">
-        <div class="divider"></div>
-        <div class="section-row">
-            <div class="section-icon-wrap">
-                <span class="material-icons section-icon">folder_open</span>
-            </div>
-            <div class="section-body">
-                <span class="section-label">Repositories</span>
-                <div class="chip-wrapper">
-                    <span class="chip" *ngFor="let r of productDetails.repositories">{{ r }}</span>
-                </div>
-            </div>
-        </div>
-    </ng-container>
-
-    <!-- ── Media Previews ── -->
-    <ng-container *ngIf="productDetails.mediaPreviews?.length">
-        <div class="divider"></div>
-        <div class="section-row">
-            <div class="section-icon-wrap">
-                <span class="material-icons section-icon">perm_media</span>
-            </div>
-            <div class="section-body">
-                <span class="section-label">Media Previews</span>
-                <div class="media-grid">
-                    <div *ngFor="let m of productDetails.mediaPreviews" class="media-item" (click)="openMediaModal(m)">
-                        <!-- YouTube -->
-                        <div *ngIf="isYouTubeLink(m)" class="media-preview youtube-preview">
-                            <img [src]="getYouTubeThumbnail(m)" alt="YouTube Preview" class="media-thumbnail" />
-                            <div class="play-overlay">
-                                <span class="material-icons play-icon">play_circle</span>
-                            </div>
-                            <div class="media-label">
-                                <span class="material-icons">smart_display</span>
-                                <span>YouTube Video</span>
-                            </div>
-                        </div>
-                        <!-- Other Link -->
-                        <div *ngIf="!isYouTubeLink(m) && isValidUrl(m)" class="media-preview link-preview">
-                            <div class="link-icon-container">
-                                <span class="material-icons link-icon">language</span>
-                            </div>
-                            <div class="media-label">
-                                <span class="material-icons">open_in_new</span>
-                                <span>{{ getDomainName(m) }}</span>
-                            </div>
-                        </div>
-                        <!-- Invalid -->
-                        <div *ngIf="!isValidUrl(m)" class="media-preview invalid-preview">
-                            <div class="link-icon-container">
-                                <span class="material-icons error-icon">broken_image</span>
-                            </div>
-                            <div class="media-label"><span>Invalid URL</span></div>
+            <!-- Category -->
+            <ng-container *ngIf="productDetails.productcategory || productDetails.baseModels.length">
+                <div class="section-row">
+                    <div class="section-icon-wrap">
+                        <span class="material-icons section-icon">label</span>
+                    </div>
+                    <div class="section-body">
+                        <span class="section-label">Category</span>
+                        <div class="chip-wrapper">
+                            <span class="chip category-chip" *ngIf="productDetails.productcategory">
+                                <span class="material-icons chip-icon">auto_awesome</span>
+                                {{ productDetails.productcategory }}
+                            </span>
+                            <span class="chip category-chip" *ngFor="let b of productDetails.baseModels">
+                                <span class="material-icons chip-icon">hub</span>{{ b }}
+                            </span>
                         </div>
                     </div>
                 </div>
-                <p class="media-hint">
-                    <span class="material-icons" style="font-size:14px;vertical-align:middle;">info</span>
-                    Click on any preview to view sample description (interactive demo)
-                </p>
+                <div class="inner-divider" *ngIf="getTechnologies().length || productDetails.useCases.length || hasValidRepositories()"></div>
+            </ng-container>
+
+            <!-- Technology -->
+            <ng-container *ngIf="getTechnologies().length">
+                <div class="section-row">
+                    <div class="section-icon-wrap">
+                        <span class="material-icons section-icon">memory</span>
+                    </div>
+                    <div class="section-body">
+                        <span class="section-label">Technology</span>
+                        <div class="chip-wrapper">
+                            <span class="chip tech-chip" *ngFor="let tech of getTechnologies()">
+                                <span class="material-icons chip-icon">code</span>{{ tech }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="inner-divider" *ngIf="productDetails.useCases.length || hasValidRepositories()"></div>
+            </ng-container>
+
+            <!-- Use Cases -->
+            <ng-container *ngIf="productDetails.useCases.length">
+                <div class="section-row">
+                    <div class="section-icon-wrap">
+                        <span class="material-icons section-icon">work_outline</span>
+                    </div>
+                    <div class="section-body">
+                        <span class="section-label">Use Cases</span>
+                        <div class="chip-wrapper">
+                            <span class="chip use-chip" *ngFor="let uc of productDetails.useCases">
+                                <span class="material-icons chip-icon">task_alt</span>{{ uc }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="inner-divider" *ngIf="hasValidRepositories()"></div>
+            </ng-container>
+
+            <!-- Repositories -->
+            <ng-container *ngIf="hasValidRepositories()">
+                <div class="section-row">
+                    <div class="section-icon-wrap">
+                        <span class="material-icons section-icon">folder_open</span>
+                    </div>
+                    <div class="section-body">
+                        <span class="section-label">Repositories</span>
+                        <div class="chip-wrapper">
+                            <span class="chip" *ngFor="let r of productDetails.repositories">{{ r }}</span>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
+
+    <!-- ══ MEDIA SECTION ══ -->
+    <ng-container *ngIf="productDetails.mediaPreviews?.length">
+        <div class="section-block">
+            <div class="section-block-title">
+                <span class="material-icons section-block-icon">perm_media</span>
+                Media Previews
+            </div>
+            <div class="section-row">
+                <div class="section-body" style="margin-left:0">
+                    <div class="media-grid">
+                        <div *ngFor="let m of productDetails.mediaPreviews" class="media-item" (click)="openMediaModal(m)">
+                            <div *ngIf="isYouTubeLink(m)" class="media-preview youtube-preview">
+                                <img [src]="getYouTubeThumbnail(m)" alt="YouTube Preview" class="media-thumbnail" />
+                                <div class="play-overlay"><span class="material-icons play-icon">play_circle</span></div>
+                                <div class="media-label"><span class="material-icons">smart_display</span><span>YouTube Video</span></div>
+                            </div>
+                            <div *ngIf="!isYouTubeLink(m) && isValidUrl(m)" class="media-preview link-preview">
+                                <div class="link-icon-container"><span class="material-icons link-icon">language</span></div>
+                                <div class="media-label"><span class="material-icons">open_in_new</span><span>{{ getDomainName(m) }}</span></div>
+                            </div>
+                            <div *ngIf="!isValidUrl(m)" class="media-preview invalid-preview">
+                                <div class="link-icon-container"><span class="material-icons error-icon">broken_image</span></div>
+                                <div class="media-label"><span>Invalid URL</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="media-hint">
+                        <span class="material-icons" style="font-size:14px;vertical-align:middle;">info</span>
+                        Click on any preview to open it
+                    </p>
+                </div>
             </div>
         </div>
     </ng-container>
 
-    <!-- ── Links ── -->
+    <!-- ══ LINKS SECTION ══ -->
     <ng-container *ngIf="productDetails.productwebsite || productDetails.productdocumentation || productDetails.xlink || productDetails.productlinkedin || productDetails.productfb">
-        <div class="divider"></div>
-        <div class="section-row links-row">
-            <div class="section-icon-wrap">
-                <span class="material-icons section-icon">link</span>
+        <div class="section-block">
+            <div class="section-block-title">
+                <span class="material-icons section-block-icon">link</span>
+                Links
             </div>
-            <div class="section-body links-body">
+            <div class="links-row-flat">
                 <a *ngIf="productDetails.productwebsite" [href]="productDetails.productwebsite" target="_blank" class="detail-link">
                     <span class="material-icons">public</span> Website
                 </a>
@@ -359,9 +356,7 @@
         </div>
     </ng-container>
 
-    <div class="divider"></div>
-
-    <!-- ── Action Buttons ── -->
+    <!-- ══ ACTIONS ══ -->
     <div class="action-bar">
         <button class="btn-battlecard" (click)="navigateToBattleCard()">
             <span class="material-icons">compare_arrows</span> Add to Battlecard
@@ -374,25 +369,18 @@
         </a>
     </div>
 
-    <!-- ── Reviews ── -->
+    <!-- ══ REVIEWS SECTION ══ -->
     <div class="reviews-section">
-
-        <!-- Section heading -->
         <div class="reviews-heading-row">
             <span class="reviews-heading-icon">✳</span>
             <h3 class="reviews-heading">Community &amp; Expert Reviews</h3>
         </div>
 
-        <!-- Rating summary bar -->
         <div class="rating-summary-bar" *ngIf="ratingData && ratingData.num_reviews > 0">
             <div class="rating-summary-left">
-                <span class="summary-big-number" [style.color]="getRatingColor(productDetails!.rating)">
-                    {{ productDetails.rating | number:'1.2-2' }}
-                </span>
+                <span class="summary-big-number">{{ productDetails.rating | number:'1.2-2' }}</span>
                 <div class="summary-stars-wrap">
-                    <span class="summary-stars" [style.color]="getRatingColor(productDetails!.rating)">
-                        {{ getProductRatingStars(productDetails!.rating) }}
-                    </span>
+                    <span class="summary-stars">{{ getProductRatingStars(productDetails!.rating) }}</span>
                     <span class="summary-count">based on {{ ratingData.num_reviews }} reviews</span>
                 </div>
             </div>
@@ -408,7 +396,6 @@
             </div>
         </div>
 
-        <!-- Review cards -->
         <div class="review-list" *ngIf="reviews.length > 0; else noReviews">
             <app-review-card *ngFor="let review of reviews" [review]="review" [currentUserId]="userid"
                 [showMenu]="review.userid === userid" (reviewDeleted)="handleReviewDeleted($event)">
@@ -427,8 +414,7 @@
             <button class="loadmorebtn" (click)="loadMoreReviews()" [disabled]="isLoadingMoreReviews">
                 <span *ngIf="!isLoadingMoreReviews">Load More Reviews</span>
                 <span *ngIf="isLoadingMoreReviews">Loading...</span>
-                <svg *ngIf="!isLoadingMoreReviews" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2">
+                <svg *ngIf="!isLoadingMoreReviews" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                 </svg>
                 <div *ngIf="isLoadingMoreReviews" class="loading-spinner"></div>
@@ -440,6 +426,7 @@
             <p>All {{ totalReviews }} reviews loaded</p>
         </div>
     </div>
+
 </div>
 
 <div class="toast-message" [ngClass]="messageClass" [style.opacity]="messageVisible ? 1 : 0">
